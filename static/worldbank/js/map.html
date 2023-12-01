@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Assessment Dashboard</title>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        section {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        #map {
+            width: 50%;
+            height: 80vh;
+            background-color: black;
+
+        }
+
+       #risk-info {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /*******************************************/
+        #attribute-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #attribute-table th, #attribute-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    #attribute-table th {
+      background-color: #f2f2f2;
+    }
+        /********************************************/
+
+        /**************************************/
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Risk Assessment Dashboard</h1>
+    </header>
+
+    <section>
+        <div id="risk-info">
+            <h2>Risk Information per Admin LeveL</h2>
+            <p>Selected Location: <span id="selected-location">City ABC</span></p>
+            <p>Risk Level: <span id="risk-level">High</span></p>
+            <!-- Additional risk information goes here -->
+        </div>
+        <div id="risk-info">
+            <h2>Risk Information per Admin LeveL</h2>
+            <p>Selected Location: <span id="selected-location">City ABC</span></p>
+            <p>Risk Level: <span id="risk-level">High</span></p>
+            <!-- Additional risk information goes here -->
+        </div>
+        <div id="map" class="map"></div>
+       
+
+        <div id="risk-info">
+            <h2>Risk Information per Admin LeveL</h2>
+            <p>Selected Location: <span id="selected-location">City ABC</span></p>
+            <p>Risk Level: <span id="risk-level">High</span></p>
+            <!-- Additional risk information goes here -->
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Risk Assessment Dashboard</p>
+    </footer>
+    
+    <script src='./map.js'></script>
+
+  
+</body>
+</html>
