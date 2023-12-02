@@ -1,9 +1,11 @@
 
 import LayerGroup from 'ol/layer/Group';
-import {substationStyle,powerLineStyle,adminBoundaryStyle} from './modules/sytle'
+import {substationStyle,powerLineStyle,adminBoundaryStyle,getPolygonStyle} from './modules/sytle'
 import { countMunicipalities, populateOptionElemets, generateSelectElementValues } from './modules/domElements';
 import { getProvinceName } from './modules/search_select';
-
+import VectorLayer from 'ol/layer/Vector';
+import { OSM, Vector as VectorSource } from 'ol/source';
+import GeoJSON from 'ol/format/GeoJSON';
 import{  initMap,createVectorLayer} from './init'
 import {province,commune} from './modules/variables'
 
@@ -32,7 +34,17 @@ const getLayers = async () => {
     
     if (response.ok) {
       const responseJSON = await response.json();
-      const layer = createVectorLayer(responseJSON, 'Layer1',adminBoundaryStyle);
+      const layer = new VectorLayer({
+        style:function(feature) {
+          return getPolygonStyle(feature)
+        },
+        source: new VectorSource({
+          features: new GeoJSON().readFeatures(responseJSON),
+          
+        }),
+        
+        title: 'title'
+      });
       mapLayers.push(layer);
       console.log(responseJSON);
     }
@@ -59,7 +71,7 @@ const getLayers = async () => {
         layers: mapLayers
       }));
 
-      const layer =  mapLayers[0]
+      const layer =  mapLayers[1]
       //console.log('layer.getSource().getFeatures()')
        ///populate province dropdown menu
              for(let i = 0;i < getProvinceName(layer.getSource().getFeatures()).length;i++ ){
