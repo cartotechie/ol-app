@@ -5,6 +5,7 @@ import { countMunicipalities, populateOptionElemets, generateSelectElementValues
 import { getProvinceName } from './modules/search_select';
 
 import{  initMap,createVectorLayer} from './init'
+import {province,commune} from './modules/variables'
 
 
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
@@ -59,14 +60,43 @@ const getLayers = async () => {
       }));
 
       const layer =  mapLayers[0]
-      console.log('layer.getSource().getFeatures()')
+      //console.log('layer.getSource().getFeatures()')
        ///populate province dropdown menu
              for(let i = 0;i < getProvinceName(layer.getSource().getFeatures()).length;i++ ){
-              console.log((layer.getSource().getFeatures())[i])
-              console.log(getProvinceName(layer.getSource().getFeatures())[i])
-               populateOptionElemets(getProvinceName(layer.getSource().getFeatures())[i], "provinces")
-            
-             }
+              //console.log((layer.getSource().getFeatures())[i])
+              //console.log(getProvinceName(layer.getSource().getFeatures())[i])
+               populateOptionElemets(getProvinceName(layer.getSource().getFeatures())[i], "provinces")}
+
+                 // Select features from options dropdown arrow
+			function onchange(event) {
+				event.preventDefault()
+				selectedProvince = event.target.value;
+				//console.log(selectedProvince)
+				for (let i = 0; document.getElementById("provinces").options.length > i; i++) {
+					//console.log(document.getElementById("provinces").options[i].value)
+					if (selectedProvince === event.target.value) {
+						document.querySelector(`#provinces option[value= "${document.getElementById("provinces").options[i].value}"]`).disabled = true
+					}
+				}
+				/*********************** */
+				for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
+					if (layer.getSource().getFeatures()[i].get(province) === selectedProvince) {
+						console.log(layer.getSource().getFeatures()[i].get(commune))
+						selectedMunicipalities.push(layer.getSource().getFeatures()[i].get(commune))
+						//console.log(selectedMunicipalities)
+						countMunicipalities(selectedMunicipalities,selectedProvince)
+						populateOptionElemets(layer.getSource().getFeatures()[i].get(commune), "municipalities")
+						//layer.setStyle(newStyle);
+						const newex = layer.getSource().getFeatures()[i].getGeometry()
+						map.getView().fit(newex);
+						/*************** */
+					}
+				}
+
+				layer.changed();
+				
+			}
+			document.getElementById('provinces').addEventListener('change', onchange)
          
     } else {
       throw new Error('No valid GeoJSON data available');
