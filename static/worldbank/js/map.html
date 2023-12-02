@@ -93,10 +93,13 @@
        
 
         <div id="risk-info">
-            <h2>Risk Information per Admin LeveL</h2>
-            <p>Selected Location: <span id="selected-location">City ABC</span></p>
-            <p>Risk Level: <span id="risk-level">High</span></p>
-            <!-- Additional risk information goes here -->
+            <form id="provinces-form">
+                <label for="provinces">Province</label>
+                <select name="provinces" id="provinces" form="provinces-form">
+                  <option value="">--Please choose a Province--</option>
+                </select>
+                <input type="submit" value="Remove" id="provinces-btn">
+                </form>
         </div>
     </section>
 
