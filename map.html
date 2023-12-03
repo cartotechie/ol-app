@@ -77,7 +77,7 @@
     </header>
 
     <section>
-        <div id="risk-info">
+        <div id="legend">
             <h2>Legend</h2>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
                 <!-- Scale Background -->
@@ -99,11 +99,15 @@
             </svg>
             
         </div>
-        <div id="risk-info">
-            <h2>Risk Information per Admin LeveL</h2>
-            <p>Selected Location: <span id="selected-location">City ABC</span></p>
-            <p>Risk Level: <span id="risk-level">High</span></p>
-            <!-- Additional risk information goes here -->
+        <div id="statistics">
+            <div class="item3 dashboard-item">   
+                <div id="province-name"></div>
+                <div class="no-municipalities values">
+                 
+                  <div class="municipality" id="total-municipalities"></div>
+                  <span id="total-count"></span>
+                </div>
+            </div>
         </div>
         <div id="map" class="map"></div>
        
@@ -124,14 +128,7 @@
               </select>
               <input type="submit" value="Remove" id="municipalities-btn">
             </form> 
-            <div class="item3 dashboard-item">   
-                <div id="province-name"></div>
-                <div class="no-municipalities values">
-                 
-                  <div class="municipality" id="total-municipalities"></div>
-                  <span id="total-count"></span>
-                </div>
-            </div>
+            
         </div>
          
     </section>

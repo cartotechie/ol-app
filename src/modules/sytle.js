@@ -1,5 +1,5 @@
 import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
-
+import {map} from '../init'
 // Styles for Power Lines
 const powerLineStyle = new Style({
   stroke: new Stroke({
@@ -48,36 +48,37 @@ function getPolygonStyle(feature) {
     }),
   });
 
+  var zoom = map.getView().getZoom();
   // Style based on admin_leve_1
-  if (feature.get('admin_leve') === '0') {
+  if (feature.get('admin_leve') === '0'&& zoom >= 8) {
     return new Style({
       fill: new Fill({
         color: 'rgba(255, 0, 0, 0.8)', // Red
       }),
       stroke: new Stroke({
         color: '#000000',
-        width: 1,
+        //width: 1,
       }),
     });
-  } else if (feature.get('admin_leve') === '2') {
+  } else if (feature.get('admin_leve') === '1'&& zoom >= 10) {
     return new Style({
       fill: new Fill({
         color: 'rgba(0, 255, 0, 0.8)', // Green
       }),
-      stroke: new Stroke({
+     /* stroke: new Stroke({
         color: '#000000',
         width: 1,
-      }),
+      }),*/
     });
-  } else if (feature.get('admin_leve') === '3') {
+  } else if (feature.get('admin_leve') === '2'&& zoom >= 12) {
     return new Style({
       fill: new Fill({
         color: 'rgba(0, 0, 255, 0.8)', // Blue
       }),
-      stroke: new Stroke({
-        color: '#000000',
+      /*stroke: new Stroke({
+        color: 'white',
         width: 1,
-      }),
+      }),*/
     });
   }
 

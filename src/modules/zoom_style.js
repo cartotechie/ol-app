@@ -1,60 +1,91 @@
-function getPolygonStyle(feature, resolution) {
-    // Extract attributes from the feature properties
-  
-    // Default style
-    var defaultStyle = new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(204, 204, 204, 0.8)', // Default fill color
+import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
+import {map} from '../init'
+// Styles for Power Lines
+const powerLineStyle = new Style({
+  stroke: new Stroke({
+    color: '#FF5733', // Orange color
+    width: 2,
+  }),
+});
+
+// Style for Substations (as points)
+const substationStyle = new Style({
+  image: new Circle({
+    radius: 8,
+    fill: new Fill({
+      color: '#33A1DE', // Light blue fill
+    }),
+    stroke: new Stroke({
+      color: '#FFFFFF', // White stroke
+      width: 2,
+    }),
+  }),
+});
+
+// Style for Administrative Boundaries
+const adminBoundaryStyle = new Style({
+  stroke: new Stroke({
+    color: '#4CAF50', // Green color
+    width: 1,
+  }),
+//fill: new Fill({color: 'rgba(76, 175, 80, 0.1)', /*Green with reduced opacity*/}),
+});
+
+
+// Style function for the polygon layer
+function getPolygonStyle(feature) {
+  console.log(feature);
+  // Extract attributes from the feature properties
+
+  // Default style
+  var defaultStyle = new Style({
+    fill: new Fill({
+      color: 'rgba(204, 204, 204, 0.8)', // Default fill color
+    }),
+    stroke: new Stroke({
+      color: '#000000', // Default border color
+      width: 1, // Default border width
+    }),
+  });
+
+  var zoom = map.getView().getZoom();
+  // Style based on admin_leve_1
+  if (feature.get('admin_leve') === '0'&& zoom >= 8) {
+    return new Style({
+      fill: new Fill({
+        color: 'rgba(255, 0, 0, 0.8)', // Red
       }),
-      stroke: new ol.style.Stroke({
-        color: '#000000', // Default border color
-        width: 1, // Default border width
+      stroke: new Stroke({
+        color: '#000000',
+        width: 1,
       }),
     });
-  
-    // Get the current zoom level
-    var zoom = map.getView().getZoom();
-  
-    // Style based on admin_level_1 at zoom level 8 or above
-    if (feature.get('admin_level') === '0' && zoom >= 8) {
-      return new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 0, 0, 0.8)', // Red
-        }),
-        stroke: new ol.style.Stroke({
-          color: '#000000',
-          width: 1,
-        }),
-      });
-    }
-  
-    // Style based on admin_level_2 at zoom level 10 or above
-    else if (feature.get('admin_level') === '1' && zoom >= 10) {
-      return new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(0, 255, 0, 0.8)', // Green
-        }),
-        stroke: new ol.style.Stroke({
-          color: '#000000',
-          width: 1,
-        }),
-      });
-    }
-  
-    // Style based on admin_level_3 at zoom level 12 or above
-    else if (feature.get('admin_level') === '2' && zoom >= 12) {
-      return new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(0, 0, 255, 0.8)', // Blue
-        }),
-        stroke: new ol.style.Stroke({
-          color: '#000000',
-          width: 1,
-        }),
-      });
-    }
-  
-    // Return default style if no condition is met
-    return defaultStyle;
+  } else if (feature.get('admin_leve') === '1'&& zoom >= 10) {
+    return new Style({
+      fill: new Fill({
+        color: 'rgba(0, 255, 0, 0.8)', // Green
+      }),
+      stroke: new Stroke({
+        color: '#000000',
+        width: 1,
+      }),
+    });
+  } else if (feature.get('admin_leve') === '2'&& zoom >= 12) {
+    return new Style({
+      fill: new Fill({
+        color: 'rgba(0, 0, 255, 0.8)', // Blue
+      }),
+      stroke: new Stroke({
+        color: 'white',
+        width: 1,
+      }),
+    });
   }
-  
+
+  // Return default style if no condition is met
+  return defaultStyle;
+}
+
+
+
+  export {powerLineStyle,substationStyle,adminBoundaryStyle,getPolygonStyle}
