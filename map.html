@@ -1,148 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Risk Assessment Dashboard</title>
-    <style>
-       body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk Assessment Dashboard</title>
+  ls
+  <style>
+html, body, .container {
+height: 100%;
+margin: 0;
+}
 
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
+.container {  display: grid;
+grid-template-columns: 1fr 1fr 1.4fr 0.6fr;
+grid-template-rows: 0.3fr 1.5fr 0.5fr 1fr 0.3fr;
+gap: 10px ;
+grid-auto-flow: row;
+grid-template-areas:
+  "header header header header"
+  "table map map map-symbology"
+  "table Info1 Info2 Info3"
+  "graph1 graph2 graph3 graph4"
+  "footer footer footer footer";
+}
 
-        section {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-        }
+.header, .footer, .map, .map-symbology,
+.Info1, .Info2, .Info3,
+.graph1, .graph2, .graph3, .graph4,
+.table {
+padding: 10px; /* Adjust as needed */
+border: 1px solid #ccc; /* Example border for clarity, adjust or remove as needed */
+}
 
-        #map {
-            width: 500px;
-            height: 130px;
-        
-        }
+.header, .footer {
+background-color: #333;
+color: white;
+}
 
-       #risk-info {
-            flex: 1;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+.header { grid-area: header; }
 
-        /*******************************************/
-        #attribute-table {
-      border-collapse: collapse;
-      width: 100%;
-    }
+.footer { grid-area: footer; }
 
-    #attribute-table th, #attribute-table td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
+.map { grid-area: map; }
 
-    #attribute-table th {
-      background-color: #f2f2f2;
-    }
-        /********************************************/
+.map-symbology { grid-area: map-symbology; }
 
-        /**************************************/
+.Info1 { grid-area: Info1; }
 
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+.Info2 { grid-area: Info2; }
 
-    </style>
+.Info3 { grid-area: Info3; }
+
+.graph1 { grid-area: graph1; }
+
+.graph2 { grid-area: graph2; }
+
+.graph3 { grid-area: graph3; }
+.graph4 { grid-area: graph4; }
+
+.table { grid-area: table; }
+
+
+
+
+/* For presentation only, no need to copy the code below */
+
+/*.container * {
+border: 1px solid red;
+position: relative;
+}
+
+.container *:after {
+content:attr(class);
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+display: grid;
+align-items: center;
+justify-content: center;
+}*/
+
+
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+.parent {
+  grid-template-columns: 1fr;
+}
+}
+
+
+
+  </style>
 </head>
+
 <body>
-
-    <header>
+  <div class="container">
+      <div class="header">
         <h1>Risk Assessment Dashboard</h1>
-    </header>
-
-    <section>
-        <div id="legend">
-            <h2>Legend</h2>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200" width="100" height="200">
-                <!-- Vertical Line -->
-                <line x1="50" y1="10" x2="50" y2="190" stroke="#333" stroke-width="2" />
+      </div>
+      <div class="footer"><p>© 2023 Risk Assessment Dashboard</p></div>
+      <div class="map"><div id="map" class="map">
+                <div id="info-box" class="info-box">
+                    <!-- Content of the info box goes here -->
+                  </div>
+            </div></div>
+      <div class="map-symbology">   <h2>Legend</h2>
+              <svg width="150" height="120">
+                <!-- Example Legend Items -->
+                <rect x="10" y="10" width="20" height="20" fill="#ff0000"></rect>
+                <text x="40" y="25" font-size="14" fill="#333">Category 1</text>
             
-                <!-- Scale Points -->
-                <circle cx="50" cy="30" r="5" fill="#4CAF50" />
-                <circle cx="50" cy="60" r="5" fill="#8BC34A" />
-                <circle cx="50" cy="90" r="5" fill="#FFC107" />
-                <circle cx="50" cy="120" r="5" fill="#FF9800" />
-                <circle cx="50" cy="150" r="5" fill="#F44336" />
+                <rect x="10" y="40" width="20" height="20" fill="#00ff00"></rect>
+                <text x="40" y="55" font-size="14" fill="#333">Category 2</text>
             
-                <!-- Labels -->
-                <text x="55" y="35" font-size="10" fill="#333">Low</text>
-                <text x="55" y="65" font-size="10" fill="#333">Moderate Low</text>
-                <text x="55" y="95" font-size="10" fill="#333">Moderate</text>
-                <text x="55" y="125" font-size="10" fill="#333">Moderate High</text>
-                <text x="55" y="155" font-size="10" fill="#333">High</text>
-            </svg>   
-            
-        </div>
-        <div id="statistics">
-            <h2>Statistics </h2>
-            <div class="item3 dashboard-item">   
-                <div id="province-name"></div>
-                <div class="no-municipalities values">
-                 
-                  <div class="municipality" id="total-municipalities"></div>
-                  <span id="total-count"></span>
-                </div>
-            </div>
-        </div>
-        <div id="map" class="map">
-            
-        </div><div id="info-box" class="info-box">
-                <!-- Content of the info box goes here -->
-              </div>
-        
-
-       
-
-        <div id="risk-info">
-            <form id="provinces-form">
-                <label for="provinces">Division</label>
-                <select name="provinces" id="provinces" form="provinces-form">
-                  <option value="">--Please choose a Division--</option>
-                </select>
-                <input type="submit" value="Remove" id="provinces-btn">
-                </form>
-            </form>
-            <form id="municipalities-form">
-              <label for="municipalities">District</label>
-              <select name="municipalities" id="municipalities">
-                <option value="">--Please choose a District--</option>
-              </select>
-              <input type="submit" value="Remove" id="municipalities-btn">
-            </form> 
-            
-        </div>
-         
-    </section>
-
-    <footer>
-        <p>&copy; 2023 Risk Assessment Dashboard</p>
-    </footer>
+                <rect x="10" y="70" width="20" height="20" fill="#0000ff"></rect>
+                <text x="40" y="85" font-size="14" fill="#333">Category 3</text>
+                <!-- Add more legend items as needed -->
+              </svg>
     
+              <svg width="150" height="120">
+                <!-- Example Legend Items -->
+                <rect x="10" y="10" width="20" height="20" fill="#ff0000"></rect>
+                <text x="40" y="25" font-size="14" fill="#333">Category 1</text>
+            
+                <rect x="10" y="40" width="20" height="20" fill="#00ff00"></rect>
+                <text x="40" y="55" font-size="14" fill="#333">Category 2</text>
+            
+                <rect x="10" y="70" width="20" height="20" fill="#0000ff"></rect>
+                <text x="40" y="85" font-size="14" fill="#333">Category 3</text>
+                <!-- Add more legend items as needed -->
+              </svg></div>
+      <div class="Info1"><h2>Statistics</h2>
+                <div class="item3 dashboard-item">
+                  <div id="province-name">Sample Province</div>
+                  <div class="no-municipalities values">
+                    <div class="municipality" id="total-municipalities">City A</div>
+                    <span id="total-count">150</span>
+                  </div>
+                </div></div>
+      <div class="Info2"><h2>Statistics</h2>
+                <div class="item3 dashboard-item">
+                  <div id="province-name">Sample Province</div>
+                  <div class="no-municipalities values">
+                    <div class="municipality" id="total-municipalities">City A</div>
+                    <span id="total-count">150</span>
+                  </div>
+                </div></div>
+      <div class="Info3"><h2>Statistics</h2>
+                <div class="item3 dashboard-item">
+                  <div id="province-name">Sample Province</div>
+                  <div class="no-municipalities values">
+                    <div class="municipality" id="total-municipalities">City A</div>
+                    <span id="total-count">150</span>
+                  </div>
+                </div></div>
+      <div class="graph1"><!-- graph 1 -->
+            <div class="graph-container">
+              <canvas id="graph1" width="373" height="249" style="display: block; box-sizing: border-box; height: 249px; width: 373px;"></canvas>
+            </div></div>
+      <div class="graph2"><!-- graph 1 -->
+            <div class="graph-container">
+              <canvas id="graph2" width="373" height="249" style="display: block; box-sizing: border-box; height: 249px; width: 373px;"></canvas>
+            </div>
+      </div>
+      <div class="graph3"><!-- graph 1 -->
+            <div class="graph-container">
+              <canvas id="graph3" width="530" height="265" style="display: block; box-sizing: border-box; height: 265px; width: 530px;"></canvas>
+            </div>
+      </div>
+      <div class="graph4"><!-- graph 4 -->
+          <div class="graph-container">
+            <canvas id="graph4" width="300" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 300px;"></canvas>
+          </div>
+    </div>
+      <div class="table"><h2>Select by Division</h2>
+                <!-- Your Risk Info Section Content  -->
+                <form id="provinces-form">
+                    <label for="provinces">Division</label>
+                    <select name="provinces" id="provinces" form="provinces-form">
+                      <option value="">--Please choose a Division--</option>
+                    </select>
+                    <input type="submit" value="Remove" id="provinces-btn">
+                </form>
+    
+                <form id="municipalities-form">
+                    <label for="municipalities">District</label>
+                    <select name="municipalities" id="municipalities">
+                        <option value="">--Please choose a District--</option>
+                    </select>
+                    <input type="submit" value="Remove" id="municipalities-btn">
+                </form> 
+              
+                <div class="container">
+                    <div class="cell">Column 1</div>
+                    <div class="cell">Column 2</div>
+                    <div class="cell">Column 3</div>
+                    <div class="cell">Column 4</div>
+    
+                    <!-- Add more rows as needed -->
+                    <div class="cell">Data 1</div>
+                    <div class="cell">Data 2</div>
+                    <div class="cell">Data 3</div>
+                    <div class="cell">Data 4</div>
+
+                    <!-- Add more rows as needed -->
+                    <div class="cell">Data 1</div>
+                    <div class="cell">Data 2</div>
+                    <div class="cell">Data 3</div>
+                    <div class="cell">Data 4</div>
+
+                    <!-- Add more rows as needed -->
+                    <div class="cell">Data 1</div>
+                    <div class="cell">Data 2</div>
+                    <div class="cell">Data 3</div>
+                    <div class="cell">Data 4</div>
+
+                </div>
+              </div>
+    </div>
     <script src='.../../static/worldbank/js/map.js'></script>
 
   
