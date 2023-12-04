@@ -1,129 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Risk Assessment Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-       body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-
-        section {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-        }
-
-        #map {
-            width: 50%;
-            height: 80vh;
-            
-
-        }
-
-       #risk-info {
-            flex: 1;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /*******************************************/
-        #attribute-table {
-      border-collapse: collapse;
-      width: 100%;
+        html, body, .container {
+    height: 100%;
+    margin: 0;
+  }
+  
+   .container {  display: grid;
+    grid-template-columns: 1fr 1fr 1.4fr 0.6fr;
+    grid-template-rows: 0.3fr 1.5fr 0.5fr 1fr 0.3fr;
+    gap: 10px ;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "header header header header"
+      "table map-container map-container map-symbology"
+      "table Info1 Info2 Info3"
+      "graph1 graph2 graph3 graph4"
+      "footer footer footer footer";
+  }
+  
+  .header, .footer, .map-container, .map-symbology,
+  .Info1, .Info2, .Info3,
+  .graph1, .graph2, .graph3, .graph4,
+  .table {
+    padding: 10px; /* Adjust as needed */
+    border: 1px solid #ccc; /* Example border for clarity, adjust or remove as needed */
+  }
+  
+  .header, .footer {
+    background-color: #333;
+    color: white;
+  }
+  
+  .header { grid-area: header; }
+  
+  .footer { grid-area: footer; }
+  
+  .map-container { grid-area: map-container; }
+  #map {
+    width: 100%;
+  height: 100%; }
+  
+  .map-symbology { grid-area: map-symbology; }
+  
+  .Info1 { grid-area: Info1; }
+  
+  .Info2 { grid-area: Info2; }
+  
+  .Info3 { grid-area: Info3; }
+  
+  .graph1 { grid-area: graph1; }
+  
+  .graph2 { grid-area: graph2; }
+  
+  .graph3 { grid-area: graph3; }
+  .graph4 { grid-area: graph4; }
+  
+  .table { grid-area: table; }
+  
+  
+  
+  
+  /* For presentation only, no need to copy the code below */
+  
+  /*.container * {
+    border: 1px solid red;
+    position: relative;
+  }
+  
+  .container *:after {
+    content:attr(class);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+  }*/
+  
+  
+  
+  /* Adjustments for smaller screens */
+  @media (max-width: 768px) {
+    .parent {
+      grid-template-columns: 1fr;
     }
-
-    #attribute-table th, #attribute-table td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-
-    #attribute-table th {
-      background-color: #f2f2f2;
-    }
-        /********************************************/
-
-        /**************************************/
-
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
+  }
+  
+  
+  
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Risk Assessment Dashboard</h1>
-    </header>
-
-    <section>
-        <div id="risk-info">
-            <h2>Risk Information per Admin LeveL</h2>
-            <p>Selected Location: <span id="selected-location">City ABC</span></p>
-            <p>Risk Level: <span id="risk-level">High</span></p>
-            <!-- Additional risk information goes here -->
-        </div>
-        <div id="risk-info">
-            <h2>Risk Information per Admin LeveL</h2>
-            <p>Selected Location: <span id="selected-location">City ABC</span></p>
-            <p>Risk Level: <span id="risk-level">High</span></p>
-            <!-- Additional risk information goes here -->
-        </div>
-        <div id="map" class="map"></div>
-       
-
-        <div id="risk-info">
-            <form id="provinces-form">
-                <label for="provinces">Province</label>
-                <select name="provinces" id="provinces" form="provinces-form">
-                  <option value="">--Please choose a Province--</option>
-                </select>
-                <input type="submit" value="Remove" id="provinces-btn">
-                </form>
-            </form>
-            <form id="municipalities-form">
-              <label for="municipalities">Municipality</label>
-              <select name="municipalities" id="municipalities">
-                <option value="">--Please choose a Municipality--</option>
-              </select>
-              <input type="submit" value="Remove" id="municipalities-btn">
-            </form> 
-            <div class="item3 dashboard-item">   
-                <div id="province-name"></div>
-                <div class="no-municipalities values">
-                 
-                  <div class="municipality" id="total-municipalities"></div>
-                  <span id="total-count"></span>
-                </div>
-            </div>
-        </div>
-         
-    </section>
-
-    <footer>
-        <p>&copy; 2023 Risk Assessment Dashboard</p>
-    </footer>
+  <div class="container">
+    <div class="header">
+      <h1>Risk Assessment Dashboard</h1>
+    </div>
+    <div class="footer"><p>&copy; 2023 Risk Assessment Dashboard</p></div>
+    <div class="map-container">
+      <div id="map" ></div>
+      <div id="info-box" class="info-box">
+        <!-- Content of the info box goes here -->
+      </div>
     
+    </div>
+    <div class="map-symbology">   
+      <h2>Legend</h2>
+            <svg width="150" height="120">
+              <!-- Example Legend Items -->
+              <rect x="10" y="10" width="20" height="20" fill="#ff0000"/>
+              <text x="40" y="25" font-size="14" fill="#333">Category 1</text>
+          
+              <rect x="10" y="40" width="20" height="20" fill="#00ff00"/>
+              <text x="40" y="55" font-size="14" fill="#333">Category 2</text>
+          
+              <rect x="10" y="70" width="20" height="20" fill="#0000ff"/>
+              <text x="40" y="85" font-size="14" fill="#333">Category 3</text>
+              <!-- Add more legend items as needed -->
+            </svg>
+  
+            <svg width="150" height="120">
+              <!-- Example Legend Items -->
+              <rect x="10" y="10" width="20" height="20" fill="#ff0000"/>
+              <text x="40" y="25" font-size="14" fill="#333">Category 1</text>
+          
+              <rect x="10" y="40" width="20" height="20" fill="#00ff00"/>
+              <text x="40" y="55" font-size="14" fill="#333">Category 2</text>
+          
+              <rect x="10" y="70" width="20" height="20" fill="#0000ff"/>
+              <text x="40" y="85" font-size="14" fill="#333">Category 3</text>
+              <!-- Add more legend items as needed -->
+            </svg>
+          </div>
+    <div class="Info1">
+      <h2>Division</h2>
+              <div class="item3 dashboard-item">
+                <div id="province-name">Sample Province</div>
+                <div class="no-municipalities values">
+                  <div class="municipality" id="total-municipalities">Natore District</div>
+                  <span id="total-count">150</span>
+                </div>
+              </div></div>
+    <div class="Info2"><h2>District</h2>
+              <div class="item3 dashboard-item">
+                <div id="province-name">Natore District</div>
+                <div class="no-municipalities values">
+                  <div class="municipality" id="total-municipalities">City A</div>
+                  <span id="total-count">150</span>
+                </div>
+              </div></div>
+    <div class="Info3"><h2>Upezillas</h2>
+              <div class="item3 dashboard-item">
+                <div id="province-name">Natore District</div>
+                <div class="no-municipalities values">
+                  <div class="municipality" id="total-municipalities">City A</div>
+                  <span id="total-count">150</span>
+                </div>
+              </div></div>
+    <div class="graph1"><!-- graph 1 -->
+          <div class="graph-container">
+            <canvas id="graph1" width="300" height="200"></canvas>
+          </div></div>
+    <div class="graph2"><!-- graph 1 -->
+          <div class="graph-container">
+            <canvas id="graph2" width="300" height="200"></canvas>
+          </div>
+    </div>
+    <div class="graph3"><!-- graph 1 -->
+          <div class="graph-container">
+            <canvas id="graph3" width="300" height="150"></canvas>
+          </div>
+    </div>
+    <div class="graph4"><!-- graph 4 -->
+        <div class="graph-container">
+          <canvas id="graph4" width="300" height="200"></canvas>
+        </div>
+  </div>
+    <div class="table"><h2>Select by Division</h2>
+              <!-- Your Risk Info Section Content  -->
+              <form id="provinces-form">
+                  <label for="provinces">Division</label>
+                  <select name="provinces" id="division" form="provinces-form">
+                    <option value="">--Please choose a Division--</option>
+                  </select>
+                  <input type="submit" value="Remove" id="provinces-btn">
+              </form>
+  
+              <form id="municipalities-form">
+                  <label for="municipalities">District</label>
+                  <select name="municipalities" id="district">
+                      <option value="">--Please choose a District--</option>
+                  </select>
+                  <input type="submit" value="Remove" id="municipalities-btn">
+              </form> 
+            
+              <div class="container">
+                  <div class="cell">Column 1</div>
+                  <div class="cell">Column 2</div>
+                  <div class="cell">Column 3</div>
+                  <div class="cell">Column 4</div>
+  
+                  <!-- Add more rows as needed -->
+                  <div class="cell">Data 1</div>
+                  <div class="cell">Data 2</div>
+                  <div class="cell">Data 3</div>
+                  <div class="cell">Data 4</div>
+
+                  <!-- Add more rows as needed -->
+                  <div class="cell">Data 1</div>
+                  <div class="cell">Data 2</div>
+                  <div class="cell">Data 3</div>
+                  <div class="cell">Data 4</div>
+
+                  <!-- Add more rows as needed -->
+                  <div class="cell">Data 1</div>
+                  <div class="cell">Data 2</div>
+                  <div class="cell">Data 3</div>
+                  <div class="cell">Data 4</div>
+
+              </div>
+            </div>
+  </div>
     <script src='./map.js'></script>
 
   

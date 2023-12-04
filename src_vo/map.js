@@ -36,8 +36,7 @@ const getLayers = async () => {
       const responseJSON = await response.json();
       const layer = new VectorLayer({
         style:function(feature) {
-          //return getPolygonStyle(feature)
-          return adminBoundaryStyle
+          return getPolygonStyle(feature)
         },
         source: new VectorSource({
           features: new GeoJSON().readFeatures(responseJSON),
@@ -47,24 +46,19 @@ const getLayers = async () => {
         title: 'title'
       });
       mapLayers.push(layer);
-      ;
-      
+      console.log(responseJSON);
     }
 
     if (response1.ok) {
       const responseJSON = await response1.json();
-      
       const layer = createVectorLayer(responseJSON, 'Layer2',substationStyle);
       mapLayers.push(layer);
-      
     }
 
     if (response2.ok) {
       const responseJSON = await response2.json();
-      
       const layer = createVectorLayer(responseJSON, 'Layer3',powerLineStyle);
       mapLayers.push(layer);
-      
     }
 
     if (mapLayers.length > 0) {
@@ -78,35 +72,24 @@ const getLayers = async () => {
       }));
 
       const layer =  mapLayers[1]
-      console.log(layer.getSource().getFeatures())
+      //console.log('layer.getSource().getFeatures()')
        ///populate province dropdown menu
              for(let i = 0;i < getProvinceName(layer.getSource().getFeatures()).length;i++ ){
               //console.log((layer.getSource().getFeatures())[i])
               //console.log(getProvinceName(layer.getSource().getFeatures())[i])
-               populateOptionElemets(getProvinceName(layer.getSource().getFeatures())[i], "division")}
+               populateOptionElemets(getProvinceName(layer.getSource().getFeatures())[i], "provinces")}
 
                  // Select features from options dropdown arrow
 			function onchange(event) {
 				event.preventDefault()
 				selectedProvince = event.target.value;
 				//console.log(selectedProvince)
-				/*for (let i = 0; document.getElementById("division").options.length > i; i++) {
-					console.log(document.getElementById("provinces").options[i].value)
+				for (let i = 0; document.getElementById("provinces").options.length > i; i++) {
+					//console.log(document.getElementById("provinces").options[i].value)
 					if (selectedProvince === event.target.value) {
-						document.querySelector(`#division option[value= "${document.getElementById("division").options[i].value}"]`).disabled = true
+						document.querySelector(`#provinces option[value= "${document.getElementById("provinces").options[i].value}"]`).disabled = true
 					}
-				}*/
-
-        let divisionOptions = document.getElementById("division").options;
-for (let i = 0; i < divisionOptions.length; i++) {
-   // console.log(document.getElementById("division").options[i].value);
-
-    if (selectedProvince === event.target.value) {
-        document.querySelector(`#division option[value="${divisionOptions[i].value}"]`).disabled = true;
-    }
-}
-
-      
+				}
 				/*********************** */
 				for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
 					if (layer.getSource().getFeatures()[i].get(province) === selectedProvince) {
@@ -114,7 +97,7 @@ for (let i = 0; i < divisionOptions.length; i++) {
 						selectedMunicipalities.push(layer.getSource().getFeatures()[i].get(commune))
 						//console.log(selectedMunicipalities)
 						countMunicipalities(selectedMunicipalities,selectedProvince)
-						populateOptionElemets(layer.getSource().getFeatures()[i].get(commune), "district")
+						populateOptionElemets(layer.getSource().getFeatures()[i].get(commune), "municipalities")
 						//layer.setStyle(newStyle);
 						const newex = layer.getSource().getFeatures()[i].getGeometry()
 						map.getView().fit(newex);
@@ -125,80 +108,22 @@ for (let i = 0; i < divisionOptions.length; i++) {
 				layer.changed();
 				
 			}
-			document.getElementById('division').addEventListener('change', onchange)
+			document.getElementById('provinces').addEventListener('change', onchange)
+
       map.on('click', function (event) {
         var coordinate = event.coordinate;
         console.log('Clicked coordinate:', coordinate);
+      
         // Open the info box and display information
         var infoBox = document.getElementById('info-box');
         infoBox.innerHTML = 'Latitude: ' + coordinate[1] + '<br>Longitude: ' + coordinate[0];
         infoBox.style.left = event.pixel[0] + 'px';
         infoBox.style.top = event.pixel[1] + 'px';
         infoBox.style.display = 'block';
-
-        
       });
-
-// Sample data for each chart
-var lineChartData = {
-  labels: ['January', 'February', 'March', 'April', 'May'],
-  datasets: [{
-      label: 'Line Chart',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      data: [65, 59, 80, 81, 56],
-      fill: false,
-  }]
-};
-
-var barChartData = {
-  labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
-  datasets: [{
-      label: 'Bar Chart',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1,
-      data: [65, 59, 80, 81, 56],
-  }]
-};
-
-var bar2ChartData = {
-  labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
-  datasets: [{
-      label: 'Bar Chart',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1,
-      data: [65, 59, 80, 81, 56],
-  }]
-};
-
-var radarChartData = {
-  labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
-  datasets: [{
-      label: 'Radar Chart',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderWidth: 1,
-      data: [65, 59, 90, 81, 56, 55, 40],
-  }]
-};
-
-// Function to create a chart
-function createChart(chartId, chartType, data) {
-  var ctx = document.getElementById(chartId).getContext('2d');
-  return new Chart(ctx, {
-      type: chartType,
-      data: data,
-      options: {} // You can customize options here
-  });
-}
-
-// Create charts using the above data
-var lineChart = createChart('graph1', 'line', lineChartData);
-var barChart = createChart('graph2', 'bar', barChartData);
-var bar2Chart = createChart('graph3', 'bar', barChartData);
-var radarChart = createChart('graph4', 'radar', radarChartData);
-
+      
+      getLayers();
+         
     } else {
       throw new Error('No valid GeoJSON data available');
     }
@@ -208,9 +133,6 @@ var radarChart = createChart('graph4', 'radar', radarChartData);
   }
 };
 
+
+
 getLayers();
-
-
-/*****************************************+ */
-
- 

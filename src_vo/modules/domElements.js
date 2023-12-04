@@ -22,7 +22,7 @@ const countMunicipalities = (selectedMunicipalities,selectedProvince)=>{
   
   
   const populateOptionElemets = (features, elementId)=>{
-    console.log(features)
+    console.log(features + 'hi')
       const optionElement = document.createElement("option");
       const textoptionElement = document.createTextNode(features);
       optionElement.appendChild(textoptionElement);
