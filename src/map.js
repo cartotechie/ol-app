@@ -109,6 +109,20 @@ const getLayers = async () => {
 				
 			}
 			document.getElementById('provinces').addEventListener('change', onchange)
+
+      map.on('click', function (event) {
+        var coordinate = event.coordinate;
+        console.log('Clicked coordinate:', coordinate);
+      
+        // Open the info box and display information
+        var infoBox = document.getElementById('info-box');
+        infoBox.innerHTML = 'Latitude: ' + coordinate[1] + '<br>Longitude: ' + coordinate[0];
+        infoBox.style.left = event.pixel[0] + 'px';
+        infoBox.style.top = event.pixel[1] + 'px';
+        infoBox.style.display = 'block';
+      });
+      
+      getLayers();
          
     } else {
       throw new Error('No valid GeoJSON data available');
@@ -118,5 +132,7 @@ const getLayers = async () => {
     console.error('There was a problem fetching the data:', error);
   }
 };
+
+
 
 getLayers();
