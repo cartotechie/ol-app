@@ -8,17 +8,27 @@ import { OSM, Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
 import{  initMap,createVectorLayer} from './init'
 import {province,commune} from './modules/variables'
+import{generateTable} from './modules/table' 
 
 
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
-const geoserverUrl = [
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Aadmin_boundaries_osm_refined&outputFormat=application/json&srsname=EPSG:4326',
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powerplants_updated_upazilla&outputFormat=application/json&srsname=EPSG:4326',
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powertlines_withvoltage_lulc&outputFormat=application/json&srsname=EPSG:4326']
+
 
   let selectedProvince;
   let selectedMunicipality;
   let selectedMunicipalities = [];
+
+/*const geoserverUrl = [
+  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Aadmin_boundaries_osm_refined&outputFormat=application/json&srsname=EPSG:4326',
+  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powerplants_updated_upazilla&outputFormat=application/json&srsname=EPSG:4326',
+  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powertlines_withvoltage_lulc&outputFormat=application/json&srsname=EPSG:4326'
+]*/
+
+const geoserverUrl = [
+  './data/Admin_Boundaries_OSM_refined.geojson',
+  './data/Bangladesh_powerplants_updated_upazilla.json',
+  './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
+]
 
 
 
@@ -78,7 +88,7 @@ const getLayers = async () => {
       }));
 
       const layer =  mapLayers[1]
-      console.log(layer.getSource().getFeatures())
+      //console.log(layer.getSource().getFeatures())
        ///populate province dropdown menu
              for(let i = 0;i < getProvinceName(layer.getSource().getFeatures()).length;i++ ){
               //console.log((layer.getSource().getFeatures())[i])
@@ -110,7 +120,7 @@ for (let i = 0; i < divisionOptions.length; i++) {
 				/*********************** */
 				for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
 					if (layer.getSource().getFeatures()[i].get(province) === selectedProvince) {
-						console.log(layer.getSource().getFeatures()[i].get(commune))
+						//console.log(layer.getSource().getFeatures()[i].get(commune))
 						selectedMunicipalities.push(layer.getSource().getFeatures()[i].get(commune))
 						//console.log(selectedMunicipalities)
 						countMunicipalities(selectedMunicipalities,selectedProvince)
@@ -138,7 +148,7 @@ for (let i = 0; i < divisionOptions.length; i++) {
 
         
       });
-
+      generateTable()
 // Sample data for each chart
 var lineChartData = {
   labels: ['January', 'February', 'March', 'April', 'May'],
@@ -198,6 +208,7 @@ var lineChart = createChart('graph1', 'line', lineChartData);
 var barChart = createChart('graph2', 'bar', barChartData);
 var bar2Chart = createChart('graph3', 'bar', barChartData);
 var radarChart = createChart('graph4', 'radar', radarChartData);
+
 
     } else {
       throw new Error('No valid GeoJSON data available');

@@ -53,12 +53,14 @@ html, body, .container {
   .graph3 { grid-area: graph3; }
   .graph4 { grid-area: graph4; }
   
-  .table { grid-area: table; }
+  .table { grid-area: table;
+    height: 40vh;
+    overflow-y: scroll; }
   
   
   
   
-  /* For presentation only, no need to copy the code below */
+  /* For presentation of the grid only*/
   
   /*.container * {
     border: 1px solid red;
@@ -87,4 +89,19 @@ html, body, .container {
   }
   
   
-  
+   /* Add styling for the table  */
+   table {
+    border-collapse: collapse;
+    width: 100%;
+    
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 1px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}

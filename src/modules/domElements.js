@@ -1,17 +1,19 @@
-
+import{commune,province} from './variables' 
 const countMunicipalities = (selectedMunicipalities,selectedProvince)=>{
 
     console.log(selectedProvince)
     document.getElementById('province-name').innerHTML = selectedProvince
-    document.getElementById('total-municipalities').innerHTML = `Number of municipalies`
-    document.getElementById('total-count').innerHTML = `${selectedMunicipalities.length}`
+    console.log(selectedMunicipalities)
+    //Find unique values
+    document.getElementById('total-municipalities').innerHTML = `Number of Districts`
+    document.getElementById('total-count').innerHTML = `${selectedMunicipalities.length} Upezilla`
     
   }
   
   const generateSelectElementValues = (feature) => {
-    console.log(feature.get('REGION'))
+    console.log(feature.get(province))
    
-    document.getElementById('municipality-name').innerHTML = `${feature.get("COMMUNE")}`
+    document.getElementById('municipality-name').innerHTML = `${feature.get(commune)}`
     document.getElementById('exposure').innerHTML = `<span> Exposure-MULMP_exp:</span> <span class="figure exposure" >${feature.get("MULMP_exp")}</span>`
     document.getElementById('vulnerability').innerHTML = ` <span>Vulnerability-MULMP_vuln:</span>
     <span class="figure" >${feature.get("MULMP_vuln") }</span>`
@@ -22,7 +24,7 @@ const countMunicipalities = (selectedMunicipalities,selectedProvince)=>{
   
   
   const populateOptionElemets = (features, elementId)=>{
-    console.log(features)
+    //console.log(features)
       const optionElement = document.createElement("option");
       const textoptionElement = document.createTextNode(features);
       optionElement.appendChild(textoptionElement);
