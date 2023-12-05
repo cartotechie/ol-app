@@ -2,13 +2,15 @@
 import LayerGroup from 'ol/layer/Group';
 import {substationStyle,powerLineStyle,adminBoundaryStyle,getPolygonStyle} from './modules/sytle'
 import { countMunicipalities, populateOptionElemets, generateSelectElementValues } from './modules/domElements';
-import { getProvinceName } from './modules/search_select';
+import { getProvinceName,getDistrictName } from './modules/search_select';
 import VectorLayer from 'ol/layer/Vector';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
 import{  initMap,createVectorLayer} from './init'
-import {province,commune} from './modules/variables'
+import {province,commune, districts} from './modules/variables'
 import{generateTable} from './modules/table' 
+import{divisions}  from './modules/variables' 
+import{generateCharts} from './modules/charts' 
 
 
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
@@ -26,7 +28,7 @@ const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
 const geoserverUrl = [
   './data/Admin_Boundaries_OSM_refined.geojson',
-  './data/Bangladesh_powerplants_updated_upazilla.json',
+  './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
   './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
 ]
 
@@ -89,11 +91,26 @@ const getLayers = async () => {
 
       const layer =  mapLayers[1]
       //console.log(layer.getSource().getFeatures())
+
+// Assuming 'layer' is your vector layer
+var features = layer.getSource().getFeatures();
+
+/*/ Iterate through the features
+features.forEach(function(feature) {
+    // Access individual feature properties or geometry
+    var geometry = feature.getGeometry();
+    var properties = feature.getProperties();
+
+    // Do something with the geometry and properties
+    console.log("Geometry:", geometry);
+    console.log("Properties:", properties);
+});*/
+//console.log(getDistrictName(layer.getSource().getFeatures()))
        ///populate province dropdown menu
-             for(let i = 0;i < getProvinceName(layer.getSource().getFeatures()).length;i++ ){
+             for(let i = 0;i < /*getProvinceName(layer.getSource().getFeatures())*/divisions.length;i++ ){
               //console.log((layer.getSource().getFeatures())[i])
-              //console.log(getProvinceName(layer.getSource().getFeatures())[i])
-               populateOptionElemets(getProvinceName(layer.getSource().getFeatures())[i], "division")}
+              //console.log(/*getProvinceName(layer.getSource().getFeatures())*/divisions[i])
+               populateOptionElemets(/*getProvinceName(layer.getSource().getFeatures())*/divisions[i], "division")}
 
                  // Select features from options dropdown arrow
 			function onchange(event) {
@@ -118,7 +135,7 @@ for (let i = 0; i < divisionOptions.length; i++) {
 
       
 				/*********************** */
-				for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
+				/*for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
 					if (layer.getSource().getFeatures()[i].get(province) === selectedProvince) {
 						//console.log(layer.getSource().getFeatures()[i].get(commune))
 						selectedMunicipalities.push(layer.getSource().getFeatures()[i].get(commune))
@@ -128,9 +145,18 @@ for (let i = 0; i < divisionOptions.length; i++) {
 						//layer.setStyle(newStyle);
 						const newex = layer.getSource().getFeatures()[i].getGeometry()
 						map.getView().fit(newex);
-						/*************** */
+						
 					}
-				}
+				}*/
+
+        for (let i = 0; i < districts.length; i++) {
+					
+						populateOptionElemets(districts[i], "district")
+
+						
+						
+					}
+				
 
 				layer.changed();
 				
@@ -148,66 +174,10 @@ for (let i = 0; i < divisionOptions.length; i++) {
 
         
       });
-      generateTable()
-// Sample data for each chart
-var lineChartData = {
-  labels: ['January', 'February', 'March', 'April', 'May'],
-  datasets: [{
-      label: 'Line Chart',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      data: [65, 59, 80, 81, 56],
-      fill: false,
-  }]
-};
+      generateTable(layer.getSource().getFeatures())
 
-var barChartData = {
-  labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
-  datasets: [{
-      label: 'Bar Chart',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1,
-      data: [65, 59, 80, 81, 56],
-  }]
-};
+      generateCharts()
 
-var bar2ChartData = {
-  labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
-  datasets: [{
-      label: 'Bar Chart',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1,
-      data: [65, 59, 80, 81, 56],
-  }]
-};
-
-var radarChartData = {
-  labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
-  datasets: [{
-      label: 'Radar Chart',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderWidth: 1,
-      data: [65, 59, 90, 81, 56, 55, 40],
-  }]
-};
-
-// Function to create a chart
-function createChart(chartId, chartType, data) {
-  var ctx = document.getElementById(chartId).getContext('2d');
-  return new Chart(ctx, {
-      type: chartType,
-      data: data,
-      options: {} // You can customize options here
-  });
-}
-
-// Create charts using the above data
-var lineChart = createChart('graph1', 'line', lineChartData);
-var barChart = createChart('graph2', 'bar', barChartData);
-var bar2Chart = createChart('graph3', 'bar', barChartData);
-var radarChart = createChart('graph4', 'radar', radarChartData);
 
 
     } else {
