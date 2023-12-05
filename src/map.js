@@ -113,6 +113,11 @@ features.forEach(function(feature) {
                populateOptionElemets(/*getProvinceName(layer.getSource().getFeatures())*/divisions[i], "division")}
 
                  // Select features from options dropdown arrow
+                 for (let i = 0; i < divisions.length; i++) {
+                  populateOptionElemets(divisions[i], "district")
+                }
+
+                console.log('REMOVE POPULATE divion name from function below')
 			function onchange(event) {
 				event.preventDefault()
 				selectedProvince = event.target.value;
@@ -150,13 +155,22 @@ for (let i = 0; i < divisionOptions.length; i++) {
 				}*/
 
         for (let i = 0; i < districts.length; i++) {
-					
-						populateOptionElemets(districts[i], "district")
-
+					populateOptionElemets(districts[i], "district")
+        }
+				
+        for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
+					if (layer.getSource().getFeatures()[i].get(province) === selectedProvince) {
+						//console.log(layer.getSource().getFeatures()[i].get(commune))
+						selectedMunicipalities.push(layer.getSource().getFeatures()[i].get(commune))
+						//console.log(selectedMunicipalities)
+						countMunicipalities(selectedMunicipalities,selectedProvince)
 						
+						//layer.setStyle(newStyle);
+						const newex = layer.getSource().getFeatures()[i].getGeometry()
+						map.getView().fit(newex);
 						
 					}
-				
+				}
 
 				layer.changed();
 				
