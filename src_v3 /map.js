@@ -135,7 +135,7 @@ const getLayers = async () => {
 
             /****************************************************** */
 
-            
+            const DIVISION_ID = "division";
 const countDisplayDistricts = document.getElementById('countDisplayDistricts');
 const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
 const adminName = document.getElementById('adminName');
@@ -161,7 +161,12 @@ function onchange(event) {
     event.preventDefault();
     const selectedProvince = event.target.value;
     adminName.innerHTML=`${selectedProvince}`
- 
+    //const zoomTo = adminlayer.getSource().getFeatures().filter(feature => feature.get(province) === selectedProvince)
+    //const geometryCollection = new GeometryCollection(zoomTo.map(feature => feature.getGeometry()));
+    //map.getView().fit(geometryCollection , { padding: [10, 10, 10, 10], duration: 1000 });
+
+
+
     const filteredFeatures = features.filter(feature => feature.get(province) === selectedProvince);
     countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
     const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
@@ -174,27 +179,9 @@ function onchange(event) {
     layer.changed();
 }
 
-document.getElementById("division").addEventListener('change', onchange);
+document.getElementById(DIVISION_ID).addEventListener('change', onchange);
 
 
-function onchangeDistrict(event) {
-    event.preventDefault();
-    const selectedDistrict = event.target.value;
-    adminName.innerHTML=`${selectedDistrict}`
- 
-    const filteredFeatures = features.filter(feature => feature.get(commune) === selectedDistrict);
-    countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
-    const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
-    updateCountDisplay(countDisplayDistricts, uniqueCommunesCount, 'Districts');
-
-    const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
-    updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
-    generateTable(filteredFeatures)
-
-    layer.changed();
-}
-
-document.getElementById('district').addEventListener('change', onchangeDistrict);
 
 
 
