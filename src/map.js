@@ -296,11 +296,22 @@ const displayInfo = (event) => {
     const layer = map.getAllLayers()[2]
     const features = layer.getSource().getFeatures()
     const filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===value)
+    // Clear the existing table
+  clearTable();
+    generateTable(filterUpezillaFeatures)
     
    // Get the extent of the filtered features
 const extent = olExtent.boundingExtent(filterUpezillaFeatures.map(feature => feature.getGeometry().getExtent()));
 
 map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
+// Sample data
+const upezillaName = "Sample Upezilla";
+const countUpezillaPowerlines = 42;
+
+// Update the content of the elements
+document.getElementById('upezilla-name').innerHTML = `<strong>${value}</strong>`;
+document.getElementById('countUpezillaPowerlines').innerHTML = `${filterUpezillaFeatures.length} Powerlines `;
+
 }
 
 // Add click event listener to the table
