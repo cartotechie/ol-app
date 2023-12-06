@@ -2,7 +2,7 @@
 const province = 'div_name'
 const commune = 'dist_name'
 const powerplantName = 'name'
-const upazilla = 'name_en'
+const upezilla = 'name_en'
 let flood_exposure 
 let floodExposureClass = 'class'
 
@@ -93,4 +93,4 @@ const districts =[
 
 const tableAttributes =['div_name','dist_name','name_en',] 
 
-export{province,commune,divisions,districts}
+export{province,commune,divisions,districts,upezilla}

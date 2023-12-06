@@ -11,7 +11,7 @@ import LayerSwitcher from 'ol-layerswitcher';
 import LayerTile from 'ol/layer/Tile';
 
 const defaultCenter = [90, 24];
-const defaultZoom = 6;
+const defaultZoom = 7;
 
 
 // Function to create a Vector Layer from GeoJSON

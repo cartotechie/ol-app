@@ -6,7 +6,7 @@ import {
     getPolygonStyle
 } from './modules/sytle'
 import {
-    countFeatures,
+    //countFeatures,
     populateOptionElemets,
     generateSelectElementValues
 } from './modules/domElements';
@@ -28,7 +28,7 @@ import {
     province,
     commune,
     districts,
-    upazilla
+    upezilla
 } from './modules/variables'
 import {
     generateTable
@@ -56,7 +56,7 @@ const geoserverUrl = [
     './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
 ]
 
-
+const map = initMap();
 
 
 const getLayers = async () => {
@@ -103,7 +103,7 @@ const getLayers = async () => {
         }
 
         if (mapLayers.length > 0) {
-            const map = initMap();
+            
 
 
             // Add layers to LayerGroup and then to the map
@@ -113,7 +113,7 @@ const getLayers = async () => {
             }));
 
             const adminlayer = mapLayers[0]
-            const layer = mapLayers[0]
+            const layer = mapLayers[1]
 
 
 
@@ -121,87 +121,7 @@ const getLayers = async () => {
             const features = layer.getSource().getFeatures();
             
 
-            for (let i = 0; i < divisions.length; i++) {
-
-                populateOptionElemets(divisions[i], "division")
-
-            }
-
-            for (let i = 0; i < districts.length; i++) {
-
-                populateOptionElemets(districts[i], "district")
-
-            }
-
-            /****************************************************** */
-
-            
-const countDisplayDistricts = document.getElementById('countDisplayDistricts');
-const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
-const adminName = document.getElementById('adminName');
-const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
-
-function countFeatures(features, property, selectedValues) {
-    const uniqueValues = new Set();
-
-    features.forEach(feature => {
-        const value = feature.get(property);
-        selectedValues.push(value);
-        uniqueValues.add(value);
-    });
-
-    return uniqueValues.size;
-}
-
-function updateCountDisplay(element, count, label) {
-    element.textContent = `${count} ${label}`;
-}
-
-function onchange(event) {
-    event.preventDefault();
-    const selectedProvince = event.target.value;
-    adminName.innerHTML=`${selectedProvince}`
- 
-    const filteredFeatures = features.filter(feature => feature.get(province) === selectedProvince);
-    countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
-    const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
-    updateCountDisplay(countDisplayDistricts, uniqueCommunesCount, 'Districts');
-
-    const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
-    updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
-    generateTable(filteredFeatures)
-
-    layer.changed();
-}
-
-document.getElementById("division").addEventListener('change', onchange);
-
-
-function onchangeDistrict(event) {
-    event.preventDefault();
-    const selectedDistrict = event.target.value;
-    adminName.innerHTML=`${selectedDistrict}`
- 
-    const filteredFeatures = features.filter(feature => feature.get(commune) === selectedDistrict);
-    countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
-    const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
-    updateCountDisplay(countDisplayDistricts, uniqueCommunesCount, 'Districts');
-
-    const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
-    updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
-    generateTable(filteredFeatures)
-
-    layer.changed();
-}
-
-document.getElementById('district').addEventListener('change', onchangeDistrict);
-
-
-
-            /*************************************************************** */
-
-          
-
+         
             // info box
 
             map.on('click', function(event) {
@@ -222,7 +142,7 @@ document.getElementById('district').addEventListener('change', onchangeDistrict)
 
 
             generateCharts()
-            //generateTable(features)
+            generateTable(features)
 
 
 
@@ -235,7 +155,128 @@ document.getElementById('district').addEventListener('change', onchangeDistrict)
     }
 };
 
+
+
 getLayers();
 
+/************************************************************************ */
 
-/*****************************************+ */
+const getOptionDOMValues = (divisions, districts) => {
+   
+    // Loop through divisions and populate option elements
+    divisions.forEach((division) => {
+     populateOptionElemets(division, "division");
+    });
+  
+    // Loop through districts and populate option elements
+    districts.forEach((district) => {
+      populateOptionElemets(district, "district");
+    });
+  };
+  
+  getOptionDOMValues(divisions, districts);
+  
+/****************************************************************************************** */
+
+const countDisplayDistricts = document.getElementById('countDisplayDistricts');
+const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
+const adminName = document.getElementById('adminName');
+const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
+
+function countFeatures(features, property, selectedValues) {
+    const uniqueValues = new Set();
+
+    features.forEach(feature => {
+        const value = feature.get(property);
+        selectedValues.push(value);
+        uniqueValues.add(value);
+    });
+
+    return uniqueValues.size;
+}
+
+function updateCountDisplay(element, count, label) {
+    element.textContent = `${count} ${label}`;
+}
+/******************************************************************************************* */
+
+function onchange(event) {
+    const layer = map.getAllLayers()[2]
+    const features = layer.getSource().getFeatures();
+
+    event.preventDefault();
+    const selectedProvince = event.target.value;
+    adminName.innerHTML=`${selectedProvince}`
+ 
+    const filteredFeatures = features.filter(feature => feature.get(province) === selectedProvince);
+    console.log(filteredFeatures)
+    countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
+    const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
+    updateCountDisplay(countDisplayDistricts, uniqueCommunesCount, 'Districts');
+
+    const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
+    updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
+    generateTable(filteredFeatures)
+
+    layer.changed();
+}
+
+document.getElementById("division").addEventListener('change', onchange);
+
+/****************************************************************************************** */
+
+function onchangeDistrict(event) {
+     const layer = map.getAllLayers()[2]
+     const features = layer.getSource().getFeatures();
+
+    console.log(features)
+    event.preventDefault();
+    const selectedDistrict = event.target.value;
+    adminName.innerHTML=`${selectedDistrict}`
+ 
+    const filteredFeatures = features.filter(feature => feature.get(commune) === selectedDistrict);
+    countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
+    //const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
+    updateCountDisplay(countDisplayDistricts, '', '');
+
+    const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
+    updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
+    generateTable(filteredFeatures)
+
+    layer.changed();
+
+}
+
+document.getElementById('district').addEventListener('change', onchangeDistrict);
+
+/************************************************************************************************* */
+
+
+const displayInfo = (event) => {
+    // Get the clicked row
+    const clickedRow = event.target.closest('tr');
+    let value 
+    
+    // Check if a row was clicked
+    if (clickedRow) {
+        // Get data from the clicked row
+        const columns = clickedRow.querySelectorAll('td');
+        const rowData = Array.from(columns).map(column => column.textContent);
+
+        // Display the data in an alert
+        //alert('Clicked Row Data:\n' + rowData.join('\n'));
+        console.log(rowData[2])
+        value = rowData[2]
+    }
+
+    const layer = map.getAllLayers()[2]
+    const features = layer.getSource().getFeatures()
+    filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===value)
+    console.log(filterUpezillaFeatures)
+}
+
+// Add click event listener to the table
+document.getElementById('table').addEventListener('click', displayInfo);
+
+/********************************************* */
+
