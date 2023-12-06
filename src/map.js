@@ -40,7 +40,7 @@ import {
     generateCharts
 } from './modules/charts'
 import GeometryCollection from 'ol/geom/GeometryCollection';
-import { get } from 'ol/extent';
+import * as olExtent from 'ol/extent';
 
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
@@ -198,6 +198,19 @@ function countFeatures(features, property, selectedValues) {
 function updateCountDisplay(element, count, label) {
     element.textContent = `${count} ${label}`;
 }
+
+
+
+/***************************************************************************************** */
+// Assuming you have a function to clear the table or remove it
+function clearTable() {
+    const tableContainer = document.getElementById('table');
+    if (tableContainer) {
+      tableContainer.innerHTML = ''; // Clear the content
+      // Alternatively, you can remove the entire table element
+      // tableContainer.parentNode.removeChild(tableContainer);
+    }
+  }
 /******************************************************************************************* */
 
 function onchange(event) {
@@ -209,6 +222,10 @@ function onchange(event) {
     adminName.innerHTML=`${selectedProvince}`
  
     const filteredFeatures = features.filter(feature => feature.get(province) === selectedProvince);
+    const extent = olExtent.boundingExtent(filteredFeatures.map(feature => feature.getGeometry().getExtent()));
+
+    map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
+
     console.log(filteredFeatures)
     countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
     const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
@@ -216,6 +233,8 @@ function onchange(event) {
 
     const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
     updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
+    // Clear the existing table
+    clearTable();
     generateTable(filteredFeatures)
 
     layer.changed();
@@ -235,12 +254,17 @@ function onchangeDistrict(event) {
     adminName.innerHTML=`${selectedDistrict}`
  
     const filteredFeatures = features.filter(feature => feature.get(commune) === selectedDistrict);
+    const extent = olExtent.boundingExtent(filteredFeatures.map(feature => feature.getGeometry().getExtent()));
+
+map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
     countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
     //const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
     updateCountDisplay(countDisplayDistricts, '', '');
 
     const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
     updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
+    // Clear the existing table
+    clearTable();
     generateTable(filteredFeatures)
 
     layer.changed();
@@ -271,8 +295,12 @@ const displayInfo = (event) => {
 
     const layer = map.getAllLayers()[2]
     const features = layer.getSource().getFeatures()
-    filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===value)
-    console.log(filterUpezillaFeatures)
+    const filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===value)
+    
+   // Get the extent of the filtered features
+const extent = olExtent.boundingExtent(filterUpezillaFeatures.map(feature => feature.getGeometry().getExtent()));
+
+map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
 }
 
 // Add click event listener to the table
