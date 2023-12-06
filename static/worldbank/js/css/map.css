@@ -20,8 +20,8 @@ html, body, .container {
   .Info1, .Info2, .Info3,
   .graph1, .graph2, .graph3, .graph4,
   .table {
-    padding: 10px; /* Adjust as needed */
-    border: 1px solid #ccc; /* Example border for clarity, adjust or remove as needed */
+    padding: 10px; 
+    border: 1px solid #ccc;
   }
   
   .header, .footer {
@@ -54,7 +54,7 @@ html, body, .container {
   .graph4 { grid-area: graph4; }
   
   .table { grid-area: table;
-    height: 40vh;
+    height: 90%;
     overflow-y: scroll; }
   
   

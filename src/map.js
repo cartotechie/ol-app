@@ -1,13 +1,13 @@
 
 import LayerGroup from 'ol/layer/Group';
 import {substationStyle,powerLineStyle,adminBoundaryStyle,getPolygonStyle} from './modules/sytle'
-import { countMunicipalities, populateOptionElemets, generateSelectElementValues } from './modules/domElements';
+import { countFeatures, populateOptionElemets, generateSelectElementValues } from './modules/domElements';
 import { getProvinceName,getDistrictName } from './modules/search_select';
 import VectorLayer from 'ol/layer/Vector';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
 import{  initMap,createVectorLayer} from './init'
-import {province,commune, districts} from './modules/variables'
+import {province,commune, districts,upazilla} from './modules/variables'
 import{generateTable} from './modules/table' 
 import{divisions}  from './modules/variables' 
 import{generateCharts} from './modules/charts' 
@@ -18,14 +18,9 @@ const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
   let selectedProvince;
   let selectedMunicipality;
-  let selectedMunicipalities = [];
-
-/*const geoserverUrl = [
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Aadmin_boundaries_osm_refined&outputFormat=application/json&srsname=EPSG:4326',
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powerplants_updated_upazilla&outputFormat=application/json&srsname=EPSG:4326',
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powertlines_withvoltage_lulc&outputFormat=application/json&srsname=EPSG:4326'
-]*/
-
+  let selectedDistricts = [];
+  let selectedUpezillas = [];
+  let featureTable
 const geoserverUrl = [
   './data/Admin_Boundaries_OSM_refined.geojson',
   './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
@@ -90,92 +85,102 @@ const getLayers = async () => {
       }));
 
       const layer =  mapLayers[1]
-      //console.log(layer.getSource().getFeatures())
 
-// Assuming 'layer' is your vector layer
-var features = layer.getSource().getFeatures();
 
-/*/ Iterate through the features
-features.forEach(function(feature) {
-    // Access individual feature properties or geometry
-    var geometry = feature.getGeometry();
-    var properties = feature.getProperties();
 
-    // Do something with the geometry and properties
-    console.log("Geometry:", geometry);
-    console.log("Properties:", properties);
-});*/
-//console.log(getDistrictName(layer.getSource().getFeatures()))
-       ///populate province dropdown menu
-             for(let i = 0;i < /*getProvinceName(layer.getSource().getFeatures())*/divisions.length;i++ ){
-              //console.log((layer.getSource().getFeatures())[i])
-              //console.log(/*getProvinceName(layer.getSource().getFeatures())*/divisions[i])
-               populateOptionElemets(/*getProvinceName(layer.getSource().getFeatures())*/divisions[i], "division")}
+      /******************************************* */
+      const features = layer.getSource().getFeatures();
 
-                 // Select features from options dropdown arrow
-                 for (let i = 0; i < divisions.length; i++) {
-                  populateOptionElemets(divisions[i], "district")
+             for(let i = 0;i < divisions.length;i++ ){
+              
+               populateOptionElemets(divisions[i], "division")
+              
+              }
+
+                 for (let i = 0; i < districts.length; i++) {
+
+                  populateOptionElemets(districts[i], "district")
+
                 }
 
+                /****************************************************** */
+
+
+
+
+                /*************************************************************** */
+
                 console.log('REMOVE POPULATE divion name from function below')
-			function onchange(event) {
-				event.preventDefault()
-				selectedProvince = event.target.value;
-				//console.log(selectedProvince)
-				/*for (let i = 0; document.getElementById("division").options.length > i; i++) {
-					console.log(document.getElementById("provinces").options[i].value)
-					if (selectedProvince === event.target.value) {
-						document.querySelector(`#division option[value= "${document.getElementById("division").options[i].value}"]`).disabled = true
-					}
-				}*/
 
-        let divisionOptions = document.getElementById("division").options;
-for (let i = 0; i < divisionOptions.length; i++) {
-   // console.log(document.getElementById("division").options[i].value);
+                const DIVISION_ID = "division";
 
-    if (selectedProvince === event.target.value) {
-        document.querySelector(`#division option[value="${divisionOptions[i].value}"]`).disabled = true;
-    }
-}
+                function onchange(event) {
+                    event.preventDefault();
+                    selectedProvince = event.target.value;
+                
+                    let divisionOptions = document.getElementById(DIVISION_ID).options;
+                
+                    /*for (let i = 0; i < divisionOptions.length; i++) {
+                        document.querySelector(`#${DIVISION_ID} option[value="${divisionOptions[i].value}"]`).disabled = (selectedProvince === divisionOptions[i].value);
+                    }*/
+                                                        
+const uniqueCommunes = new Set();
+console.log(uniqueCommunes)
 
-      
-				/*********************** */
-				/*for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
-					if (layer.getSource().getFeatures()[i].get(province) === selectedProvince) {
-						//console.log(layer.getSource().getFeatures()[i].get(commune))
-						selectedMunicipalities.push(layer.getSource().getFeatures()[i].get(commune))
-						//console.log(selectedMunicipalities)
-						countMunicipalities(selectedMunicipalities,selectedProvince)
-						populateOptionElemets(layer.getSource().getFeatures()[i].get(commune), "district")
-						//layer.setStyle(newStyle);
-						const newex = layer.getSource().getFeatures()[i].getGeometry()
-						map.getView().fit(newex);
-						
-					}
-				}*/
+features
+  .filter(feature => feature.get(province) === selectedProvince)
+  .forEach(feature => {
+    console.log(feature)
+    const communeValue = feature.get(commune);
+    selectedDistricts.push(communeValue);
+    countFeatures(selectedDistricts, selectedProvince);
 
-        for (let i = 0; i < districts.length; i++) {
-					populateOptionElemets(districts[i], "district")
-        }
-				
-        for (let i = 0; i < layer.getSource().getFeatures().length; i++) {
-					if (layer.getSource().getFeatures()[i].get(province) === selectedProvince) {
-						//console.log(layer.getSource().getFeatures()[i].get(commune))
-						selectedMunicipalities.push(layer.getSource().getFeatures()[i].get(commune))
-						//console.log(selectedMunicipalities)
-						countMunicipalities(selectedMunicipalities,selectedProvince)
-						
-						//layer.setStyle(newStyle);
-						const newex = layer.getSource().getFeatures()[i].getGeometry()
-						map.getView().fit(newex);
-						
-					}
-				}
 
-				layer.changed();
-				
-			}
-			document.getElementById('division').addEventListener('change', onchange)
+    // Add the commune value to the set for counting unique values
+    uniqueCommunes.add(communeValue);
+  });
+
+// Update the DOM with the count
+const countDisplayDistricts = document.getElementById('countDisplayDistricts');
+countDisplayDistricts.textContent = `${uniqueCommunes.size} Districts`;
+
+const uniqueUpezillas = new Set();
+
+
+features
+  .filter(feature => feature.get(province) === selectedProvince)
+  .forEach(feature => {
+    const upazillaValue = feature.get('name_en');
+    
+    selectedUpezillas.push(upazillaValue);
+    
+
+    const newex = feature.getGeometry();
+    map.getView().fit(newex);
+
+    // Add the upazilla value to the set for counting unique values
+    uniqueUpezillas.add(upazillaValue);
+  });
+
+// Update the DOM with the count
+const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
+countDisplayUpezillas.textContent = ` ${uniqueUpezillas.size} Upezillas`;
+
+//console.log(features.length)
+
+layer.changed();
+                
+
+                
+                
+                  
+                }
+                
+                document.getElementById(DIVISION_ID).addEventListener('change', onchange);
+                
+
+      // info box
+
       map.on('click', function (event) {
         var coordinate = event.coordinate;
         console.log('Clicked coordinate:', coordinate);
@@ -188,6 +193,8 @@ for (let i = 0; i < divisionOptions.length; i++) {
 
         
       });
+      
+      
       generateTable(layer.getSource().getFeatures())
 
       generateCharts()

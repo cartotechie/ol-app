@@ -1,11 +1,11 @@
 import{commune,province} from './variables' 
-const countFeatures = (selectedMunicipalities,selectedProvince)=>{
+const countMunicipalities = (selectedMunicipalities,selectedProvince)=>{
 
     //console.log(selectedProvince)
     document.getElementById('province-name').innerHTML = selectedProvince
     //console.log(selectedMunicipalities)
     //Find unique values
-    //document.getElementById('total-municipalities').innerHTML = `Number of Districts`
+    document.getElementById('total-municipalities').innerHTML = `Number of Districts`
     document.getElementById('total-count').innerHTML = `${selectedMunicipalities.length} PowerTowers`
     
   }
@@ -24,12 +24,11 @@ const countFeatures = (selectedMunicipalities,selectedProvince)=>{
   
   
   const populateOptionElemets = (features, elementId)=>{
-    
-    //console.log(features)
+    console.log(features)
       const optionElement = document.createElement("option");
       const textoptionElement = document.createTextNode(features);
       optionElement.appendChild(textoptionElement);
-      const selectedProvince = document.getElementById(elementId);
+      var selectedProvince = document.getElementById(elementId);
       selectedProvince.appendChild(optionElement);
       optionElement.setAttribute('value',features)
       
@@ -38,4 +37,4 @@ const countFeatures = (selectedMunicipalities,selectedProvince)=>{
       
       }
       
-  export {generateSelectElementValues,populateOptionElemets,countFeatures}
+  export {generateSelectElementValues,populateOptionElemets,countMunicipalities}

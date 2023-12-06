@@ -28,14 +28,7 @@ const divisions =[
 const districts =[
 "Sylhet District", 
 "Moulvibazar District",
-"Sunamganj District", 
-"Habiganj District",
- "Kishoreganj District", 
- "Brahmanbaria District", 
- "Cumilla District", 
- "Narsingdi District", 
- "Mymensingh District", 
- "Netrokona District"
+"Sunamganj District", "Habiganj District", "Kishoreganj District", "Brahmanbaria District", "Cumilla District", "Narsingdi District", "Mymensingh District", "Netrokona District"
 , "Gazipur District"
 , "Narayanganj District"
 , "Tangail District"
