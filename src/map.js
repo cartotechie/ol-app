@@ -137,11 +137,6 @@ const getLayers = async () => {
 
             });
 
-            
-
-
-
-            generateCharts()
             generateTable(features)
 
 
@@ -305,17 +300,126 @@ const extent = olExtent.boundingExtent(filterUpezillaFeatures.map(feature => fea
 
 map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
 // Sample data
-const upezillaName = "Sample Upezilla";
-const countUpezillaPowerlines = 42;
 
 // Update the content of the elements
 document.getElementById('upezilla-name').innerHTML = `<strong>${value}</strong>`;
 document.getElementById('countUpezillaPowerlines').innerHTML = `${filterUpezillaFeatures.length} Powerlines `;
+////////////////////*****************+ */
+// Count occurrences of each value for creating a bar chart
+const valueCounts = {};
+const featureKeys = ['class', 'class_1','class_1_13', 'class_1_14', 'class_1_15',, 'class_12'];
 
+filterUpezillaFeatures.forEach(feature => {
+  featureKeys.forEach(key => {
+    const value = feature.get(key);
+    valueCounts[key] = { ...(valueCounts[key] || {}), [value]: (valueCounts[key]?.[value] || 0) + 1 };
+  });
+});
+
+// Now you can use a library like Chart.js to create a bar chart
+// Here's a simple example using Chart.js
+const labels = Object.keys(valueCounts['class']);
+const data = Object.values(valueCounts['class']);
+const labels1 = Object.keys(valueCounts['class_1']);
+const data1 = Object.values(valueCounts['class_1']);
+
+
+console.log(labels)
+console.log(data)
+console.log(filterUpezillaFeatures)
+/************************************** */
+// Function to create a chart
+function createChart(chartId, chartType, data) {
+    var ctx = document.getElementById(chartId).getContext('2d');
+    return new Chart(ctx, {
+        type: chartType,
+        data: data,
+        options: {} // You can customize options here
+    });
+  }
+  
+var floodExposureData = {
+    labels: Object.keys(valueCounts['class']),
+    datasets: [{
+        label: 'Flood exposure',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        data: Object.values(valueCounts['class']),
+    }]
+  };
+
+  var lulcData = {
+    labels: Object.keys(valueCounts['class_1']),
+    datasets: [{
+        label: 'LULC',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        data: Object.values(valueCounts['class_1']),
+    }]
+  };
+
+  var maintenanceData = {
+    labels: Object.keys(valueCounts['class_12']),
+    datasets: [{
+        label: 'Maintenance',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        data: Object.values(valueCounts['class_12']),
+    }]
+  };
+
+  var windspeedData = {
+    labels: Object.keys(valueCounts['class_1_13']),
+    datasets: [{
+        label: 'Windspeed 100m ',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        data: Object.values(valueCounts['class_1_13']),
+    }]
+  }; 
+  
+  var earthquakeData = {
+    labels: Object.keys(valueCounts['class_1_14']),
+    datasets: [{
+        label: 'Earthquake',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        data: Object.values(valueCounts['class_1_14']),
+    }]
+  };
+
+  var landslideData = {
+    labels: Object.keys(valueCounts['class_1_15']),
+    datasets: [{
+        label: 'Landslide susceptability',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        data: Object.values(valueCounts['class_1_15']),
+    }]
+  };
+  createChart('graph4', 'bar', floodExposureData);
+  createChart('graph1', 'bar', lulcData);
+  createChart('graph2', 'bar', maintenanceData);
+  createChart('graph3', 'bar', windspeedData);
+  createChart('graph5', 'bar', earthquakeData);
+  createChart('graph6', 'bar', landslideData);
+  
 }
 
 // Add click event listener to the table
 document.getElementById('table').addEventListener('click', displayInfo);
 
 /********************************************* */
+
+
+
+
+
+
 

@@ -19,7 +19,7 @@ const generateTable = (features) => {
         var row = table.insertRow();
         tableAttributes.forEach(function (key) {
             var td = document.createElement('td');
-            console.log(td)
+            //console.log(td)
             td.textContent = feature.get(key); // Get the value using the specified key
             row.appendChild(td);
         });

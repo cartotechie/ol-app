@@ -6,6 +6,8 @@ const upezilla = 'name_en'
 let flood_exposure 
 let floodExposureClass = 'class'
 
+const alias ={'class':'Flood exposure'}
+
 let lulcClass ='class_1'
 
 let landslideExposure
@@ -94,3 +96,4 @@ const districts =[
 const tableAttributes =['div_name','dist_name','name_en',] 
 
 export{province,commune,divisions,districts,upezilla}
+
