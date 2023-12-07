@@ -146,15 +146,11 @@ const getLayers = async () => {
             const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
             const countDisplayDivisions = document.getElementById('countDisplayDivisions');
 
-            
-            
-function updateCountDisplay(element, count, label) {
-    element.textContent = `${count} ${label}`;
-}
+            const uniqueUpezillasCount = countFeatures(features, 'name_en', selectedUpezillas);
 
-updateCountDisplay(adminName,'','Bangladesh')
+updateCountDisplay(adminName,'','Bangladesh( data according to data)')
 updateCountDisplay(countDisplayDistricts,districts.length,'Districts')
-updateCountDisplay(countDisplayUpezillas,features.length,'Upezillas')
+updateCountDisplay(countDisplayUpezillas,uniqueUpezillasCount,'Upezillas')
 updateCountDisplay(countDisplayedFeatures,features.length,'Powerlines')
 updateCountDisplay(countDisplayDivisions,divisions.length,'Divisions')
 
