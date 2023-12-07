@@ -5,10 +5,7 @@ import {
     adminBoundaryStyle,
     getPolygonStyle
 } from './modules/sytle'
-import {
-    //countFeatures,
-    populateOptionElemets,
-    generateSelectElementValues
+import {getOptionDOMValues
 } from './modules/domElements';
 import {
     getProvinceName,
@@ -31,7 +28,7 @@ import {
     upezilla
 } from './modules/variables'
 import {
-    generateTable
+    generateTable,clearTable
 } from './modules/table'
 import {
     divisions
@@ -42,7 +39,7 @@ import {
 import GeometryCollection from 'ol/geom/GeometryCollection';
 import * as olExtent from 'ol/extent';
 import {generateChartData,createChartData,createChart,clearCharts} from './modules/charts'
-
+import {countFeatures} from './modules/processing'
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
 
@@ -56,6 +53,11 @@ const geoserverUrl = [
     './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
     './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
 ]
+
+
+function updateCountDisplay(element, count, label) {
+    element.textContent = `${count} ${label}`;
+}
 
 const map = initMap();
 
@@ -138,6 +140,27 @@ const getLayers = async () => {
 
             });
 
+            const countDisplayDistricts = document.getElementById('countDisplayDistricts');
+            const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
+            const adminName = document.getElementById('adminName');
+            const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
+            const countDisplayDivisions = document.getElementById('countDisplayDivisions');
+
+            
+            
+function updateCountDisplay(element, count, label) {
+    element.textContent = `${count} ${label}`;
+}
+
+updateCountDisplay(adminName,'','Bangladesh')
+updateCountDisplay(countDisplayDistricts,districts.length,'Districts')
+updateCountDisplay(countDisplayUpezillas,features.length,'Upezillas')
+updateCountDisplay(countDisplayedFeatures,features.length,'Powerlines')
+updateCountDisplay(countDisplayDivisions,divisions.length,'Divisions')
+
+
+console.log(features)
+
             generateTable(features)
             // Clear existing charts
 clearCharts();
@@ -170,19 +193,7 @@ getLayers();
 
 /************************************************************************ */
 
-const getOptionDOMValues = (divisions, districts) => {
-   
-    // Loop through divisions and populate option elements
-    divisions.forEach((division) => {
-     populateOptionElemets(division, "division");
-    });
-  
-    // Loop through districts and populate option elements
-    districts.forEach((district) => {
-      populateOptionElemets(district, "district");
-    });
-  };
-  
+
   getOptionDOMValues(divisions, districts);
   
 /****************************************************************************************** */
@@ -192,34 +203,8 @@ const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
 const adminName = document.getElementById('adminName');
 const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
 
-function countFeatures(features, property, selectedValues) {
-    const uniqueValues = new Set();
-
-    features.forEach(feature => {
-        const value = feature.get(property);
-        selectedValues.push(value);
-        uniqueValues.add(value);
-    });
-
-    return uniqueValues.size;
-}
-
-function updateCountDisplay(element, count, label) {
-    element.textContent = `${count} ${label}`;
-}
 
 
-
-/***************************************************************************************** */
-// Assuming you have a function to clear the table or remove it
-function clearTable() {
-    const tableContainer = document.getElementById('table');
-    if (tableContainer) {
-      tableContainer.innerHTML = ''; // Clear the content
-      // Alternatively, you can remove the entire table element
-      // tableContainer.parentNode.removeChild(tableContainer);
-    }
-  }
 /******************************************************************************************* */
 
 function onchange(event) {

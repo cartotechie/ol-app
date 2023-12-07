@@ -1,28 +1,4 @@
-import{commune,province} from './variables' 
-const countFeatures = (selectedMunicipalities,selectedProvince)=>{
-
-    //console.log(selectedProvince)
-    document.getElementById('province-name').innerHTML = selectedProvince
-    //console.log(selectedMunicipalities)
-    //Find unique values
-    //document.getElementById('total-municipalities').innerHTML = `Number of Districts`
-    document.getElementById('total-count').innerHTML = `${selectedMunicipalities.length} PowerTowers`
-    
-  }
-  
-  const generateSelectElementValues = (feature) => {
-    //console.log(feature.get(province))
-   
-    document.getElementById('municipality-name').innerHTML = `${feature.get(commune)}`
-    document.getElementById('exposure').innerHTML = `<span> Exposure-MULMP_exp:</span> <span class="figure exposure" >${feature.get("MULMP_exp")}</span>`
-    document.getElementById('vulnerability').innerHTML = ` <span>Vulnerability-MULMP_vuln:</span>
-    <span class="figure" >${feature.get("MULMP_vuln") }</span>`
-    document.getElementById('risk').innerHTML = `<span>Risk-MULMP_risq:</span>
-    <span class="figure" >${feature.get("MULMP_risq") }</span>`
-  
-  }
-  
-  
+ 
   const populateOptionElemets = (features, elementId)=>{
     
     //console.log(features)
@@ -31,11 +7,21 @@ const countFeatures = (selectedMunicipalities,selectedProvince)=>{
       optionElement.appendChild(textoptionElement);
       const selectedProvince = document.getElementById(elementId);
       selectedProvince.appendChild(optionElement);
-      optionElement.setAttribute('value',features)
-      
-    
-  
-      
+      optionElement.setAttribute('value',features)   
       }
+
+      const getOptionDOMValues = (divisions, districts) => {
+   
+        // Loop through divisions and populate option elements
+        divisions.forEach((division) => {
+         populateOptionElemets(division, "division");
+        });
       
-  export {generateSelectElementValues,populateOptionElemets,countFeatures}
+        // Loop through districts and populate option elements
+        districts.forEach((district) => {
+          populateOptionElemets(district, "district");
+        });
+      };
+      
+      
+  export {getOptionDOMValues}

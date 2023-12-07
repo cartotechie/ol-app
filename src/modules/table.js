@@ -32,6 +32,13 @@ const generateTable = (features) => {
 
 
 
+function clearTable() {
+    const tableContainer = document.getElementById('table');
+    if (tableContainer) {
+      tableContainer.innerHTML = ''; // Clear the content
+      // Alternatively, you can remove the entire table element
+      // tableContainer.parentNode.removeChild(tableContainer);
+    }
+  }
 
-
-export {generateTable};
+export {generateTable,clearTable};
