@@ -50,7 +50,7 @@ let selectedUpezillas = [];
 let featureTable
 const geoserverUrl = [
     './data/Admin_Boundaries_OSM_refined.geojson',
-    './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
+    './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.json',
     './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
 ]
 
@@ -198,6 +198,8 @@ const countDisplayDistricts = document.getElementById('countDisplayDistricts');
 const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
 const adminName = document.getElementById('adminName');
 const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
+const countDisplayDivisions = document.getElementById('countDisplayDivisions');
+
 
 
 
@@ -220,6 +222,7 @@ function onchange(event) {
     countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
     const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
     updateCountDisplay(countDisplayDistricts, uniqueCommunesCount, 'Districts');
+    updateCountDisplay(countDisplayDivisions,'','')
 
     const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
     updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
@@ -250,6 +253,7 @@ map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
     countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
     //const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
     updateCountDisplay(countDisplayDistricts, '', '');
+    updateCountDisplay(countDisplayDivisions,'','')
 
     const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
     updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
