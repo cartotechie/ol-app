@@ -325,10 +325,46 @@ createChart('graph6', 'bar', filteredData.class_12);
 document.getElementById('table').addEventListener('click', displayInfo);
 
 /********************************************* */
+// Sample point data with variables
+const pointData = {
+    variables: [
+      { name: 'Variable A', latitude: 90, longitude: 22 },
+      { name: 'Variable B', latitude: 90, longitude: 26 },
+      // Add more variables as needed
+    ],
+  };
+  
 
+  // Create a vector source and layer for each variable
+  const variableLayers = pointData.variables.map(variable => {
+    const vectorSource = new VectorSource({
+      features: [
+        /**new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.fromLonLat([variable.longitude, variable.latitude])),
+          name: variable.name,
+        }),*/
+      ],
+    });
+  
+    return new VectorLayer({
+      source: vectorSource,
+      style: new ol.style.Style({
+        image: new CircleStyle({
+          radius: 8,
+          fill: new Fill({
+            color: 'red',
+          }),
+        }),
+        text: new Text({
+          text: variable.name,
+          offsetY: -15,
+          fill: new Fill({
+            color: 'black',
+          }),
+        }),
+      }),
+      visible: false,
+    });
+  });
 
-
-
-
-
-
+map.addLayer(variableLayers)
