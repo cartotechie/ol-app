@@ -1,4 +1,6 @@
 
+const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
+
 function generateChartData(features) {
   const valueCounts = {};
   const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
@@ -44,7 +46,7 @@ function createChart(chartId, chartType, data) {
 
 function clearCharts() {
   // Get all chart elements and destroy them
-  ['graph4', 'graph1', 'graph2', 'graph3', 'graph5', 'graph6'].forEach(chartId => {
+  ['graph_div_class', 'graph_div_class_1', 'graph_div_class_1_13', 'graph_div_class_1_14', 'graph_div_class_1_15', 'graph_div_class_12','graph_dist_class', 'graph_dist_class_1', 'graph_dist_class_1_13', 'graph_dist_class_1_14', 'graph_dist_class_1_15', 'graph_dist_class_12','graph_upezila_class', 'graph_upezila_class_1', 'graph_upezila_class_1_13', 'graph_upezila_class_1_14', 'graph_upezila_class_1_15', 'graph_upezila_class_12'].forEach(chartId => {
     var existingChart = Chart.getChart(chartId);
     if (existingChart) {
       existingChart.destroy();
@@ -53,4 +55,4 @@ function clearCharts() {
 }
 
 
-export {generateChartData,createChartData,createChart,clearCharts}
+export {generateChartData,createChartData,createChart,clearCharts,featureKeys}

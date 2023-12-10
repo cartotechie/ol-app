@@ -1,4 +1,5 @@
 import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
+import {featureKeys} from './variables' 
 
 // Styles for Power Lines
 const powerLineStyle = new Style({
@@ -86,5 +87,27 @@ function getPolygonStyle(feature) {
 }
 
 
+// Create a style function to display each variable differently.
+const multiVarPointStyleFunction = (feature) => {
+  //console.log('LOad points with variables')
 
-  export {powerLineStyle,substationStyle,adminBoundaryStyle,getPolygonStyle}
+  const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
+  // Customize this function based on your data structure.
+  const variable1 = feature.get(featureKeys[2]);
+  //console.log('LOad points with variables 1')
+  const variable2 = feature.get(featureKeys[1]);
+  console.log('LOad points with variables 2')
+
+  return new Style({
+      image: new Circle({
+          radius: 2,
+          fill: new Fill({
+              color: `red, green, 0, 0.8)`,
+          }),
+      }),
+  });
+};
+
+
+
+  export {powerLineStyle,substationStyle,adminBoundaryStyle,getPolygonStyle,multiVarPointStyleFunction}

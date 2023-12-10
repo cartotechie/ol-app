@@ -59,7 +59,7 @@ background-color: #333;}
     .charts-container {  display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
       grid-template-rows: 1fr;
-      gap: 0px 0px;
+      gap: 2rem 2rem;
       grid-auto-flow: row;
       grid-template-areas:
         ". . . .";

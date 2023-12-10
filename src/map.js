@@ -3,7 +3,8 @@ import {
     substationStyle,
     powerLineStyle,
     adminBoundaryStyle,
-    getPolygonStyle
+    getPolygonStyle,
+    multiVarPointStyleFunction
 } from './modules/sytle'
 import {getOptionDOMValues
 } from './modules/domElements';
@@ -25,7 +26,7 @@ import {
     province,
     commune,
     districts,
-    upezilla
+    upezilla,districtsByDivision
 } from './modules/variables'
 import {
     generateTable,clearTable
@@ -58,6 +59,8 @@ const geoserverUrl = [
 function updateCountDisplay(element, count, label) {
     element.textContent = `${count} ${label}`;
 }
+
+const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
 
 const map = initMap();
 
@@ -92,7 +95,23 @@ const getLayers = async () => {
         if (response1.ok) {
             const responseJSON = await response1.json();
 
-            const layer = createVectorLayer(responseJSON, 'Layer2', substationStyle);
+            // const layer = createVectorLayer(responseJSON, 'Layer2', substationStyle);
+
+            const layer = new VectorLayer({
+                style: function(feature) {
+                    //return getPolygonStyle(feature)
+                    return multiVarPointStyleFunction(feature)
+                },
+                source: new VectorSource({
+                    features: new GeoJSON().readFeatures(responseJSON),
+
+                }),
+
+                title: 'Powerlines'
+            });
+
+
+
             mapLayers.push(layer);
 
         }
@@ -148,18 +167,18 @@ const getLayers = async () => {
 
             const uniqueUpezillasCount = countFeatures(features, 'name_en', selectedUpezillas);
 
-updateCountDisplay(adminName,'','Bangladesh( data according to data)')
-updateCountDisplay(countDisplayDistricts,districts.length,'Districts')
-updateCountDisplay(countDisplayUpezillas,uniqueUpezillasCount,'Upezillas')
-updateCountDisplay(countDisplayedFeatures,features.length,'Powerlines')
-updateCountDisplay(countDisplayDivisions,divisions.length,'Divisions')
+            updateCountDisplay(adminName,'','Bangladesh (data according to data)')
+            updateCountDisplay(countDisplayDistricts,districts.length,'Districts')
+            updateCountDisplay(countDisplayUpezillas,uniqueUpezillasCount,'Upezillas')
+            updateCountDisplay(countDisplayedFeatures,features.length,'Powerlines')
+            updateCountDisplay(countDisplayDivisions,divisions.length,'Divisions')
 
 
-console.log(features)
+            console.log(features)
 
             generateTable(features)
             // Clear existing charts
-clearCharts();
+            clearCharts();
 
 // Generate and create new charts
             const filteredData = generateChartData(features);
@@ -205,13 +224,15 @@ const countDisplayDivisions = document.getElementById('countDisplayDivisions');
 
 /******************************************************************************************* */
 
-function onchange(event) {
+function onchangeDivision(event) {
     const layer = map.getAllLayers()[2]
     const features = layer.getSource().getFeatures();
 
     event.preventDefault();
     const selectedProvince = event.target.value;
     adminName.innerHTML=`${selectedProvince}`
+
+   
  
     const filteredFeatures = features.filter(feature => feature.get(province) === selectedProvince);
     const extent = olExtent.boundingExtent(filteredFeatures.map(feature => feature.getGeometry().getExtent()));
@@ -230,10 +251,27 @@ function onchange(event) {
     clearTable();
     generateTable(filteredFeatures)
 
+    /*****************************************************************************/
+
+
+    featureKeys.forEach(className => console.log(className))
+    // Iterate over the array using forEach
+
+    const filteredData = generateChartData(filteredFeatures);
+
+    // Create charts
+    clearCharts();
+    createChart(`graph_div_class`, `bar`, filteredData.class);
+    createChart(`graph_div_class_1`, `bar`, filteredData.class_1);
+    createChart(`graph_div_class_1_13`, `bar`, filteredData.class_1_13);
+    createChart(`graph_div_class_1_14`, `bar`, filteredData.class_1_14);
+    createChart(`graph_div_class_1_15`, `bar`, filteredData.class_1_15);
+    createChart(`graph_div_class_12`, `bar`, filteredData.class_12);
+
     layer.changed();
 }
 
-document.getElementById("division").addEventListener('change', onchange);
+document.getElementById("division").addEventListener('change', onchangeDivision);
 
 /****************************************************************************************** */
 
@@ -241,7 +279,7 @@ function onchangeDistrict(event) {
      const layer = map.getAllLayers()[2]
      const features = layer.getSource().getFeatures();
 
-    console.log(features)
+    //console.log(features)
     event.preventDefault();
     const selectedDistrict = event.target.value;
     adminName.innerHTML=`${selectedDistrict}`
@@ -249,7 +287,7 @@ function onchangeDistrict(event) {
     const filteredFeatures = features.filter(feature => feature.get(commune) === selectedDistrict);
     const extent = olExtent.boundingExtent(filteredFeatures.map(feature => feature.getGeometry().getExtent()));
 
-map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
+    map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
     countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
     //const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
     updateCountDisplay(countDisplayDistricts, '', '');
@@ -260,6 +298,17 @@ map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
     // Clear the existing table
     clearTable();
     generateTable(filteredFeatures)
+    console.log(filteredFeatures)
+    const filteredData = generateChartData(filteredFeatures)
+    
+    clearCharts()
+
+    createChart(`graph_dist_class`, `bar`, filteredData.class);
+    createChart(`graph_dist_class_1`, `bar`, filteredData.class_1);
+    createChart(`graph_dist_class_1_13`, `bar`, filteredData.class_1_13);
+    createChart(`graph_dist_class_1_14`, `bar`, filteredData.class_1_14);
+    createChart(`graph_dist_class_1_15`, `bar`, filteredData.class_1_15);
+    createChart(`graph_dist_class_12`, `bar`, filteredData.class_12);
 
     layer.changed();
 
@@ -270,7 +319,7 @@ document.getElementById('district').addEventListener('change', onchangeDistrict)
 /************************************************************************************************* */
 
 
-const displayInfo = (event) => {
+const displayUpazilaInfo = (event) => {
     // Get the clicked row
     const clickedRow = event.target.closest('tr');
     let value 
@@ -291,7 +340,7 @@ const displayInfo = (event) => {
     const features = layer.getSource().getFeatures()
     const filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===value)
     // Clear the existing table
-  clearTable();
+    clearTable();
     generateTable(filterUpezillaFeatures)
     
    // Get the extent of the filtered features
@@ -303,68 +352,24 @@ map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
 // Update the content of the elements
 document.getElementById('upezilla-name').innerHTML = `<strong>${value}</strong>`;
 document.getElementById('countUpezillaPowerlines').innerHTML = `${filterUpezillaFeatures.length} Powerlines `;
-////////////////////*****************+ */
+
 // Clear existing charts
 clearCharts();
 
 // Generate and create new charts
 const filteredData = generateChartData(filterUpezillaFeatures);
 
-// Create charts
-createChart('graph4', 'bar', filteredData.class);
-createChart('graph1', 'bar', filteredData.class_1);
-createChart('graph2', 'bar', filteredData.class_1_13);
-createChart('graph3', 'bar', filteredData.class_1_14);
-createChart('graph5', 'bar', filteredData.class_1_15);
-createChart('graph6', 'bar', filteredData.class_12);
 
+createChart(`graph_upazila_class`, `bar`, filteredData.class);
+createChart(`graph_upazila_class_1`, `bar`, filteredData.class_1);
+createChart(`graph_upazila_class_1_13`, `bar`, filteredData.class_1_13);
+createChart(`graph_upazila_class_1_14`, `bar`, filteredData.class_1_14);
+createChart(`graph_upazila_class_1_15`, `bar`, filteredData.class_1_15);
+createChart(`graph_upazila_class_12`, `bar`, filteredData.class_12);
   
 }
 
 // Add click event listener to the table
-document.getElementById('table').addEventListener('click', displayInfo);
+document.getElementById('table').addEventListener('click', displayUpazilaInfo);
 
 /********************************************* */
-// Sample point data with variables
-const pointData = {
-    variables: [
-      { name: 'Variable A', latitude: 90, longitude: 22 },
-      { name: 'Variable B', latitude: 90, longitude: 26 },
-      // Add more variables as needed
-    ],
-  };
-  
-
-  // Create a vector source and layer for each variable
-  const variableLayers = pointData.variables.map(variable => {
-    const vectorSource = new VectorSource({
-      features: [
-        /**new ol.Feature({
-          geometry: new ol.geom.Point(ol.proj.fromLonLat([variable.longitude, variable.latitude])),
-          name: variable.name,
-        }),*/
-      ],
-    });
-  
-    return new VectorLayer({
-      source: vectorSource,
-      style: new ol.style.Style({
-        image: new CircleStyle({
-          radius: 8,
-          fill: new Fill({
-            color: 'red',
-          }),
-        }),
-        text: new Text({
-          text: variable.name,
-          offsetY: -15,
-          fill: new Fill({
-            color: 'black',
-          }),
-        }),
-      }),
-      visible: false,
-    });
-  });
-
-map.addLayer(variableLayers)

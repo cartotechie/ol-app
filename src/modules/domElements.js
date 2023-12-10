@@ -21,6 +21,7 @@
         districts.forEach((district) => {
           populateOptionElemets(district, "district");
         });
+        
       };
       
       

@@ -1,7 +1,7 @@
 const tableAttributes = ['div_name', 'dist_name', 'name_en'];
 
 const generateTable = (features) => {
-    console.log('TABLE LOADED');
+    //console.log('TABLE LOADED');
     //console.log(features);
 
     var table = document.createElement('table');

@@ -58,3 +58,53 @@ function getPolygonStyle(feature, resolution) {
     return defaultStyle;
   }
   
+
+  /*************************************************************************+ */
+
+  // Replace 'YOUR_DATA_URL' with the URL to your point data.
+const dataUrl = 'YOUR_DATA_URL';
+
+// Create a VectorSource with your data.
+const vectorSource = new VectorSource({
+    url: dataUrl,
+    format: new GeoJSON(),
+});
+
+// Create a style function to display each variable differently.
+const styleFunction = (feature) => {
+    // Customize this function based on your data structure.
+    const variable1 = feature.get('variable1');
+    const variable2 = feature.get('variable2');
+
+    return new Style({
+        image: new Circle({
+            radius: 8,
+            fill: new Fill({
+                color: `rgba(${variable1}, ${variable2}, 0, 0.8)`,
+            }),
+        }),
+    });
+};
+
+// Create the VectorLayer with the style function.
+const vectorLayer = new VectorLayer({
+    source: vectorSource,
+    style: styleFunction,
+});
+
+// Create the map.
+const map = new Map({
+    layers: [
+        new TileLayer({
+            source: new XYZ({
+                url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            }),
+        }),
+        vectorLayer,
+    ],
+    target: 'map',
+    view: new View({
+        center: [0, 0],
+        zoom: 2,
+    }),
+});
