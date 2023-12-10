@@ -46,7 +46,10 @@ function createChart(chartId, chartType, data) {
 
 function clearCharts() {
   // Get all chart elements and destroy them
-  ['graph_div_class', 'graph_div_class_1', 'graph_div_class_1_13', 'graph_div_class_1_14', 'graph_div_class_1_15', 'graph_div_class_12','graph_dist_class', 'graph_dist_class_1', 'graph_dist_class_1_13', 'graph_dist_class_1_14', 'graph_dist_class_1_15', 'graph_dist_class_12','graph_upezila_class', 'graph_upezila_class_1', 'graph_upezila_class_1_13', 'graph_upezila_class_1_14', 'graph_upezila_class_1_15', 'graph_upezila_class_12'].forEach(chartId => {
+  ['graph_div_class', 
+  'graph_div_class_1', 
+  'graph_div_class_1_13',
+   'graph_div_class_1_14', 'graph_div_class_1_15', 'graph_div_class_12','graph_dist_class', 'graph_dist_class_1', 'graph_dist_class_1_13', 'graph_dist_class_1_14', 'graph_dist_class_1_15', 'graph_dist_class_12','graph_upazila_class', 'graph_upazila_class_1', 'graph_upazila_class_1_13', 'graph_upazila_class_1_14', 'graph_upazila_class_1_15', 'graph_upazila_class_12'].forEach(chartId => {
     var existingChart = Chart.getChart(chartId);
     if (existingChart) {
       existingChart.destroy();
