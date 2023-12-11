@@ -1,4 +1,3 @@
-import Chart from 'chart.js/auto';
 
 const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
 // Custom colors for each data point
@@ -50,7 +49,7 @@ function createChartData(label, key, valueCounts) {
     datasets: [{
       //label: label,
       backgroundColor: colors,
-      borderColor: 'black',
+      borderColor: 'rgba(75, 192, 192, 1)',
       borderWidth: 1,
       barThickness:30,
       data: dataValues,
@@ -70,12 +69,7 @@ function createChart(chartId, chartType, data) {
           suggestedMin: 0,
           suggestedMax: 200,
         } 
-      } ,
-      plugins: {
-        legend: {
-          display: false, // Set to false to hide the legend
-        },
-      },
+      } 
     } 
   });
 }

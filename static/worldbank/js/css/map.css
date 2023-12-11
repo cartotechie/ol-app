@@ -1,7 +1,7 @@
 html, body {
   height: 100%;
   margin: 0 auto;
-  font-size: 1rem;
+  font-size: 0.8rem;
   width: 99%;
  
 } 
@@ -11,6 +11,7 @@ html, body {
     height: 100%;
     margin: 0;
     font-size: 1rem;
+    position: relative;
    
   }
  
@@ -18,7 +19,36 @@ html, body {
     width: 100%;
   height: 100%; 
 background-color: #333;}
-  
+  /* Apply padding and neutral background to specific grid areas */
+.table, .map-container, .map-symbology, .info1, .info2, .footer {
+  padding: 15px; /* Adjust padding as needed */
+  background-color: #f8f8f8; /* Set a neutral background color */
+}
+
+.header {
+  grid-area: header;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #397AAB; /* Set a background color for the header */
+  color: #fff; /* Set text color for the header */
+  padding: 10px; /* Add padding as needed */
+  z-index: 1000; /* Set a high z-index to make sure it's above other elements */
+}
+
+.footer {
+  grid-area: footer;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #397AAB; /* Set a background color for the footer */
+  color: #fff; /* Set text color for the footer */
+  padding: 10px; /* Add padding as needed */
+  z-index: 1000; /* Set a high z-index to make sure it's above other elements */
+}
+
  .table { grid-area: table;
     
     overflow-y: scroll; }
@@ -34,7 +64,7 @@ background-color: #333;}
         "table map-container map-container map-container map-symbology"
         "table map-container map-container map-container map-symbology"
         "table map-container map-container map-container map-symbology"
-        "info1 classes division district upezilla"
+        /*"info1 classes division district upezilla"*/
         "info2 charts-container charts-container charts-container charts-container"
         "info2 charts-container charts-container charts-container charts-container"
         "footer footer footer footer footer";
@@ -73,8 +103,21 @@ background-color: #333;}
     
     .footer { grid-area: footer; }
     
-    
+    canvas {
+      width: 200;
+      height: 150;
+    }
+
    
+    .div-name,
+    .dist-name,
+    .upazila-name {
+      font-weight: bold;
+      color: #333; 
+      font-size: 1.2rem;
+      margin-bottom: 1.2rem;
+      
+    }
     /* For presentation only, no need to copy the code below 
     
     .container * {
@@ -121,3 +164,40 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
+
+/* Add styling for the info box */
+.info2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.dashboard-item {
+  text-align: center;
+}
+
+#adminName,
+#upezilla-name {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Style for each stat element */
+.stats div {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* ... Rest of your styles ... */

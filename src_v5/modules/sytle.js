@@ -12,13 +12,13 @@ const powerLineStyle = new Style({
 // Style for Substations (as points)
 const substationStyle = new Style({
   image: new Circle({
-    radius: 4,
+    radius: 8,
     fill: new Fill({
       color: '#33A1DE', // Light blue fill
     }),
     stroke: new Stroke({
       color: '#FFFFFF', // White stroke
-      width: 1,
+      width: 2,
     }),
   }),
 });
@@ -108,19 +108,6 @@ const multiVarPointStyleFunction = (feature) => {
   });
 };
 
-// Create a glowing style
-const glowingStyle = new Style({
-  image: new Circle({
-      radius: 2,
-      fill: new Fill({
-          color: 'rgba(68, 170, 68, 0.5)', // Adjust the glowing color
-      }),
-      stroke: new Stroke({
-          color: '#45a049', // Adjust the glowing border color
-          width: 1,
-      }),
-  }),
-});
 
 
-  export {powerLineStyle,substationStyle,adminBoundaryStyle,glowingStyle,getPolygonStyle,multiVarPointStyleFunction}
+  export {powerLineStyle,substationStyle,adminBoundaryStyle,getPolygonStyle,multiVarPointStyleFunction}

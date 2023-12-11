@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Risk Assessment Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <link rel="stylesheet" href="./css/map.css">
     </style>
 </head>
@@ -49,6 +49,7 @@
     </div>
     <div class="map-symbology">
       <h2>Legend</h2>
+             <div>
               <svg width="150" height="120">
                 <!-- Example Legend Items -->
                 <rect x="10" y="10" width="20" height="20" fill="#ff0000"/>
@@ -61,24 +62,25 @@
                 <text x="40" y="85" font-size="14" fill="#333">Category 3</text>
                 <!-- Add more legend items as needed -->
               </svg>
+             </div>
     
-              <svg width="150" height="120">
-                <!-- Example Legend Items -->
-                <rect x="10" y="10" width="20" height="20" fill="#ff0000"/>
-                <text x="40" y="25" font-size="14" fill="#333">Category 1</text>
-            
-                <rect x="10" y="40" width="20" height="20" fill="#00ff00"/>
-                <text x="40" y="55" font-size="14" fill="#333">Category 2</text>
-            
-                <rect x="10" y="70" width="20" height="20" fill="#0000ff"/>
-                <text x="40" y="85" font-size="14" fill="#333">Category 3</text>
-                <!-- Add more legend items as needed -->
-              </svg>
+             <div> <svg width="150" height="120">
+              <!-- Example Legend Items -->
+              <rect x="10" y="10" width="20" height="20" fill="#ff0000"/>
+              <text x="40" y="25" font-size="14" fill="#333">Category 1</text>
+          
+              <rect x="10" y="40" width="20" height="20" fill="#00ff00"/>
+              <text x="40" y="55" font-size="14" fill="#333">Category 2</text>
+          
+              <rect x="10" y="70" width="20" height="20" fill="#0000ff"/>
+              <text x="40" y="85" font-size="14" fill="#333">Category 3</text>
+              <!-- Add more legend items as needed -->
+            </svg></div>
     </div>
-    <div class="upezilla"><h2>Upazila</h2></div>
+    <!--div class="upezilla"><h2>Upazila</h2></div>
     <div class="district"><h2>District</h2></div>
     <div class="division"><h2>Division</h2></div>
-    <div class="classes"><h2>Classes</h2></div>
+    <div class="classes"><h2>Classes</h2></div-->
     <div class="charts-container">
       <div>
         <h3>Flood exposure</h3>
@@ -87,15 +89,15 @@
   
         <div class="graph-container">
           <div class="div-name"></div>
-          <canvas id="graph_div_class" width="200" height="50"></canvas>
+          <canvas id="graph_div_class"></canvas>
         </div>
         <div class="graph-container">
           <div class="dist-name"></div>
-          <canvas id="graph_dist_class" width="200" height="50"></canvas>
+          <canvas id="graph_dist_class"></canvas>
         </div>
         <div class="graph-container">
           <div class="upazila-name"></div>
-          <canvas id="graph_upazila_class" width="200" height="50"></canvas>
+          <canvas id="graph_upazila_class"></canvas>
         </div>
         
         
@@ -104,15 +106,15 @@
         <p>Land Use / Land Cover Classifications are among the most iconic tasks for remote sensing scientists. They enable us to explore, map and monitor landscapes as well as better understand the impacts of for exampel natural hazards or anthropogenic influences.</p></div>
             <div class="graph-container">
               <div class="div-name"></div>
-              <canvas id="graph_div_class_1" width="200" height="50"></canvas>
+              <canvas id="graph_div_class_1"></canvas>
             </div>
             <div class="graph-container">
               <div class="dist-name"></div>
-              <canvas id="graph_dist_class_1" width="200" height="50"></canvas>
+              <canvas id="graph_dist_class_1"></canvas>
             </div>
             <div class="graph-container">
               <div class="upazila-name"></div>
-              <canvas id="graph_upazila_class_1" width="200" height="50"></canvas>
+              <canvas id="graph_upazila_class_1"></canvas>
             </div>
 
       <div>
@@ -121,17 +123,17 @@
        
             <div class="graph-container">
               <div class="div-name"></div>
-              <canvas id="graph_div_class_1_13" width="200" height="50"></canvas>
+              <canvas id="graph_div_class_1_13"></canvas>
             </div>
 
             <div class="graph-container">
               <div class="dist-name"></div>
-              <canvas id="graph_dist_class_1_13" width="200" height="50"></canvas>
+              <canvas id="graph_dist_class_1_13"></canvas>
             </div>
             
             <div class="graph-container">
               <div class="upazila-name"></div>
-              <canvas id="graph_upazila_class_1_13" width="200" height="50"></canvas>
+              <canvas id="graph_upazila_class_1_13"></canvas>
             </div>
 
 
@@ -141,17 +143,17 @@
        
             <div class="graph-container">
               <div class="div-name"></div>
-              <canvas id="graph_div_class_1_14" width="200" height="50"></canvas>
+              <canvas id="graph_div_class_1_14"></canvas>
             </div>
 
             <div class="graph-container">
               <div class="dist-name"></div>
-              <canvas id="graph_dist_class_1_14" width="200" height="50"></canvas>
+              <canvas id="graph_dist_class_1_14"></canvas>
             </div>
 
             <div class="graph-container">
               <div class="upazila-name"></div>
-              <canvas id="graph_upazila_class_1_14" width="200" height="50"></canvas>
+              <canvas id="graph_upazila_class_1_14"></canvas>
             </div>
 
 
@@ -162,16 +164,16 @@
         <p>Land Use / Land Cover Classifications are among the most iconic tasks for remote sensing scientists. They enable us to explore, map and monitor landscapes as well as better understand the impacts of for exampel natural hazards or anthropogenic influences.</p></div>
             <div class="graph-container">
               <div class="div-name"></div>
-              <canvas id="graph_div_class_1_15" width="200" height="50"></canvas>
+              <canvas id="graph_div_class_1_15"></canvas>
             </div>
             <div class="graph-container">
               <div class="dist-name"></div>
-              <canvas id="graph_dist_class_1_15" width="200" height="50"></canvas>
+              <canvas id="graph_dist_class_1_15"></canvas>
             </div>
 
             <div class="graph-container">
               <div class="upazila-name"></div>
-              <canvas id="graph_upazila_class_1_15" width="200" height="50"></canvas>
+              <canvas id="graph_upazila_class_1_15"></canvas>
             </div>
 
 
@@ -180,21 +182,21 @@
         <p>Land Use / Land Cover Classifications are among the most iconic tasks for remote sensing scientists. They enable us to explore, map and monitor landscapes as well as better understand the impacts of for exampel natural hazards or anthropogenic influences.</p></div>
             <div class="graph-container">
               <div class="div-name"></div>
-              <canvas id="graph_div_class_12" width="200" height="50"></canvas>
+              <canvas id="graph_div_class_12"></canvas>
             </div>
             <div class="graph-container">
               <div class="dist-name"></div>
-              <canvas id="graph_dist_class_12" width="200" height="50"></canvas>
+              <canvas id="graph_dist_class_12"></canvas>
             </div>
             <div class="graph-container">
               <div class="upazila-name"></div>
-              <canvas id="graph_upazila_class_12" width="200" height="50"></canvas>
+              <canvas id="graph_upazila_class_12"></canvas>
             </div>
             
             
       
     </div>
-    <div class="info1"><h2>Heading</h2></div>
+    <!--div class="info1"><h2>Heading</h2></div-->
     <div class="info2">
       <div class="dashboard-item">
                   <h2 id="adminName">Admin not selected</h2>
@@ -202,10 +204,11 @@
                     <div id="countDisplayDivisions"></div>
                     <div id="countDisplayDistricts"></div>
                     <div id="countDisplayUpezillas"></div>
-                    <div id="countDisplayedFeatures"> </div>
+                    <div id="countDisplayedFeatures"> </div> 
+                  </div>
+                  <div>
                     <h2 id="upezilla-name">Upazila not selected</h2>
                     <div id="countUpezillaPowerlines" ></div>
-                    
                   </div>
                 </div>
     </div>

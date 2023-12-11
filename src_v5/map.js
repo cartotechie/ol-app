@@ -1,14 +1,17 @@
 import LayerGroup from 'ol/layer/Group';
 import {
-    glowingStyle,
     substationStyle,
+    powerLineStyle,
     adminBoundaryStyle,
-    //getPolygonStyle,
+    getPolygonStyle,
     multiVarPointStyleFunction
 } from './modules/sytle'
 import {getOptionDOMValues
 } from './modules/domElements';
-
+import {
+    getProvinceName,
+    getDistrictName
+} from './modules/search_select';
 import VectorLayer from 'ol/layer/Vector';
 import {
     OSM,
@@ -25,7 +28,6 @@ import {
     districts,
     upezilla,districtsByDivision
 } from './modules/variables'
-import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
 import {
     generateTable,clearTable
 } from './modules/table'
@@ -39,86 +41,18 @@ import GeometryCollection from 'ol/geom/GeometryCollection';
 import * as olExtent from 'ol/extent';
 import {generateChartData,createChartData,createChart,clearUpazilaCharts,clearDistCharts,clearDivCharts} from './modules/charts'
 import {countFeatures} from './modules/processing'
-//import {getPolygonStyle} from './modules/zoom_style'
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
-function getPolygonStyle(feature) {
-    // Extract attributes from the feature properties
-  console.log(feature)
-    // Default style
-    var defaultStyle = new Style({
-      fill: new Fill({
-        color: 'rgba(204, 204, 204, 0.8)', // Default fill color
-      }),
-      stroke: new Stroke({
-        color: 'grey', // Default border color
-        width: 0, // Default border width
-      }),
-    });
-  
-    // Get the current zoom level
-    var zoom = map.getView().getZoom();
-  
-    // Style based on admin_level_1 at zoom level 8 or above
-    if (feature.get('div_name') === divisions[0] ) {
-       
-      return new Style({
-        fill: new Fill({
-          color: 'red', // Red
-        }),
-        stroke: new Stroke({
-          color: 'grey',
-          width: 0,
-        }),
-      });
-    }
-  
-    // Style based on admin_level_2 at zoom level 10 or above
-    else if (feature.get('div_name') === divisions[1] ) {
-        
-      return new Style({
-        fill: new Fill({
-          color: 'green', // Green
-        }),
-        stroke: new Stroke({
-          color: 'grey',
-          width: 0,
-        }),
-      });
-    }
-  
-    // Style based on admin_level_3 at zoom level 12 or above
-    else if (feature.get('div_name') === divisions[2] ) {
-      return new Style({
-        fill: new Fill({
-          color: 'blue', // Blue
-        }),
-        stroke: new Stroke({
-          color: 'grey',
-          width: 0,
-        }),
-      });
-    }
-  
-    // Return default style if no condition is met
-    return defaultStyle;
-  }
-  
-let selectedProvince ='Sylhet Division';
-let selectedDistrict='Sylhet District';
+
+let selectedProvince;
+let selectedMunicipality;
 let selectedDistricts = [];
 let selectedUpezillas = [];
 let featureTable
-/*const geoserverUrl = [
+const geoserverUrl = [
     './data/Admin_Boundaries_OSM_refined.geojson',
     './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
     './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
-]*/
-
-const geoserverUrl =[
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Aadmin_boundaries_osm_refined&outputFormat=application/json&srsname=EPSG:4326',
-  'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up&outputFormat=application/json&srsname=EPSG:4326',
-  
 ]
 
 
@@ -138,15 +72,14 @@ const getLayers = async () => {
         // Fetch GeoJSON data
         const response = await fetch(geoserverUrl[0]);
         const response1 = await fetch(geoserverUrl[1]);
-        
+        const response2 = await fetch(geoserverUrl[2]);
 
         if (response.ok) {
             const responseJSON = await response.json();
             const layer = new VectorLayer({
-                visible:false,
                 style: function(feature) {
                     //return getPolygonStyle(feature)
-                    return getPolygonStyle(feature)
+                    return adminBoundaryStyle
                 },
                 source: new VectorSource({
                     features: new GeoJSON().readFeatures(responseJSON),
@@ -167,7 +100,7 @@ const getLayers = async () => {
             const layer = new VectorLayer({
                 style: function(feature) {
                     //return getPolygonStyle(feature)
-                    return substationStyle//multiVarPointStyleFunction(feature)
+                    return multiVarPointStyleFunction(feature)
                 },
                 source: new VectorSource({
                     features: new GeoJSON().readFeatures(responseJSON),
@@ -183,7 +116,13 @@ const getLayers = async () => {
 
         }
 
-        
+        if (response2.ok) {
+            const responseJSON = await response2.json();
+
+            const layer = createVectorLayer(responseJSON, 'Layer3', powerLineStyle);
+            mapLayers.push(layer);
+
+        }
 
         if (mapLayers.length > 0) {
             
@@ -243,7 +182,16 @@ const getLayers = async () => {
             clearDistCharts()
             clearUpazilaCharts()
 
+// Generate and create new charts
+            const filteredData = generateChartData(features);
 
+// Create charts
+createChart('graph4', 'bar', filteredData.class);
+createChart('graph1', 'bar', filteredData.class_1);
+createChart('graph2', 'bar', filteredData.class_1_13);
+createChart('graph3', 'bar', filteredData.class_1_14);
+createChart('graph5', 'bar', filteredData.class_1_15);
+createChart('graph6', 'bar', filteredData.class_12);
 
 
 
@@ -284,6 +232,9 @@ const adminName = document.getElementById('adminName');
 const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
 const countDisplayDivisions = document.getElementById('countDisplayDivisions');
 
+
+
+
 /******************************************************************************************* */
 
 function onchangeDivision(event) {
@@ -291,7 +242,7 @@ function onchangeDivision(event) {
     const features = layer.getSource().getFeatures();
 
     event.preventDefault();
-    selectedProvince = event.target.value;
+    const selectedProvince = event.target.value;
     adminName.innerHTML=`${selectedProvince}`
 
    
@@ -300,17 +251,6 @@ function onchangeDivision(event) {
     const extent = olExtent.boundingExtent(filteredFeatures.map(feature => feature.getGeometry().getExtent()));
 
     map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
-    /* Apply the glowing style to the selected features
-filteredFeatures.forEach(feature => {
-    feature.setStyle(glowingStyle);
-});
-
-// Optionally, remove the glowing effect after a certain time
-setTimeout(() => {
-    filteredFeatures.forEach(feature => {
-        feature.setStyle(null); // Remove the style to revert to the default
-    });
-}, 10000); // Adjust the time (in milliseconds) as needed*/
 
     console.log(filteredFeatures)
     countDisplayedFeatures.innerHTML=`${filteredFeatures.length} Powerlines`
@@ -364,7 +304,7 @@ function onchangeDistrict(event) {
 
     //console.log(features)
     event.preventDefault();
-    selectedDistrict = event.target.value;
+    const selectedDistrict = event.target.value;
     adminName.innerHTML=`${selectedDistrict}`
  
     const filteredFeatures = features.filter(feature => feature.get(commune) === selectedDistrict);
