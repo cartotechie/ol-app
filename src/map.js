@@ -39,7 +39,7 @@ import {
 } from './modules/charts'
 import GeometryCollection from 'ol/geom/GeometryCollection';
 import * as olExtent from 'ol/extent';
-import {generateChartData,createChartData,createChart,clearCharts} from './modules/charts'
+import {generateChartData,createChartData,createChart,clearUpazilaCharts,clearDistCharts,clearDivCharts} from './modules/charts'
 import {countFeatures} from './modules/processing'
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
@@ -51,7 +51,7 @@ let selectedUpezillas = [];
 let featureTable
 const geoserverUrl = [
     './data/Admin_Boundaries_OSM_refined.geojson',
-    './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.json',
+    './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
     './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
 ]
 
@@ -178,7 +178,9 @@ const getLayers = async () => {
 
             generateTable(features)
             // Clear existing charts
-            clearCharts();
+            clearDivCharts();
+            clearDistCharts()
+            clearUpazilaCharts()
 
 // Generate and create new charts
             const filteredData = generateChartData(features);
@@ -206,8 +208,19 @@ createChart('graph6', 'bar', filteredData.class_12);
 
 getLayers();
 
+
+
 /************************************************************************ */
 
+const divName = document.getElementsByClassName('div-name')
+const distName = document.getElementsByClassName('dist-name')
+const upazilaName = document.getElementsByClassName('upazila-name')
+console.log(divName)
+console.log(distName)
+
+for (let i = 0; i < divName.length; i++) {
+    console.log(divName[i].textContent); 
+  }
 
   getOptionDOMValues(divisions, districts);
   
@@ -260,7 +273,17 @@ function onchangeDivision(event) {
     const filteredData = generateChartData(filteredFeatures);
 
     // Create charts
-    clearCharts();
+    clearDivCharts()
+    clearDistCharts()
+    clearUpazilaCharts()
+    
+    for (let i = 0; i < divName.length; i++) {
+        
+        divName[i].textContent =selectedProvince 
+      }
+    
+   
+
     createChart(`graph_div_class`, `bar`, filteredData.class);
     createChart(`graph_div_class_1`, `bar`, filteredData.class_1);
     createChart(`graph_div_class_1_13`, `bar`, filteredData.class_1_13);
@@ -300,8 +323,15 @@ function onchangeDistrict(event) {
     generateTable(filteredFeatures)
     console.log(filteredFeatures)
     const filteredData = generateChartData(filteredFeatures)
+
+    clearDistCharts()
+    clearUpazilaCharts()
     
-    clearCharts()
+    for (let i = 0; i < distName.length; i++) {
+        distName[i].textContent =''
+        distName[i].textContent =selectedDistrict; // You can perform actions on each element here
+      }
+    
 
     createChart(`graph_dist_class`, `bar`, filteredData.class);
     createChart(`graph_dist_class_1`, `bar`, filteredData.class_1);
@@ -322,7 +352,9 @@ document.getElementById('district').addEventListener('change', onchangeDistrict)
 const displayUpazilaInfo = (event) => {
     // Get the clicked row
     const clickedRow = event.target.closest('tr');
-    let value 
+    let valueUpazila 
+    let valueDivision
+    let valueDistrict
     
     // Check if a row was clicked
     if (clickedRow) {
@@ -333,14 +365,19 @@ const displayUpazilaInfo = (event) => {
         // Display the data in an alert
         //alert('Clicked Row Data:\n' + rowData.join('\n'));
         console.log(rowData[2])
-        value = rowData[2]
+        valueDivision = rowData[0]
+        valueDistrict = rowData[1]
+        valueUpazila = rowData[2]
+        
     }
 
     const layer = map.getAllLayers()[2]
     const features = layer.getSource().getFeatures()
-    const filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===value)
+    const filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===valueUpazila)
+    const filterDistFeatures =features.filter(feature=>feature.get(commune)===valueUpazila)
+    console.log(filterDistFeatures)
     // Clear the existing table
-    clearTable();
+    clearUpazilaCharts()
     generateTable(filterUpezillaFeatures)
     
    // Get the extent of the filtered features
@@ -350,22 +387,29 @@ map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
 // Sample data
 
 // Update the content of the elements
-document.getElementById('upezilla-name').innerHTML = `<strong>${value}</strong>`;
+document.getElementById('upezilla-name').innerHTML = `<strong>${valueUpazila}</strong>`;
 document.getElementById('countUpezillaPowerlines').innerHTML = `${filterUpezillaFeatures.length} Powerlines `;
 
 // Clear existing charts
-clearCharts();
+
+for (let i = 0; i < upazilaName.length; i++) {
+    upazilaName[i].textContent =''
+    upazilaName[i].textContent =valueUpazila 
+  }
+
+
+
 
 // Generate and create new charts
-const filteredData = generateChartData(filterUpezillaFeatures);
+const filteredDataUpazila = generateChartData(filterUpezillaFeatures);
 
-
-createChart(`graph_upazila_class`, `bar`, filteredData.class);
-createChart(`graph_upazila_class_1`, `bar`, filteredData.class_1);
-createChart(`graph_upazila_class_1_13`, `bar`, filteredData.class_1_13);
-createChart(`graph_upazila_class_1_14`, `bar`, filteredData.class_1_14);
-createChart(`graph_upazila_class_1_15`, `bar`, filteredData.class_1_15);
-createChart(`graph_upazila_class_12`, `bar`, filteredData.class_12);
+/*********** Upazila ********************************/
+createChart(`graph_upazila_class`, `bar`, filteredDataUpazila.class);
+createChart(`graph_upazila_class_1`, `bar`, filteredDataUpazila.class_1);
+createChart(`graph_upazila_class_1_13`, `bar`, filteredDataUpazila.class_1_13);
+createChart(`graph_upazila_class_1_14`, `bar`, filteredDataUpazila.class_1_14);
+createChart(`graph_upazila_class_1_15`, `bar`, filteredDataUpazila.class_1_15);
+createChart(`graph_upazila_class_12`, `bar`, filteredDataUpazila.class_12);
   
 }
 

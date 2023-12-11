@@ -57,7 +57,7 @@ background-color: #333;}
     .classes { grid-area: classes; }
     
     .charts-container {  display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: 0.7fr 1.1fr 1.1fr 1.1fr;
       grid-template-rows: 1fr;
       gap: 2rem 2rem;
       grid-auto-flow: row;
