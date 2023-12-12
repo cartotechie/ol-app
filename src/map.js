@@ -146,14 +146,14 @@ const getLayers = async () => {
                 visible:false,
                 style: function(feature) {
                     //return getPolygonStyle(feature)
-                    return getPolygonStyle(feature)
+                    return adminBoundaryStyle
                 },
                 source: new VectorSource({
                     features: new GeoJSON().readFeatures(responseJSON),
 
                 }),
 
-                title: 'title'
+                title: 'Upazila boundary'
             });
             mapLayers.push(layer);;
 
@@ -206,19 +206,86 @@ const getLayers = async () => {
 
          
             // info box
-
-            map.on('click', function(event) {
-                var coordinate = event.coordinate;
-                //console.log('Clicked coordinate:', coordinate);
+            
+            map.on('click', function (event) {
+              var coordinate = event.coordinate;
+            
+              // Get features at the clicked pixel
+              var features = map.getFeaturesAtPixel(event.pixel);
+            
+              if (features.length > 0) {
+                // Open the info box and display information for the first feature
+                var firstFeature = features[0];
+                var properties = firstFeature.getProperties();
+            
+                // Keep only specific properties
+                properties = {
+                  'class': properties['class'],
+                  'class_1_13': properties['class_1_13'],
+                  'class_1_14': properties['class_1_14'],
+                  'class_1_14': properties['class_1_14'],
+                  'class_12': properties['class_12'],
+                  'div_name': properties['div_name'],
+                  'dist_name': properties['dist_name'],
+                  'name_en': properties['name_en'],
+                };
+            
+                // Log the properties to the console
+                console.log(properties);
+            
+                // Customize this part based on your feature properties
+                var infoContent = '<strong>Feature Info:</strong><br>';
+                for (var key in properties) {
+                  if (properties.hasOwnProperty(key)) {
+                    infoContent += key + ': ' + properties[key] + '<br>';
+                  }
+                }
+            
                 // Open the info box and display information
                 var infoBox = document.getElementById('info-box');
-                infoBox.innerHTML = 'Latitude: ' + coordinate[1] + '<br>Longitude: ' + coordinate[0];
+                infoBox.innerHTML = infoContent;
+            
+                // Position the info box just below the selected point
                 infoBox.style.left = event.pixel[0] + 'px';
-                infoBox.style.top = event.pixel[1] + 'px';
+                infoBox.style.top = event.pixel[1] + 10 + 'px'; // Add some margin below the point
                 infoBox.style.display = 'block';
-
-
+            
+                // Highlight the selected point
+                highlightPoint(firstFeature,2000);
+              } else {
+                // If no feature is clicked, close the info box
+                var infoBox = document.getElementById('info-box');
+                infoBox.style.display = 'none';
+              }
             });
+            
+            function highlightPoint(feature) {
+              // You can customize the highlight style based on your requirements
+              var highlightStyle = new Style({
+                image: new Circle({
+                  radius: 12,
+                  fill: new Fill({
+                    color: 'yellow',
+                  }),
+                  stroke: new Stroke({
+                    color: 'red',
+                    width: 2,
+                  }),
+                }),
+              });
+            
+              // Apply the highlight style to the selected feature
+              feature.setStyle(highlightStyle);
+               
+
+  // Reset the style after the specified duration
+  setTimeout(function () {
+    feature.setStyle(null); // Reset to the default style
+  }, 2000);
+            }
+            
+
+        /***************************************** */
 
             const countDisplayDistricts = document.getElementById('countDisplayDistricts');
             const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');

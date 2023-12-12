@@ -249,3 +249,27 @@ th {
   width: 10px;
   height: 10px;
 }
+.legend-polygon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border: 2px solid rgba(100, 100, 100, 1); /* Use the neutral stroke color */
+}
+
+
+/* Style for the horizontal line separator */
+.legend-separator {
+  margin: 5px 0;
+  border-top: 1px solid gray;
+}
+/****************************************Info-box**************/
+
+.info-box {
+  position: absolute;
+  background-color: white;
+  padding: 1px;
+  border: 1px solid #ccc;
+  /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
+  display: none;
+  z-index: 1000;
+}

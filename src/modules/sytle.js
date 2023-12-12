@@ -25,11 +25,12 @@ const substationStyle = new Style({
 
 // Style for Administrative Boundaries
 const adminBoundaryStyle = new Style({
+  
+  //fill: new Fill({color: 'rgba(200, 200, 200, 1)'}),
   stroke: new Stroke({
-    color: '#4CAF50', // Green color
-    width: 1,
+    color: 'rgba(100, 100, 100, 1)', // Neutral stroke color
+    width: 2, // Stroke width
   }),
-//fill: new Fill({color: 'rgba(76, 175, 80, 0.1)', /*Green with reduced opacity*/}),
 });
 
 
@@ -181,11 +182,7 @@ const styleVariableA_Rank4 = new Style({
 // Create a style function to apply styles based on variables and ranks
 const styleFunction = function(feature) {
   const variables = feature.get('class');
-  console.log(variables)
-  const variableA = variables.variableA;
-  console.log(variableA)
-  const rankA = variables.rankA;
-
+ 
   // Apply styles based on variables and ranks
   
     if (variables === 'VeryHigh') {
@@ -220,9 +217,9 @@ const styleFunction = function(feature) {
 
   // Create a legend
   var legend = document.getElementById('legend');
-  var legendHeader = document.createElement('h3');
-    legendHeader.innerHTML='Flood Exposure'
-    legend.appendChild(legendHeader);
+  var legendFloodExp = document.createElement('h3');
+    legendFloodExp.innerHTML='Flood Exposure'
+    legend.appendChild(legendFloodExp);
 
   // Add legend items
   function addLegendItem(style, label, className) {
@@ -252,5 +249,42 @@ const styleFunction = function(feature) {
   addLegendItem(styleVariableA_Rank2, 'High', 'legend-circle-high');
   addLegendItem(styleVariableA_Rank3, 'Moderate', 'legend-circle-moderate');
   addLegendItem(styleVariableA_Rank4, 'Low', 'legend-circle-low');
+  // Add the adminBoundaryStyle to legend
+
+// Create a legend item
+function createLegendItem(label, color) {
+  // Create a legend item container
+  var legendItem = document.createElement('div');
+  legendItem.className = 'legend-item';
+
+  // Create a polygon shape
+  var polygon = document.createElement('div');
+  polygon.className = 'legend-polygon';
+  polygon.style.backgroundColor = color; // Set the color of the polygon
+
+  // Create a label
+  var labelElement = document.createElement('div');
+  labelElement.className = 'legend-label';
+  labelElement.textContent = label;
+
+  // Append the polygon and label to the legend item container
+  legendItem.appendChild(polygon);
+  legendItem.appendChild(labelElement);
+
+  // Append the legend item to the legend container
+  legend.appendChild(legendItem);
+}
+
+
+// Assuming you want to create a legend item for the adminBoundaryStyle with a label "Admin Boundary"
+  // Add a horizontal line separator
+  var separator = document.createElement('hr');
+  separator.className = 'legend-separator';
+  legend.appendChild(separator);
+
+var legendAdminBounday = document.createElement('h3');
+legendAdminBounday.innerHTML='Upazila Boundary'
+legend.appendChild(legendAdminBounday);
+createLegendItem('Admin Boundary', 'rgba(200, 200, 200, 1)');
 
   export {powerLineStyle,substationStyle,adminBoundaryStyle,glowingStyle,styleFunction,getPolygonStyle,multiVarPointStyleFunction}

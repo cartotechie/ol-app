@@ -11,7 +11,7 @@ import LayerSwitcher from 'ol-layerswitcher';
 import LayerTile from 'ol/layer/Tile';
 
 const defaultCenter = [ 92.08484286873286, 24.906870848845983];
-const defaultZoom = 20;
+const defaultZoom = 14;
 
 
 // Function to create a Vector Layer from GeoJSON
@@ -52,7 +52,9 @@ const createVectorLayer = (geoJSON, title,style) => {
   
     const layerSwitcher = new LayerSwitcher({
       reverse: true,
-      groupSelectStyle: 'group'
+      groupSelectStyle: 'group',
+      tipLabel: 'Layers',
+      open: true,
     });
     map.addControl(layerSwitcher);
   
