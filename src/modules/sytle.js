@@ -17,7 +17,7 @@ const substationStyle = new Style({
       color: '#33A1DE', // Light blue fill
     }),
     stroke: new Stroke({
-      color: '#FFFFFF', // White stroke
+      color: '#FFFFFF', // grey stroke
       width: 1,
     }),
   }),
@@ -39,7 +39,7 @@ function getPolygonStyle(feature) {
   // Extract attributes from the feature properties
 
   // Default style
-  var defaultStyle = new Style({
+  const defaultStyle = new Style({
     fill: new Fill({
       color: 'rgba(204, 204, 204, 0.8)', // Default fill color
     }),
@@ -123,4 +123,134 @@ const glowingStyle = new Style({
 });
 
 
-  export {powerLineStyle,substationStyle,adminBoundaryStyle,glowingStyle,getPolygonStyle,multiVarPointStyleFunction}
+// Define styles for different ranks within each variable
+const styleVariableA_Rank1 = new Style({
+  image: new Circle({
+    radius: 12,
+    fill: new Fill({
+      color: 'red'
+    }),
+    stroke: new Stroke({
+      color: 'grey',
+      width: 2
+    })
+  })
+});
+
+const styleVariableA_Rank2 = new Style({
+  image: new Circle({
+    radius: 9,
+    fill: new Fill({
+      color: 'orange'
+    }),
+    stroke: new Stroke({
+      color: 'grey',
+      width: 2
+    })
+  })
+});
+const styleVariableA_Rank3 = new Style({
+  image: new Circle({
+    radius: 6,
+    fill: new Fill({
+      color: 'green'
+    }),
+    stroke: new Stroke({
+      color: 'grey',
+      width: 2
+    })
+  })
+});
+
+const styleVariableA_Rank4 = new Style({
+  image: new Circle({
+    radius: 3,
+    fill: new Fill({
+      color: 'blue'
+    }),
+    stroke: new Stroke({
+      color: 'grey',
+      width: 2
+    })
+  })
+});
+
+
+// Add more styles for other ranks and variables as needed
+
+// Create a style function to apply styles based on variables and ranks
+const styleFunction = function(feature) {
+  const variables = feature.get('class');
+  console.log(variables)
+  const variableA = variables.variableA;
+  console.log(variableA)
+  const rankA = variables.rankA;
+
+  // Apply styles based on variables and ranks
+  
+    if (variables === 'VeryHigh') {
+      return styleVariableA_Rank1;
+    } else if (variables ===  'High') {
+      return styleVariableA_Rank2;
+    }else  if (variables ==='moderate') {
+      return styleVariableA_Rank3;
+    } else if (variables === 'Low') {
+      return styleVariableA_Rank4;
+    }
+   
+   
+
+  // Add more conditions for other variables
+
+  // Return a default style if no conditions match
+  return new Style({
+    image: new Circle({
+      radius: 8,
+      fill: new Fill({
+        color: 'gray'
+      }),
+      stroke: new Stroke({
+        color: 'grey',
+        width: 2
+      })
+    })
+  });
+};
+
+
+  // Create a legend
+  var legend = document.getElementById('legend');
+  var legendHeader = document.createElement('h3');
+    legendHeader.innerHTML='Flood Exposure'
+    legend.appendChild(legendHeader);
+
+  // Add legend items
+  function addLegendItem(style, label, className) {
+    var legendItem = document.createElement('div');
+    legendItem.classList.add('legend-item');
+
+    var legendCircle = document.createElement('div');
+    legendCircle.classList.add('legend-circle');
+    legendCircle.classList.add(className);
+    legendCircle.style.backgroundColor = style.getImage().getFill().getColor();
+
+    var legendLabel = document.createElement('div');
+    
+    legendLabel.classList.add('legend-label');
+    
+    legendLabel.textContent = label;
+
+    
+
+    legendItem.appendChild(legendCircle);
+    legendItem.appendChild(legendLabel);
+    legend.appendChild(legendItem);
+  }
+
+  // Add legend items based on your styles and ranks
+  addLegendItem(styleVariableA_Rank1, 'Very High', 'legend-circle-very-high');
+  addLegendItem(styleVariableA_Rank2, 'High', 'legend-circle-high');
+  addLegendItem(styleVariableA_Rank3, 'Moderate', 'legend-circle-moderate');
+  addLegendItem(styleVariableA_Rank4, 'Low', 'legend-circle-low');
+
+  export {powerLineStyle,substationStyle,adminBoundaryStyle,glowingStyle,styleFunction,getPolygonStyle,multiVarPointStyleFunction}

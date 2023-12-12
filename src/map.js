@@ -3,7 +3,7 @@ import {
     glowingStyle,
     substationStyle,
     adminBoundaryStyle,
-    //getPolygonStyle,
+    styleFunction,
     multiVarPointStyleFunction
 } from './modules/sytle'
 import {getOptionDOMValues
@@ -109,17 +109,17 @@ let selectedDistrict='Sylhet District';
 let selectedDistricts = [];
 let selectedUpezillas = [];
 let featureTable
-/*const geoserverUrl = [
+const geoserverUrl = [
     './data/Admin_Boundaries_OSM_refined.geojson',
     './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
     './data/Bangladesh_powertlines_withVoltage_ByExposure_upazilla.json'
-]*/
+]
 
-const geoserverUrl =[
+/*const geoserverUrl =[
   'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Aadmin_boundaries_osm_refined&outputFormat=application/json&srsname=EPSG:4326',
   'http://localhost/geoserver/geonode/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=geonode%3Abangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up&outputFormat=application/json&srsname=EPSG:4326',
   
-]
+]*/
 
 
 function updateCountDisplay(element, count, label) {
@@ -167,7 +167,7 @@ const getLayers = async () => {
             const layer = new VectorLayer({
                 style: function(feature) {
                     //return getPolygonStyle(feature)
-                    return substationStyle//multiVarPointStyleFunction(feature)
+                    return styleFunction(feature)//multiVarPointStyleFunction(feature)
                 },
                 source: new VectorSource({
                     features: new GeoJSON().readFeatures(responseJSON),
@@ -443,7 +443,7 @@ const displayUpazilaInfo = (event) => {
    // Get the extent of the filtered features
 const extent = olExtent.boundingExtent(filterUpezillaFeatures.map(feature => feature.getGeometry().getExtent()));
 
-map.getView().fit(extent, { padding: [10, 10, 10, 10], duration: 1000 });
+map.getView().fit(extent, { padding: [30, 30, 30, 30], duration: 1000 });
 // Sample data
 
 // Update the content of the elements

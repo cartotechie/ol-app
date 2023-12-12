@@ -10,8 +10,8 @@ import { bbox as bboxStrategy } from 'ol/loadingstrategy';
 import LayerSwitcher from 'ol-layerswitcher';
 import LayerTile from 'ol/layer/Tile';
 
-const defaultCenter = [90, 24];
-const defaultZoom = 7;
+const defaultCenter = [ 92.08484286873286, 24.906870848845983];
+const defaultZoom = 20;
 
 
 // Function to create a Vector Layer from GeoJSON
@@ -45,7 +45,7 @@ const createVectorLayer = (geoJSON, title,style) => {
         projection: 'EPSG:4326',
         center: defaultCenter,
         zoom: defaultZoom,
-        maxZoom:16
+        maxZoom:20
       
       }),
     });
