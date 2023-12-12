@@ -264,12 +264,40 @@ th {
 }
 /****************************************Info-box**************/
 
+
+/* Updated styles for the info-box */
 .info-box {
   position: absolute;
-  background-color: white;
-  padding: 1px;
-  border: 1px solid #ccc;
-  /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
+  background-color: #fff; /* White background */
+  padding: 10px; /* Increase padding for better spacing */
+  border: 2px solid #ddd; /* Light gray border */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle box shadow */
   display: none;
   z-index: 1000;
+  font-family: 'Arial', sans-serif; /* Choose an appropriate font */
+}
+
+/* Style for the title of the info-box */
+.info-box h3 {
+  margin-top: 0; /* Remove top margin for the title */
+  font-size: 16px; /* Increase font size for the title */
+  color: #333; /* Set the desired title color */
+}
+
+/* Style for the content of the info-box */
+.info-box p {
+  margin-bottom: 0; /* Remove bottom margin for paragraphs */
+  font-size: 14px; /* Set the font size for the content */
+  color: #555; /* Set the desired content color */
+}
+
+/* Style for a close button (optional) */
+.info-box .close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #888;
 }

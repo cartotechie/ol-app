@@ -204,6 +204,32 @@ const getLayers = async () => {
             const features = layer.getSource().getFeatures();
             
 
+// Specify the attribute you want to use for uniqueness
+const attributeName = 'name_en';
+
+// Use a Set to store unique attribute values
+const uniqueAttributeValues = new Set();
+
+// Filter unique features based on the specified attribute
+const uniqueFeatures = features.filter(feature => {
+  const attributeValue = feature.get(attributeName);
+
+  // Check if the attribute value is already in the Set
+  // If not, add it to the Set and include the feature in the result
+  if (!uniqueAttributeValues.has(attributeValue)) {
+    uniqueAttributeValues.add(attributeValue);
+    return true;
+  }
+
+  // If the attribute value is already in the Set, exclude the feature
+  return false;
+});
+
+// Now, uniqueFeatures contains an array of features with unique values for the specified attribute
+console.log(uniqueFeatures);
+
+            
+
          
             // info box
             
@@ -223,7 +249,7 @@ const getLayers = async () => {
                   'class': properties['class'],
                   'class_1_13': properties['class_1_13'],
                   'class_1_14': properties['class_1_14'],
-                  'class_1_14': properties['class_1_14'],
+                  'class_1_15': properties['class_1_15'],
                   'class_12': properties['class_12'],
                   'div_name': properties['div_name'],
                   'dist_name': properties['dist_name'],
@@ -304,7 +330,7 @@ const getLayers = async () => {
 
             console.log(features)
 
-            generateTable(features)
+            generateTable(uniqueFeatures)
             // Clear existing charts
             clearDivCharts();
             clearDistCharts()
@@ -505,7 +531,7 @@ const displayUpazilaInfo = (event) => {
     console.log(filterDistFeatures)
     // Clear the existing table
     clearUpazilaCharts()
-    generateTable(filterUpezillaFeatures)
+    generateTable(filterDistFeatures)
     
    // Get the extent of the filtered features
 const extent = olExtent.boundingExtent(filterUpezillaFeatures.map(feature => feature.getGeometry().getExtent()));
