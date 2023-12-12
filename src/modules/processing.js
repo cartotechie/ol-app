@@ -10,5 +10,21 @@ function countFeatures(features, property, selectedValues) {
     return uniqueValues.size;
 }
 
+function createUniqueAttributes(features,property) {
 
-export {countFeatures}
+
+    const uniqueAttributeSet = new Set()
+    const uniqueFeatures = features.filter(feature=>{
+      const attributeValue = feature.get(property)
+      if (!uniqueAttributeSet.has(attributeValue)) {
+        uniqueAttributeSet.add(attributeValue)
+        return true
+      } else {
+        return false
+      }
+    })
+    return uniqueFeatures
+      
+    }
+
+export {countFeatures,createUniqueAttributes}

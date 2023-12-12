@@ -38,7 +38,7 @@ import {
 import GeometryCollection from 'ol/geom/GeometryCollection';
 import * as olExtent from 'ol/extent';
 import {generateChartData,createChartData,createChart,clearUpazilaCharts,clearDistCharts,clearDivCharts} from './modules/charts'
-import {countFeatures} from './modules/processing'
+import {countFeatures,createUniqueAttributes} from './modules/processing'
 //import {getPolygonStyle} from './modules/zoom_style'
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
@@ -204,30 +204,6 @@ const getLayers = async () => {
             const features = layer.getSource().getFeatures();
             
 
-// Specify the attribute you want to use for uniqueness
-const attributeName = 'name_en';
-
-// Use a Set to store unique attribute values
-const uniqueAttributeValues = new Set();
-
-// Filter unique features based on the specified attribute
-const uniqueFeatures = features.filter(feature => {
-  const attributeValue = feature.get(attributeName);
-
-  // Check if the attribute value is already in the Set
-  // If not, add it to the Set and include the feature in the result
-  if (!uniqueAttributeValues.has(attributeValue)) {
-    uniqueAttributeValues.add(attributeValue);
-    return true;
-  }
-
-  // If the attribute value is already in the Set, exclude the feature
-  return false;
-});
-
-// Now, uniqueFeatures contains an array of features with unique values for the specified attribute
-console.log(uniqueFeatures);
-
             
 
          
@@ -330,7 +306,7 @@ console.log(uniqueFeatures);
 
             console.log(features)
 
-            generateTable(uniqueFeatures)
+            generateTable(createUniqueAttributes(features,'name_en'))
             // Clear existing charts
             clearDivCharts();
             clearDistCharts()
@@ -415,7 +391,7 @@ setTimeout(() => {
     updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
     // Clear the existing table
     clearTable();
-    generateTable(filteredFeatures)
+    generateTable(createUniqueAttributes(filteredFeatures,'name_en'))
 
     /*****************************************************************************/
 
@@ -473,7 +449,7 @@ function onchangeDistrict(event) {
     updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
     // Clear the existing table
     clearTable();
-    generateTable(filteredFeatures)
+    generateTable(createUniqueAttributes(filteredFeatures,'name_en'))
     console.log(filteredFeatures)
     const filteredData = generateChartData(filteredFeatures)
 
@@ -526,12 +502,18 @@ const displayUpazilaInfo = (event) => {
 
     const layer = map.getAllLayers()[2]
     const features = layer.getSource().getFeatures()
+/********** generate table */
+
+generateTable(createUniqueAttributes(features,'name_en'))
+
+/****************************+ */
+
     const filterUpezillaFeatures =features.filter(feature=>feature.get(upezilla)===valueUpazila)
     const filterDistFeatures =features.filter(feature=>feature.get(commune)===valueUpazila)
     console.log(filterDistFeatures)
     // Clear the existing table
     clearUpazilaCharts()
-    generateTable(filterDistFeatures)
+    
     
    // Get the extent of the filtered features
 const extent = olExtent.boundingExtent(filterUpezillaFeatures.map(feature => feature.getGeometry().getExtent()));
