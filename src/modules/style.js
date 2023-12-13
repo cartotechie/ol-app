@@ -1,6 +1,15 @@
 import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
 import {featureKeys} from './variables' 
 
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 // Styles for Power Lines
 const powerLineStyle = new Style({
   stroke: new Stroke({
@@ -87,17 +96,19 @@ function getPolygonStyle(feature) {
   return defaultStyle;
 }
 
+const customColors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)','blue','green'];
+
 
 // Create a style function to display each variable differently.
 const multiVarPointStyleFunction = (feature) => {
-  //console.log('LOad points with variables')
+  //console.log('Load points with variables')
 
   const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
   // Customize this function based on your data structure.
   const variable1 = feature.get(featureKeys[2]);
   //console.log('LOad points with variables 1')
   const variable2 = feature.get(featureKeys[1]);
-  console.log('LOad points with variables 2')
+  console.log('Load points with variables 2')
 
   return new Style({
       image: new Circle({
@@ -287,4 +298,4 @@ legendAdminBounday.innerHTML='Upazila Boundary'
 legend.appendChild(legendAdminBounday);
 createLegendItem('Admin Boundary', 'rgba(200, 200, 200, 1)');
 
-  export {powerLineStyle,substationStyle,adminBoundaryStyle,glowingStyle,styleFunction,getPolygonStyle,multiVarPointStyleFunction}
+  export {powerLineStyle,substationStyle,adminBoundaryStyle,glowingStyle,getRandomColor,customColors,styleFunction,getPolygonStyle,multiVarPointStyleFunction}

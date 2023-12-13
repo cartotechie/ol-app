@@ -5,7 +5,8 @@ import {
     adminBoundaryStyle,
     styleFunction,
     multiVarPointStyleFunction
-} from './modules/sytle'
+} from './modules/style'
+import {handleMapInfoBoxClick} from './modules/infoBox'
 import {
     getOptionDOMValues
 } from './modules/domElements';
@@ -18,7 +19,7 @@ import {
 import GeoJSON from 'ol/format/GeoJSON';
 import {
     initMap,
-    createVectorLayer
+    createVectorLayer,createSubVectorLayer
 } from './init'
 import {
     province,
@@ -60,11 +61,12 @@ import {
     createUniqueAttributes
 } from './modules/processing'
 import {textPointStyle,customSVGPointStyle,starPointStyle,crossPointStyle,squarePointStyle,defaultPointStyle}from './modules/pointStyle'
+import {classesValues} from './modules/dataStore'
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
 function getPolygonStyle(feature) {
     // Extract attributes from the feature properties
-    console.log(feature)
+    //console.log(feature)
     // Default style
     var defaultStyle = new Style({
         fill: new Fill({
@@ -128,7 +130,16 @@ let selectedProvince = 'Sylhet Division';
 let selectedDistrict = 'Sylhet District';
 let selectedDistricts = [];
 let selectedUpezillas = [];
-let featureTable
+/****************************************************************************************** */
+
+const countDisplayDistricts = document.getElementById('countDisplayDistricts');
+const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
+const adminName = document.getElementById('adminName');
+const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
+const countDisplayDivisions = document.getElementById('countDisplayDivisions');
+
+
+/******************************************************************************************* */
 const geoserverUrl = [
     './data/Admin_Boundaries_OSM_refined.geojson',
     './data/bangladesh_powertowers_withdem_flood_lulc_cfocus_wind_eq_ls_up.geojson',
@@ -182,91 +193,42 @@ const getLayers = async () => {
         if (response1.ok) {
             const responseJSON = await response1.json();
 
-            // const layer = createVectorLayer(responseJSON, 'Layer2', substationStyle);
-            const vectorSource = new VectorSource({features: new GeoJSON().readFeatures(responseJSON),})
-            const layer = new VectorLayer({
-                
-                source: vectorSource,
-
-                title: 'Powerlines'
-                //title: 'Flood Exposure'
-            });
-
-
-
+            const layer = createVectorLayer(responseJSON, 'Powerlines', '');
+           
             mapLayers.push(layer);
 
-            
-            
-            
-
         }
-        console.log(mapLayers[1].getSource())
+        /*********************************/
 
-        /****************************** */
-        // Create sub-layers within the main vector layer
-        const vectorSource = mapLayers[1].getSource()
-        const subLayer1 = new VectorLayer({
-            style: function(feature) {
-              console.log(feature)
-              
-              //return getPolygonStyle(feature)
-              return styleFunction(feature) //multiVarPointStyleFunction(feature)
-          },
-            source: vectorSource,
-            // styling or other options for subLayer1...
-            title: 'Flood Exposure',
-            visible:false
-          });
-          
-          const subLayer2 = new VectorLayer({
-            source: vectorSource,
-            style:defaultPointStyle,
-            title: 'LULC',
-            visible:false
-          });
-          const subLayer3 = new VectorLayer({
-              source: vectorSource,
-              style:defaultPointStyle,
-              title: 'WindSpeed 100m',
-              visible:false
-            });
-            const subLayer4 = new VectorLayer({
-              source: vectorSource,
-              style:defaultPointStyle,
-              title: 'Earthquake',
-              visible:false
-            });
-            const subLayer5 = new VectorLayer({
-              source: vectorSource,
-              style:defaultPointStyle,
-              title: 'Landslide susceptibility',
-              visible:false
-            });
+    const vectorSource = mapLayers[1].getSource();
 
-            const subLayer6 = new VectorLayer({
-              source: vectorSource,
-              style:defaultPointStyle,
-              title: 'Maintenance',
-              visible:false
-            });
+const subLayersData = [
+  { style: styleFunction, title: 'Flood Exposure', visible: true },
+  { style: substationStyle, title: 'LULC', visible: false },
+  { style: defaultPointStyle, title: 'WindSpeed 100m', visible: false },
+  { style: crossPointStyle, title: 'Earthquake', visible: false },
+  { style: defaultPointStyle, title: 'Landslide susceptibility', visible: false },
+  { style: defaultPointStyle, title: 'Maintenance', visible: false }
+];
 
-         
+const subLayers = subLayersData.map(layerData =>
+  createSubVectorLayer(vectorSource, layerData.style, layerData.title, layerData.visible)
+);
 
-          const layerGroup = new LayerGroup({
-            layers: [new LayerGroup({
-              layers:[subLayer1, subLayer2,subLayer3,subLayer4,subLayer5,subLayer6],
-              title:'Classes'
+const layerGroup = new LayerGroup({
+  layers: [
+    new LayerGroup({
+      layers: subLayers.reverse(), // Reverse the order if needed
+      title: 'Classes'
+    })
+  ],
+  title: 'Powerlines'
+});
 
-            })],
-            title:'Powerlines'
-          });
-          //console.log(layerGroup.get('title'))
+ 
 
-          //map.addLayer(layerGroup)
-
-
-        /****************************+ */
+   
+        /*************************************/
 
         if (mapLayers.length > 0) {
 
@@ -287,98 +249,12 @@ const getLayers = async () => {
             const features = layer.getSource().getFeatures();
 
 
-
-
-            // info box
-
-            map.on('click', function(event) {
-                var coordinate = event.coordinate;
-
-                // Get features at the clicked pixel
-                var features = map.getFeaturesAtPixel(event.pixel);
-
-                if (features.length > 0) {
-                    // Open the info box and display information for the first feature
-                    var firstFeature = features[0];
-                    var properties = firstFeature.getProperties();
-
-                    // Keep only specific properties
-                    properties = {
-                        'class': properties['class'],
-                        'class_1_13': properties['class_1_13'],
-                        'class_1_14': properties['class_1_14'],
-                        'class_1_15': properties['class_1_15'],
-                        'class_12': properties['class_12'],
-                        'div_name': properties['div_name'],
-                        'dist_name': properties['dist_name'],
-                        'name_en': properties['name_en'],
-                    };
-
-                    // Log the properties to the console
-                    //console.log(properties);
-
-                    // Customize this part based on your feature properties
-                    var infoContent = '<strong>Feature Info:</strong><br>';
-                    for (var key in properties) {
-                        if (properties.hasOwnProperty(key)) {
-                            infoContent += key + ': ' + properties[key] + '<br>';
-                        }
-                    }
-
-                    // Open the info box and display information
-                    var infoBox = document.getElementById('info-box');
-                    infoBox.innerHTML = infoContent;
-
-                    // Position the info box just below the selected point
-                    infoBox.style.left = event.pixel[0] + 'px';
-                    infoBox.style.top = event.pixel[1] + 10 + 'px'; // Add some margin below the point
-                    infoBox.style.display = 'block';
-
-                    // Highlight the selected point
-                    highlightPoint(firstFeature, 2000);
-                } else {
-                    // If no feature is clicked, close the info box
-                    var infoBox = document.getElementById('info-box');
-                    infoBox.style.display = 'none';
-                }
-            });
-
-            function highlightPoint(feature) {
-                // You can customize the highlight style based on your requirements
-                var highlightStyle = new Style({
-                    image: new Circle({
-                        radius: 12,
-                        fill: new Fill({
-                            color: 'yellow',
-                        }),
-                        stroke: new Stroke({
-                            color: 'red',
-                            width: 2,
-                        }),
-                    }),
-                });
-
-                // Apply the highlight style to the selected feature
-                feature.setStyle(highlightStyle);
-
-
-                // Reset the style after the specified duration
-                setTimeout(function() {
-                    feature.setStyle(null); // Reset to the default style
-                }, 2000);
-            }
+            classesValues(features)
 
 
             /***************************************** */
 
-            const countDisplayDistricts = document.getElementById('countDisplayDistricts');
-            const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
-            const adminName = document.getElementById('adminName');
-            const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
-            const countDisplayDivisions = document.getElementById('countDisplayDivisions');
-
             const uniqueUpezillasCount = countFeatures(features, 'name_en', selectedUpezillas);
-
             updateCountDisplay(adminName, '', 'Bangladesh (data according to data)')
             updateCountDisplay(countDisplayDistricts, districts.length, 'Districts')
             updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas')
@@ -417,8 +293,7 @@ getLayers();
 const divName = document.getElementsByClassName('div-name')
 const distName = document.getElementsByClassName('dist-name')
 const upazilaName = document.getElementsByClassName('upazila-name')
-//console.log(divName)
-//console.log(distName)
+
 
 for (let i = 0; i < divName.length; i++) {
     divName[i].textContent;
@@ -426,15 +301,7 @@ for (let i = 0; i < divName.length; i++) {
 
 getOptionDOMValues(divisions, districts);
 
-/****************************************************************************************** */
 
-const countDisplayDistricts = document.getElementById('countDisplayDistricts');
-const countDisplayUpezillas = document.getElementById('countDisplayUpezillas');
-const adminName = document.getElementById('adminName');
-const countDisplayedFeatures = document.getElementById('countDisplayedFeatures');
-const countDisplayDivisions = document.getElementById('countDisplayDivisions');
-
-/******************************************************************************************* */
 
 function onchangeDivision(event) {
     const layer = map.getAllLayers()[2]
@@ -465,7 +332,7 @@ setTimeout(() => {
     });
 }, 10000); // Adjust the time (in milliseconds) as needed*/
 
-    console.log(filteredFeatures)
+    //console.log(filteredFeatures)
     countDisplayedFeatures.innerHTML = `${filteredFeatures.length} Powerlines`
     const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
     updateCountDisplay(countDisplayDistricts, uniqueCommunesCount, 'Districts');
@@ -480,7 +347,7 @@ setTimeout(() => {
     /*****************************************************************************/
 
 
-    featureKeys.forEach(className => console.log(className))
+    featureKeys.forEach(className => className)
     // Iterate over the array using forEach
 
     const filteredData = generateChartData(filteredFeatures);
@@ -642,3 +509,7 @@ const displayUpazilaInfo = (event) => {
 document.getElementById('table').addEventListener('click', displayUpazilaInfo);
 
 /********************************************* */
+
+map.on('click', function(event) {
+    handleMapInfoBoxClick(event, map)
+});

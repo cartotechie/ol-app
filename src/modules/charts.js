@@ -1,21 +1,16 @@
 import Chart from 'chart.js/auto';
+import {getRandomColor,customColors} from './style'
+import {featureKeys,classVariableValues} from './variables'
+import {sortKeysInObject} from './sorting'
 
-const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
-// Custom colors for each data point
-const customColors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)','blue','green'];
-// Helper function to generate a random color
-function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
+
+
+
 
 function generateChartData(features) {
   const valueCounts = {};
-  const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
+ 
+ 
 
   features.forEach(feature => {
     featureKeys.forEach(key => {
@@ -35,14 +30,54 @@ function generateChartData(features) {
 }
 
 function createChartData(label, key, valueCounts) {
-  const labels = Object.keys(valueCounts[key]);
-  const dataValues = Object.values(valueCounts[key]);
-  // Normalize the values to be in the range of 0 to 8000
-  //const normalizedValues = dataValues.map((val) => (val / Math.max(...dataValues)) * 8000);
+  
+  //console.log(valueCounts)
+  const objectKeyValue=valueCounts[key]
+  for(let i in classVariableValues){
 
-  // Generate random colors for each data point
-  const randomColors = labels.map(() => getRandomColor());
-  // Use custom colors or default to a single color
+    for (let j in valueCounts){
+      
+      if(i===j){
+
+        //console.log(classVariableValues[key])
+       
+        //console.log(valueCounts[key])
+
+        objectKeyValue[classVariableValues[key][3]]=0
+
+        
+        classVariableValues[key].forEach(item =>{
+
+          if(item ){
+             //console.log(item)
+             
+             // Check if the item exists in the object
+              const valueExists = Object.keys(objectKeyValue).includes(item);
+              //console.log(valueExists)
+              if (!valueExists) {
+                objectKeyValue[item]=0
+              } else {
+                
+              }
+
+          }
+        })
+
+        
+      }
+    }
+  
+
+  }
+  console.log(objectKeyValue)
+
+console.log(sortKeysInObject(objectKeyValue))
+const sortedObjectKeyValue = sortKeysInObject(objectKeyValue)
+  const labels = Object.keys(sortedObjectKeyValue);
+  //console.log(valueCounts)
+  //console.log(labels.sort(sortOrderLowToVeryHigh))
+  const dataValues = Object.values(sortedObjectKeyValue);
+ 
   const colors = customColors || ['rgba(75, 192, 192, 0.2)'];
 
   return {

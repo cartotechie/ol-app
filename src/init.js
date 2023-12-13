@@ -61,4 +61,14 @@ const createVectorLayer = (geoJSON, title,style) => {
     return map;
   };
 
-  export {initMap,createVectorLayer}
+  function createSubVectorLayer(source, style, title, visible) {
+    return new VectorLayer({
+      source: source,
+      style: style,
+      title: title,
+      visible: visible
+    });
+  }
+  
+
+  export {initMap,createVectorLayer,createSubVectorLayer}
