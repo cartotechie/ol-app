@@ -27,14 +27,7 @@ import {
     upezilla,
     districtsByDivision,featureKeys
 } from './modules/variables'
-import {
-    Fill,
-    Stroke,
-    Style,
-    Text,
-    Circle,
-    RegularShape
-} from "ol/style";
+
 import {
     generateTable,
     clearTable
@@ -127,12 +120,13 @@ const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
 let selectedProvince //= 'Sylhet Division';
 let selectedDistrict //= 'Sylhet District';
+let valueUpazila
 let selectedDistricts = [];
 let selectedUpezillas = [];
 
 const selectedStyle = (feature)=>{
   
-    if(feature.get(province)===selectedProvince){
+    if(feature.get(province)===selectedProvince||feature.get(commune)===selectedDistrict||feature.get('name_en')===valueUpazila){
      //cases= feature.get('cases')
     //deaths=  feature.get('deaths')
     console.log('selected')
@@ -455,7 +449,7 @@ document.getElementById('district').addEventListener('change', onchangeDistrict)
 const displayUpazilaInfo = (event) => {
     // Get the clicked row
     const clickedRow = event.target.closest('tr');
-    let valueUpazila
+    
     let valueDivision
     let valueDistrict
 
