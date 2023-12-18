@@ -43,11 +43,6 @@ const adminBoundaryStyle = new Style({
 });
 
 
-// Style function for the polygon layer
-function getPolygonStyle(feature) {
-  //console.log(feature);
-  // Extract attributes from the feature properties
-
   // Default style
   const defaultStyle = new Style({
     fill: new Fill({
@@ -58,6 +53,12 @@ function getPolygonStyle(feature) {
       width: 1, // Default border width
     }),
   });
+
+
+// Style function for the polygon layer
+function getPolygonStyle(feature) {
+  //console.log(feature);
+  // Extract attributes from the feature properties
 
   // Style based on admin_leve_1
   if (feature.get('admin_leve') === '0') {
@@ -123,9 +124,9 @@ const multiVarPointStyleFunction = (feature) => {
 // Create a glowing style
 const glowingStyle = new Style({
   image: new Circle({
-      radius: 2,
+      radius: 5,
       fill: new Fill({
-          color: 'rgba(68, 170, 68, 0.5)', // Adjust the glowing color
+          color: 'red', // Adjust the glowing color
       }),
       stroke: new Stroke({
           color: '#45a049', // Adjust the glowing border color
@@ -298,4 +299,4 @@ legendAdminBounday.innerHTML='Upazila Boundary'
 legend.appendChild(legendAdminBounday);
 createLegendItem('Admin Boundary', 'rgba(200, 200, 200, 1)');
 
-  export {powerLineStyle,substationStyle,adminBoundaryStyle,glowingStyle,getRandomColor,customColors,styleFunction,getPolygonStyle,multiVarPointStyleFunction}
+  export {powerLineStyle,substationStyle,adminBoundaryStyle,defaultStyle,glowingStyle,getRandomColor,customColors,styleFunction,getPolygonStyle,multiVarPointStyleFunction}

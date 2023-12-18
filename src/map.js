@@ -2,9 +2,8 @@ import LayerGroup from 'ol/layer/Group';
 import {
     glowingStyle,
     substationStyle,
-    adminBoundaryStyle,
-    styleFunction,
-    multiVarPointStyleFunction
+    adminBoundeleselectedStyle,
+    multiVarPointStyleFunction,defaultStyle, styleFunction
 } from './modules/style'
 import {handleMapInfoBoxClick} from './modules/infoBox'
 import {
@@ -26,7 +25,7 @@ import {
     commune,
     districts,
     upezilla,
-    districtsByDivision
+    districtsByDivision,featureKeys
 } from './modules/variables'
 import {
     Fill,
@@ -64,7 +63,7 @@ import {textPointStyle,customSVGPointStyle,starPointStyle,crossPointStyle,square
 import {classesValues} from './modules/dataStore'
 const geoserverEndpoint = 'http://localhost/geoserver/geonode/ows';
 
-function getPolygonStyle(feature) {
+/*function getPolygonStyle(feature) {
     // Extract attributes from the feature properties
     //console.log(feature)
     // Default style
@@ -124,12 +123,40 @@ function getPolygonStyle(feature) {
 
     // Return default style if no condition is met
     return defaultStyle;
-}
+}*/
 
-let selectedProvince = 'Sylhet Division';
-let selectedDistrict = 'Sylhet District';
+let selectedProvince //= 'Sylhet Division';
+let selectedDistrict //= 'Sylhet District';
 let selectedDistricts = [];
 let selectedUpezillas = [];
+
+const selectedStyle = (feature)=>{
+  
+    if(feature.get(province)===selectedProvince){
+     //cases= feature.get('cases')
+    //deaths=  feature.get('deaths')
+    console.log('selected')
+return glowingStyle
+    }
+    
+
+    return styleFunction(feature)
+}
+
+/****************************************************************************************** */
+
+const divName = document.getElementsByClassName('div-name')
+const distName = document.getElementsByClassName('dist-name')
+const upazilaName = document.getElementsByClassName('upazila-name')
+
+
+for (let i = 0; i < divName.length; i++) {
+    divName[i].textContent;
+}
+
+getOptionDOMValues(divisions, districts);
+
+
 /****************************************************************************************** */
 
 const countDisplayDistricts = document.getElementById('countDisplayDistricts');
@@ -157,7 +184,7 @@ function updateCountDisplay(element, count, label) {
     element.textContent = `${count} ${label}`;
 }
 
-const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
+
 
 const map = initMap();
 
@@ -177,7 +204,7 @@ const getLayers = async () => {
                 visible: false,
                 style: function(feature) {
                     //return getPolygonStyle(feature)
-                    return adminBoundaryStyle
+                    return selectedStyle(feature)
                 },
                 source: new VectorSource({
                     features: new GeoJSON().readFeatures(responseJSON),
@@ -203,7 +230,7 @@ const getLayers = async () => {
     const vectorSource = mapLayers[1].getSource();
 
 const subLayersData = [
-  { style: styleFunction, title: 'Flood Exposure', visible: true },
+  { style: selectedStyle, title: 'Flood Exposure', visible: true },
   { style: substationStyle, title: 'LULC', visible: false },
   { style: defaultPointStyle, title: 'WindSpeed 100m', visible: false },
   { style: crossPointStyle, title: 'Earthquake', visible: false },
@@ -290,16 +317,6 @@ getLayers();
 
 /************************************************************************ */
 
-const divName = document.getElementsByClassName('div-name')
-const distName = document.getElementsByClassName('dist-name')
-const upazilaName = document.getElementsByClassName('upazila-name')
-
-
-for (let i = 0; i < divName.length; i++) {
-    divName[i].textContent;
-}
-
-getOptionDOMValues(divisions, districts);
 
 
 
@@ -320,6 +337,9 @@ function onchangeDivision(event) {
         padding: [10, 10, 10, 10],
         duration: 1000
     });
+
+
+    
     /* Apply the glowing style to the selected features
 filteredFeatures.forEach(feature => {
     feature.setStyle(glowingStyle);
