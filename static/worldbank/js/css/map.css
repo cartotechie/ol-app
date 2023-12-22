@@ -101,7 +101,8 @@ background-color: #333;}
     
     .info1 { grid-area: info1; }
     
-    .info2 { grid-area: info2; }
+    .info2 { grid-area: info2;
+    display: block; }
     
     .footer { grid-area: footer; }
     
@@ -169,16 +170,18 @@ th {
 
 /* Add styling for the info box */
 .info2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  
   background-color: #f8f8f8;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
-
+.stats{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} 
 .dashboard-item {
   text-align: center;
 }
@@ -302,4 +305,32 @@ th {
   cursor: pointer;
   font-size: 14px;
   color: #888;
+}
+
+/****************************Search form**********************/
+
+#search-form {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#search-input {
+  width: calc(100% - 40px);
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+#search-icon {
+  width: 20px;
+  height: 20px;
+  /*
+  top: 50%;
+  right: 20px;position: absolute;
+  transform: translateY(-50%);
+  */
+  cursor: pointer;
 }

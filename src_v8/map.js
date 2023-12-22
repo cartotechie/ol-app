@@ -54,7 +54,6 @@ import {
 } from './modules/processing'
 import {textPointStyle,customSVGPointStyle,starPointStyle,crossPointStyle,squarePointStyle,defaultPointStyle}from './modules/pointStyle'
 import {classesValues} from './modules/dataStore'
-import{createDropdownTable} from './modules/dropDownTable' 
 const geoJsonEndpoint = 'http://gdfworldbank/worldbank/geojsonapi/';
 
 
@@ -101,9 +100,9 @@ for (let i = 0; i < divName.length; i++) {
     divName[i].textContent;
 }
 
-const getSearchTerm=()=>{} 
+getOptionDOMValues(divisions, districts);
 
-createDropdownTable(4, 4); 
+
 /****************************************************************************************** */
 
 const countDisplayDistricts = document.getElementById('countDisplayDistricts');
