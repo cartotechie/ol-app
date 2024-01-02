@@ -6,6 +6,14 @@ html, body {
  
 } 
 
+#loadingIndicator {
+  display: block;
+  text-align: center;
+  padding: 20px;
+  font-size: 20px;
+}
+
+
 
 .container {
     height: 100%;
@@ -347,4 +355,38 @@ th {
   color: #666;
   cursor: pointer;
   display: none;
+}
+
+/******************************************/
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.collapsible-content {
+  display: none;
+}
+
+.collapsible-header:hover {
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.nested-table {
+  margin-left: 20px; /* Adjust the margin as needed */
+  width: calc(100% - 20px); /* Adjust the width to accommodate the margin */
+}
+
+.nested-table th,
+.nested-table td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
 }

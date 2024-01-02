@@ -30,7 +30,7 @@ import {
 
 import {
     generateTable,
-    clearTable
+    clearTable,generateCollapsibleTable
 } from './modules/table'
 import {
     divisions
@@ -54,7 +54,13 @@ import {
 } from './modules/processing'
 import { textPointStyle, customSVGPointStyle, starPointStyle, crossPointStyle, squarePointStyle, defaultPointStyle } from './modules/pointStyle'
 import { classesValues } from './modules/dataStore'
-import { createDropdownTable } from './modules/dropDownTable'
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Display loading indicator
+    document.getElementById("loadingIndicator").style.display = "block";
+
+
 const geoJsonEndpoint = './data/powertowers.json';
 
 
@@ -105,7 +111,7 @@ for (let i = 0; i < divName.length; i++) {
 }
 
 
-createDropdownTable(4, 4);
+//createDropdownTable(5, 5);
 /****************************************************************************************** */
 
 const countDisplayDistricts = document.getElementById('countDisplayDistricts');
@@ -132,10 +138,12 @@ const getLayers = async () => {
 
         // Fetch GeoJSON data
         const response = await fetch(geoJsonEndpoint);
-
+        document.getElementById("loadingIndicator").style.display = "none";
+       
 
 
         if (response.ok) {
+            
 
             const responseJSON = await response.json();
             console.log(responseJSON)
@@ -522,3 +530,7 @@ function onclickDivision(term) {
 }
 
 
+ // Call the function to generate the table
+ generateCollapsibleTable();
+
+})
