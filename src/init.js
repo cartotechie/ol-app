@@ -34,7 +34,7 @@ const createVectorLayer = (geoJSON, title,style) => {
     const osm = new LayerTile({
       title: 'OSM',
       type: 'base',
-      visible: true,
+      visible: false,
       source: new OSM()
     });
   

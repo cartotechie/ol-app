@@ -65,11 +65,13 @@ let valueUpazila
 let selectedDistricts = [];
 let selectedUpezillas = [];
 
+
 const selectedPointStyle = (feature)=>{
   
-    if(feature.get(province)===selected||feature.get(commune)===selectedDistrict||feature.get('name_en')===valueUpazila){
-     //cases= feature.get('cases')
-    //deaths=  feature.get('deaths')
+    if(feature.get(province)===selected||feature.get(commune)===selected||feature.get('name_en')===selected){
+        setTimeout(() => {
+            feature.setStyle(styleFunction(feature));
+        }, 2000); // 5000 milliseconds (5 seconds)
     console.log('selected')
 return glowingStyle
     }
@@ -79,9 +81,10 @@ return glowingStyle
 }
 const selectedPolyStyle = (feature)=>{
   
-    if(feature.get(province)===selected||feature.get(commune)===selectedDistrict||feature.get('name_en')===valueUpazila){
-     //cases= feature.get('cases')
-    //deaths=  feature.get('deaths')
+    if(feature.get(province)===selected||feature.get(commune)===selected||feature.get('name_en')===selected){
+        setTimeout(() => {
+            feature.setStyle(defaultStyle);
+        }, 5000); // 5000 milliseconds (5 seconds)
     console.log('selected')
 return defaultStyle
     }
@@ -261,7 +264,7 @@ getLayers();
         
         const layer = map.getAllLayers()[2]
         const features = layer.getSource().getFeatures();
-        
+        selected=searchInputTerm.value.trim()
         onclickDivision(searchInputTerm.value.trim())
         
 
@@ -279,6 +282,7 @@ function onclickDivision(term) {
     const features = layer.getSource().getFeatures();
 
     searchTerm = term;
+    
     adminName.innerHTML = `${searchTerm}`
 
     const divName = document.getElementsByClassName('div-name')
@@ -317,7 +321,7 @@ function onclickDivision(term) {
         
         for (let i = 0; i < distName.length; i++) {
             distName[i].textContent = ''
-            
+
               }
         for (let i = 0; i < upazilaName.length; i++) {
             upazilaName[i].textContent = ''
@@ -463,6 +467,7 @@ for (let i = 0; i < distName.length; i++) {
 
     }
    
+    
 
     layer.changed();
     } else {
