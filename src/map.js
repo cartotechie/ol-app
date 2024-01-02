@@ -256,14 +256,30 @@ getLayers();
     const searchInputTerm = document.getElementById('search-input')
     console.log(searchInputTerm)} */
 
+    /*document.getElementById('searchInput').addEventListener('input', function() {
+        var clearIcon = document.querySelector('.clear-icon');
+        clearIcon.style.display = this.value.length ? 'block' : 'none';
+      });*/
+  
+      
+   document.getElementById('clear-icon').addEventListener('click', function() {
+        var searchInput = document.getElementById('searchInput');
+        searchInput.value = '';
+        document.querySelector('.clear-icon').style.display = 'none';
+        clearTable()
+        const layer = map.getAllLayers()[2]
+        const features = layer.getSource().getFeatures();
+        generateTable(createUniqueAttributes(features, 'name_en'))
+      });
+
 function getSearchTerm(event) {
     event.preventDefault
+    var clearIcon = document.querySelector('.clear-icon');
+    clearIcon.style.display = this.value.length ? 'block' : 'none';
+    //document.querySelector('.clear-icon').style.display = 'none';
 
-    const searchInputTerm = document.getElementById('search-input')
+    const searchInputTerm = document.getElementById('searchInput')
 
-
-    const layer = map.getAllLayers()[2]
-    const features = layer.getSource().getFeatures();
     selected = searchInputTerm.value.trim()
     onclickDivision(searchInputTerm.value.trim())
 
@@ -271,7 +287,7 @@ function getSearchTerm(event) {
 
 }
 //const searchFormElement = document.getElementById('geocode-form')
-document.getElementById('geocode-form').addEventListener('click', getSearchTerm)
+document.getElementById('searchInput').addEventListener('input', getSearchTerm)
 
 
 
@@ -283,7 +299,7 @@ function onclickDivision(term) {
 
     searchTerm = term;
 
-    adminName.innerHTML = `${searchTerm}`
+   // adminName.innerHTML = `${searchTerm}`
 
     const divName = document.getElementsByClassName('div-name')
     const distName = document.getElementsByClassName('dist-name')

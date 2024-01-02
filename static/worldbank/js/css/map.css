@@ -21,7 +21,7 @@ html, body {
 background-color: #333;}
   /* Apply padding and neutral background to specific grid areas */
 .table, .map-container, .map-symbology, .info1, .info2, .footer {
-  padding: 15px; /* Adjust padding as needed */
+  padding: 10px; /* Adjust padding as needed */
   background-color: #f8f8f8; /* Set a neutral background color */
 }
 
@@ -72,7 +72,10 @@ background-color: #333;}
     
     .header { grid-area: header; }
     
-    .table { grid-area: table; }
+    .table { 
+      grid-area: table;
+      max-width: 100%;
+     }
     
     .map-container { grid-area: map-container; }
     
@@ -154,13 +157,15 @@ background-color: #333;}
    /* Add styling for the table  */
    table {
     border-collapse: collapse;
+    max-width: 100%;
+    margin: 5px auto;
     width: 100%;
     
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 1px;
+    padding: 3px;
     text-align: left;
 }
 
@@ -309,30 +314,37 @@ th {
 
 /****************************Search form**********************/
 
-#geocode-form {
-  display: flex;
-  width: 100%;
-  margin: 0 auto;
-  text-align: center;
+
+.search-container {
+  position: relative;
+  max-width: 80%;
+  margin: 10px auto;
+
 }
 
-#search-input {
-  flex: 70%;
-  padding: 1px;
-  margin-right: 5px;
+.search-box {
+  width: calc(100% - 30px);
+  padding: 10px;
+  padding-left: 30px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  outline: none;
 }
 
-#search-icon {
-  flex: 30%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.search-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10px;
+  color: #666;
+}
+
+.clear-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  color: #666;
   cursor: pointer;
-}
-
-#search-icon svg {
-  width: 80%; /* Adjust the size as needed */
-  height: auto;
+  display: none;
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .search-container {
+      position: relative;
+      max-width: 300px;
+      margin: 20px auto;
+    }
+
+    .search-box {
+      width: calc(100% - 30px);
+      padding: 10px;
+      padding-left: 30px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 10px;
+      color: #666;
+    }
+
+    .clear-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 10px;
+      color: #666;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="search-container">
+    <i class="search-icon">&#128269;</i>
+    <input type="text" class="search-box" id="searchInput" placeholder="Search...">
+    <i class="clear-icon" onclick="clearSearch()">&#10006;</i>
+  </div>
+
+  <script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+      var clearIcon = document.querySelector('.clear-icon');
+      clearIcon.style.display = this.value.length ? 'block' : 'none';
+    });
+
+    function clearSearch() {
+      var searchInput = document.getElementById('searchInput');
+      searchInput.value = '';
+      document.querySelector('.clear-icon').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
