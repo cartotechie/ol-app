@@ -1,23 +1,15 @@
 import Chart from 'chart.js/auto';
-import {getRandomColor,customColors} from './style'
-import {featureKeys,classVariableValues} from './variables'
-import {sortKeysInObject} from './sorting'
+import { getRandomColor, customColors } from './style'
+import { featureKeys, classVariableValues } from './variables'
+import { sortKeysInObject } from './sorting'
+import {aggregateFeaturesByAtt,updateObjectKeyValue} from './processing'
 
 
 
 
 
 function generateChartData(features) {
-  const valueCounts = {};
- 
- 
-
-  features.forEach(feature => {
-    featureKeys.forEach(key => {
-      const value = feature.get(key);
-      valueCounts[key] = { ...(valueCounts[key] || {}), [value]: (valueCounts[key]?.[value] || 0) + 1 };
-    });
-  });
+  const valueCounts = aggregateFeaturesByAtt(features)
 
   return {
     class: createChartData('Flood exposure', 'class', valueCounts),
@@ -32,52 +24,15 @@ function generateChartData(features) {
 function createChartData(label, key, valueCounts) {
   
   //console.log(valueCounts)
-  const objectKeyValue=valueCounts[key]
-  for(let i in classVariableValues){
-
-    for (let j in valueCounts){
-      
-      if(i===j){
-
-        //console.log(classVariableValues[key])
-       
-        //console.log(valueCounts[key])
-
-        objectKeyValue[classVariableValues[key][3]]=0
-
-        
-        classVariableValues[key].forEach(item =>{
-
-          if(item ){
-             //console.log(item)
-             
-             // Check if the item exists in the object
-              const valueExists = Object.keys(objectKeyValue).includes(item);
-              //console.log(valueExists)
-              if (!valueExists) {
-                objectKeyValue[item]=0
-              } else {
-                
-              }
-
-          }
-        })
-
-        
-      }
-    }
+  const objectKeyValue = updateObjectKeyValue(key, valueCounts, classVariableValues)
   
-
-  }
-  console.log(objectKeyValue)
-
-console.log(sortKeysInObject(objectKeyValue))
-const sortedObjectKeyValue = sortKeysInObject(objectKeyValue)
+  //console.log(sortKeysInObject(objectKeyValue))
+  const sortedObjectKeyValue = sortKeysInObject(objectKeyValue)
   const labels = Object.keys(sortedObjectKeyValue);
   //console.log(valueCounts)
   //console.log(labels.sort(sortOrderLowToVeryHigh))
   const dataValues = Object.values(sortedObjectKeyValue);
- 
+
   const colors = customColors || ['rgba(75, 192, 192, 0.2)'];
 
   return {
@@ -87,10 +42,10 @@ const sortedObjectKeyValue = sortKeysInObject(objectKeyValue)
       backgroundColor: colors,
       borderColor: 'black',
       borderWidth: 1,
-      barThickness:30,
+      barThickness: 30,
       data: dataValues,
     }],
-   
+
   };
 }
 
@@ -99,48 +54,48 @@ function createChart(chartId, chartType, data) {
   return new Chart(ctx, {
     type: chartType,
     data: data,
-    options:{
-      scales:{
-        y:{
+    options: {
+      scales: {
+        y: {
           suggestedMin: 0,
           //suggestedMax: 50,
-        } 
-      } ,
+        }
+      },
       plugins: {
         legend: {
           display: false, // Set to false to hide the legend
         },
       },
-    } 
+    }
   });
 }
 
 function clearCharts() {
   // Get all chart elements and destroy them
-  ['graph_div_class', 
-  'graph_div_class_1', 
-  'graph_div_class_1_13',
-   'graph_div_class_1_14', 'graph_div_class_1_15', 'graph_div_class_12','graph_dist_class', 'graph_dist_class_1', 'graph_dist_class_1_13', 'graph_dist_class_1_14', 'graph_dist_class_1_15', 'graph_dist_class_12','graph_upazila_class', 'graph_upazila_class_1', 'graph_upazila_class_1_13', 'graph_upazila_class_1_14', 'graph_upazila_class_1_15', 'graph_upazila_class_12'].forEach(chartId => {
-    var existingChart = Chart.getChart(chartId);
-    if (existingChart) {
-      existingChart.destroy();
-    }
-  });
+  ['graph_div_class',
+    'graph_div_class_1',
+    'graph_div_class_1_13',
+    'graph_div_class_1_14', 'graph_div_class_1_15', 'graph_div_class_12', 'graph_dist_class', 'graph_dist_class_1', 'graph_dist_class_1_13', 'graph_dist_class_1_14', 'graph_dist_class_1_15', 'graph_dist_class_12', 'graph_upazila_class', 'graph_upazila_class_1', 'graph_upazila_class_1_13', 'graph_upazila_class_1_14', 'graph_upazila_class_1_15', 'graph_upazila_class_12'].forEach(chartId => {
+      var existingChart = Chart.getChart(chartId);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+    });
 }
 
 function clearDivCharts() {
   // Get all chart elements and destroy them
-  ['graph_div_class', 
-  'graph_div_class_1', 
-  'graph_div_class_1_13',
-  'graph_div_class_1_14',
-   'graph_div_class_1_15',
+  ['graph_div_class',
+    'graph_div_class_1',
+    'graph_div_class_1_13',
+    'graph_div_class_1_14',
+    'graph_div_class_1_15',
     'graph_div_class_12'].forEach(chartId => {
-    var existingChart = Chart.getChart(chartId);
-    if (existingChart) {
-      existingChart.destroy();
-    }
-  });
+      var existingChart = Chart.getChart(chartId);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+    });
 }
 
 
@@ -165,4 +120,4 @@ function clearUpazilaCharts() {
 };
 
 
-export {generateChartData,createChartData,createChart,clearCharts,featureKeys,clearUpazilaCharts,clearDistCharts,clearDivCharts}
+export { generateChartData, createChartData, createChart, clearCharts, featureKeys, clearUpazilaCharts, clearDistCharts, clearDivCharts }

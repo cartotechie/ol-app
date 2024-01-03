@@ -1,117 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Collapsible Table</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
 
-<table border="1">
-  <thead>
-    <tr>
-      <th>Labels</th>
-      <th>Sum of Flood (Low)</th>
-      <th>Sum of Flood (Moderate)</th>
-      <th>Sum of Flood (High)</th>
-      <th>Sum of Flood (Very High)</th>
-    </tr>
-  </thead>
-  <tbody id="tableBody">
-    <!-- Table body will be dynamically generated here -->
-  </tbody>
-</table>
-
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Sample data
-    var data = [
-      { section: 'dhakaDivision', label: 'Dhaka Division', low: 1020, moderate: 3432, high: 1175, veryHigh: 0 },
-      { section: 'dhakaDistrict', label: 'Dhaka District', low: 116, moderate: 680, high: 277, veryHigh: 0 },
-      { section: 'dhakaDistrict', label: 'Dhaka Metropolitan', low: 36, moderate: 235, high: 71, veryHigh: 0 },
-      { section: 'dhakaDistrict', label: 'Dhamrai Upazila', low: 17, moderate: 67, high: 50, veryHigh: 0 },
-      { section: 'dhakaDistrict', label: 'Dohar Upazila', low: 0, moderate: 5, high: 3, veryHigh: 0 }
-    ];
+    const data = {
+      'name': 'Kanaighat Upazilla',
+      "class": {
+            "Low": 7,
+            "moderate": 8,
+            "High": 25,
+            "VeryHigh": 0
+        }
+    };
 
-    var tableBody = document.getElementById('tableBody');
+    // Create a table element
+    const table = document.createElement('table');
 
-    // Generate table rows dynamically
-    data.forEach(function (row) {
-      var headerRow = document.createElement('tr');
-      headerRow.className = 'collapsible-header';
-      headerRow.setAttribute('data-section', row.section);
+    // Create header row
+    const headerRow = table.insertRow();
+    const nameHeader = document.createElement('th');
+    nameHeader.textContent = 'Name';
+    headerRow.appendChild(nameHeader);
 
-      var labelCell = document.createElement('td');
-      labelCell.textContent = row.label;
+    for (const key in data.class) {
+        const th = document.createElement('th');
+        th.textContent = key;
+        headerRow.appendChild(th);
+    }
 
-      var lowCell = document.createElement('td');
-      lowCell.textContent = row.low;
+    // Create data row
+    const dataRow = table.insertRow();
+    const nameCell = document.createElement('td');
+    nameCell.textContent = data.name;
+    dataRow.appendChild(nameCell);
 
-      var moderateCell = document.createElement('td');
-      moderateCell.textContent = row.moderate;
+    for (const key in data.class) {
+        const td = document.createElement('td');
+        td.textContent = data.class[key];
+        dataRow.appendChild(td);
+    }
 
-      var highCell = document.createElement('td');
-      highCell.textContent = row.high;
-
-      var veryHighCell = document.createElement('td');
-      veryHighCell.textContent = row.veryHigh;
-
-      headerRow.appendChild(labelCell);
-      headerRow.appendChild(lowCell);
-      headerRow.appendChild(moderateCell);
-      headerRow.appendChild(highCell);
-      headerRow.appendChild(veryHighCell);
-
-      tableBody.appendChild(headerRow);
-
-      // Check if there are collapsible contents for this section
-      if (row.section === 'dhakaDistrict') {
-        var contentRow = document.createElement('tr');
-        contentRow.className = 'collapsible-content';
-        contentRow.setAttribute('data-section', row.section);
-
-        var contentLabelCell = document.createElement('td');
-        contentLabelCell.textContent = row.label; // Use the same label as the header
-
-        var contentLowCell = document.createElement('td');
-        contentLowCell.textContent = row.low;
-
-        var contentModerateCell = document.createElement('td');
-        contentModerateCell.textContent = row.moderate;
-
-        var contentHighCell = document.createElement('td');
-        contentHighCell.textContent = row.high;
-
-        var contentVeryHighCell = document.createElement('td');
-        contentVeryHighCell.textContent = row.veryHigh;
-
-        contentRow.appendChild(contentLabelCell);
-        contentRow.appendChild(contentLowCell);
-        contentRow.appendChild(contentModerateCell);
-        contentRow.appendChild(contentHighCell);
-        contentRow.appendChild(contentVeryHighCell);
-
-        tableBody.appendChild(contentRow);
-      }
-    });
-
-    // Attach event listeners to collapsible headers
-    var collapsibleHeaders = document.querySelectorAll('.collapsible-header');
-
-    collapsibleHeaders.forEach(function (header) {
-      header.addEventListener('click', function () {
-        var contentRow = this.nextElementSibling;
-        var section = this.getAttribute('data-section');
-
-        // Toggle the display of all content rows in the section
-        var allContentRowsInSection = document.querySelectorAll(`.collapsible-content[data-section="${section}"]`);
-        allContentRowsInSection.forEach(function (row) {
-          row.style.display = (row.style.display === 'none') ? 'table-row' : 'none';
-        });
-      });
-    });
-  });
+    // Append the table to the body of the document
+    document.body.appendChild(table);
 </script>
 
 </body>
 </html>
+

@@ -1,4 +1,5 @@
 import LayerGroup from 'ol/layer/Group';
+import tableFunctions from './modules/tables/tablesDOMFunctions';
 import {
     glowingStyle,
     substationStyle,
@@ -23,18 +24,15 @@ import {
 import {
     province,
     commune,
-    districts,
     upezilla,
-    districtsByDivision, featureKeys
+    featureKeys
 } from './modules/variables'
 
 import {
     generateTable,
-    clearTable,generateCollapsibleTable
+    clearTable, generateTableDataHeader, generateTable1,generateTableDataRow
 } from './modules/table'
-import {
-    divisions
-} from './modules/variables'
+
 import {
     generateCharts
 } from './modules/charts'
@@ -50,15 +48,16 @@ import {
 } from './modules/charts'
 import {
     countFeatures,
-    createUniqueAttributes
+    createUniqueAttributes,
+    updateObjectKeyValue
 } from './modules/processing'
 import { textPointStyle, customSVGPointStyle, starPointStyle, crossPointStyle, squarePointStyle, defaultPointStyle } from './modules/pointStyle'
 import { classesValues } from './modules/dataStore'
 
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Display loading indicator
-    document.getElementById("loadingIndicator").style.display = "block";
+
+// Display loading indicator
+document.getElementById("loadingIndicator").style.display = "block";
 
 
 const geoJsonEndpoint = './data/powertowers.json';
@@ -78,7 +77,7 @@ const selectedPointStyle = (feature) => {
         setTimeout(() => {
             feature.setStyle(styleFunction(feature));
         }, 2000); // 5000 milliseconds (5 seconds)
-        console.log('selected')
+        //console.log('selected')
         return glowingStyle
     }
 
@@ -91,7 +90,7 @@ const selectedPolyStyle = (feature) => {
         setTimeout(() => {
             feature.setStyle(defaultStyle);
         }, 5000); // 5000 milliseconds (5 seconds)
-        console.log('selected')
+        //console.log('selected')
         return defaultStyle
     }
 
@@ -111,7 +110,6 @@ for (let i = 0; i < divName.length; i++) {
 }
 
 
-//createDropdownTable(5, 5);
 /****************************************************************************************** */
 
 const countDisplayDistricts = document.getElementById('countDisplayDistricts');
@@ -139,14 +137,14 @@ const getLayers = async () => {
         // Fetch GeoJSON data
         const response = await fetch(geoJsonEndpoint);
         document.getElementById("loadingIndicator").style.display = "none";
-       
+
 
 
         if (response.ok) {
-            
+
 
             const responseJSON = await response.json();
-            console.log(responseJSON)
+            //console.log(responseJSON)
             const layer = new VectorLayer({
                 visible: true,
                 style: selectedPolyStyle,
@@ -222,10 +220,10 @@ const getLayers = async () => {
 
             const uniqueUpezillasCount = countFeatures(features, 'name_en', selectedUpezillas);
             updateCountDisplay(adminName, '', 'Bangladesh (data according to data)')
-            updateCountDisplay(countDisplayDistricts, districts.length, 'Districts')
+
             updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas')
             updateCountDisplay(countDisplayedFeatures, features.length, 'Powerlines')
-            updateCountDisplay(countDisplayDivisions, divisions.length, 'Divisions')
+
 
 
             //console.log(features)
@@ -235,7 +233,6 @@ const getLayers = async () => {
             clearDivCharts();
             clearDistCharts()
             clearUpazilaCharts()
-
 
 
 
@@ -259,26 +256,15 @@ getLayers();
 
 /************************************************************************ */
 
-/*const getSearchTerm=(event)=>{
-    event.preventDefault
-    const searchInputTerm = document.getElementById('search-input')
-    console.log(searchInputTerm)} */
-
-    /*document.getElementById('searchInput').addEventListener('input', function() {
-        var clearIcon = document.querySelector('.clear-icon');
-        clearIcon.style.display = this.value.length ? 'block' : 'none';
-      });*/
-  
-      
-   document.getElementById('clear-icon').addEventListener('click', function() {
-        var searchInput = document.getElementById('searchInput');
-        searchInput.value = '';
-        document.querySelector('.clear-icon').style.display = 'none';
-        clearTable()
-        const layer = map.getAllLayers()[2]
-        const features = layer.getSource().getFeatures();
-        generateTable(createUniqueAttributes(features, 'name_en'))
-      });
+document.getElementById('clear-icon').addEventListener('click', function () {
+    var searchInput = document.getElementById('searchInput');
+    searchInput.value = '';
+    document.querySelector('.clear-icon').style.display = 'none';
+    clearTable()
+    const layer = map.getAllLayers()[2]
+    const features = layer.getSource().getFeatures();
+    generateTable(createUniqueAttributes(features, 'name_en'))
+});
 
 function getSearchTerm(event) {
     event.preventDefault
@@ -294,7 +280,7 @@ function getSearchTerm(event) {
 
 
 }
-//const searchFormElement = document.getElementById('geocode-form')
+
 document.getElementById('searchInput').addEventListener('input', getSearchTerm)
 
 
@@ -307,7 +293,7 @@ function onclickDivision(term) {
 
     searchTerm = term;
 
-   // adminName.innerHTML = `${searchTerm}`
+    // adminName.innerHTML = `${searchTerm}`
 
     const divName = document.getElementsByClassName('div-name')
     const distName = document.getElementsByClassName('dist-name')
@@ -320,7 +306,7 @@ function onclickDivision(term) {
 
     if (filteredFeatures.length > 0) {
         const extent = olExtent.boundingExtent(filteredFeatures.map(feature => feature.getGeometry().getExtent()));
-        console.log(filteredFeatures)
+        //console.log(filteredFeatures)
         map.getView().fit(extent, {
             padding: [10, 10, 10, 10],
             duration: 1000
@@ -373,7 +359,7 @@ function onclickDivision(term) {
 
             // Iterate through filteredFeaturesDist to get unique province values
             filteredFeaturesDist.forEach(feature => {
-                console.log(feature.get(province));
+                //console.log(feature.get(province));
                 const attributeValue = feature.get(province);
 
                 // Check if the attributeValue is defined (not undefined)
@@ -386,7 +372,7 @@ function onclickDivision(term) {
             let uniquefilteredDataDiv = Array.from(uniqueValuesSetDiv);
 
             // Now, uniquefilteredDataDiv contains an array of unique province values
-            console.log(uniquefilteredDataDiv);
+            //console.log(uniquefilteredDataDiv);
 
             for (let i = 0; i < divName.length; i++) {
                 divName[i].textContent = ''
@@ -429,12 +415,14 @@ function onclickDivision(term) {
             clearTable();
             generateTable(createUniqueAttributes(filteredFeaturesUpe, 'name_en'))
 
+
+
             // Assuming you have already defined filteredFeaturesDist
             const uniqueValuesSetDiv = new Set();
 
             // Iterate through filteredFeaturesDist to get unique province values
             filteredFeaturesUpe.forEach(feature => {
-                console.log(feature.get(province));
+                //console.log(feature.get(province));
                 const attributeValue1 = feature.get(province);
                 const attributeValue2 = feature.get(commune);
                 const attributeValue3 = feature.get(upezilla);
@@ -451,7 +439,7 @@ function onclickDivision(term) {
             let uniquefilteredDataDiv = Array.from(uniqueValuesSetDiv);
 
             // Now, uniquefilteredDataDiv contains an array of unique province values
-            console.log(uniquefilteredDataDiv);
+            //console.log(uniquefilteredDataDiv);
             for (let i = 0; i < divName.length; i++) {
                 divName[i].textContent = ''
                 divName[i].textContent = uniquefilteredDataDiv[0]; // You can perform actions on each element here
@@ -496,6 +484,25 @@ function onclickDivision(term) {
             createChart(`graph_upazila_class_1_15`, `bar`, filteredDataUpe.class_1_15);
             createChart(`graph_upazila_class_12`, `bar`, filteredDataUpe.class_12);
 
+
+
+            // Statistical tables
+
+            const summaryStatsElement = document.getElementById('summary-stats');
+
+            // Generate a table with 5 rows and 5 columns
+            //const generatedTable = generateTableDataHeader(filteredFeaturesUpe,selected);
+            
+            const table = document.createElement('table');
+            // Append the generated table to the summaryStatsElement
+            table.appendChild(generateTableDataHeader(filteredFeaturesUpe, table));
+            const generatedTableRow = generateTableDataRow(filteredDataDivUn, uniquefilteredDataDiv[0],table);
+            table.appendChild(generatedTableRow);
+            table.appendChild(generateTableDataRow(filteredDataComUn, uniquefilteredDataDiv[1],table));
+            table.appendChild(generateTableDataRow(filteredFeaturesUpe, uniquefilteredDataDiv[2],table));
+            summaryStatsElement.appendChild(table);
+            
+
         }
 
 
@@ -505,32 +512,12 @@ function onclickDivision(term) {
         console.log('No feature filtered')
     }
 
-
-
-
-
-
-
-    /**countDisplayedFeatures.innerHTML = `${filteredFeatures.length} Powerlines`
-    const uniqueCommunesCount = countFeatures(filteredFeatures, commune, selectedDistricts);
-    updateCountDisplay(countDisplayDistricts, uniqueCommunesCount, 'Districts');
-    updateCountDisplay(countDisplayDivisions, '', '')
-
-    const uniqueUpezillasCount = countFeatures(filteredFeatures, 'name_en', selectedUpezillas);
-    updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas');
-    // Clear the existing table
-    clearTable();
-    generateTable(createUniqueAttributes(filteredFeatures, 'name_en'))
-
-    /*****************************************************************************/
-
-
-
-
 }
 
 
- // Call the function to generate the table
- generateCollapsibleTable();
 
-})
+
+
+
+
+

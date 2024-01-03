@@ -36,7 +36,7 @@ sortedKeys.forEach(key => {
   sortedObject[key] = objectToSort[key];
 });
 
-console.log(sortedObject);
+//console.log(sortedObject);
 return sortedObject
 
 }
