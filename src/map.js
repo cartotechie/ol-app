@@ -30,7 +30,7 @@ import {
 
 import {
     generateTable,
-    clearTable, generateTableDataHeader, generateTable1,generateTableDataRow
+    clearTable, generateTableDataHeader, generateTable1, generateTableDataRow
 } from './modules/table'
 
 import {
@@ -290,6 +290,9 @@ function onclickDivision(term) {
 
     const layer = map.getAllLayers()[2]
     const features = layer.getSource().getFeatures();
+    const summaryStatsElement = document.getElementById('summary-stats')
+
+    const table = document.createElement('table');
 
     searchTerm = term;
 
@@ -325,6 +328,7 @@ function onclickDivision(term) {
 
         if (filteredFeaturesDiv.length > 0) {
 
+
             clearTable();
             generateTable(createUniqueAttributes(filteredFeaturesDiv, 'name_en'))
 
@@ -341,6 +345,22 @@ function onclickDivision(term) {
                 upazilaName[i].textContent = ''
 
             }
+
+
+
+
+            for (let i = 0; i < featureKeys.length; i++) {
+
+                // Statistical tables
+                // Append the generated table to the summaryStatsElement
+                table.appendChild(generateTableDataHeader(filteredFeaturesDiv, table, featureKeys[i]));
+                const generatedTableRow = generateTableDataRow(filteredFeaturesDiv, searchTerm, table,featureKeys[i]);
+                table.appendChild(generatedTableRow);
+                summaryStatsElement.appendChild(table);
+
+            }
+
+
             let filteredDataDiv = generateChartData(filteredFeaturesDiv);
             createChart(`graph_div_class`, `bar`, filteredDataDiv.class);
             createChart(`graph_div_class_1`, `bar`, filteredDataDiv.class_1);
@@ -407,6 +427,14 @@ function onclickDivision(term) {
             createChart(`graph_dist_class_1_14`, `bar`, filteredDataDist.class_1_14);
             createChart(`graph_dist_class_1_15`, `bar`, filteredDataDist.class_1_15);
             createChart(`graph_dist_class_12`, `bar`, filteredDataDist.class_12);
+
+            // Statistical tables
+            // Append the generated table to the summaryStatsElement
+            table.appendChild(generateTableDataHeader(filteredFeaturesDist, table, featureKeys[0]));
+            const generatedTableRow = generateTableDataRow(filteredData, uniquefilteredDataDiv[0], table, featureKeys[0]);
+            table.appendChild(generatedTableRow);
+            //table.appendChild(generateTableDataRow(filteredFeaturesUpe, uniquefilteredDataDiv[2],table));
+            summaryStatsElement.appendChild(table);
 
         }
 
@@ -487,21 +515,14 @@ function onclickDivision(term) {
 
 
             // Statistical tables
-
-            const summaryStatsElement = document.getElementById('summary-stats');
-
-            // Generate a table with 5 rows and 5 columns
-            //const generatedTable = generateTableDataHeader(filteredFeaturesUpe,selected);
-            
-            const table = document.createElement('table');
             // Append the generated table to the summaryStatsElement
-            table.appendChild(generateTableDataHeader(filteredFeaturesUpe, table));
-            const generatedTableRow = generateTableDataRow(filteredDataDivUn, uniquefilteredDataDiv[0],table);
+            table.appendChild(generateTableDataHeader(filteredFeaturesUpe, table, featureKeys[0]));
+            const generatedTableRow = generateTableDataRow(filteredDataDivUn, uniquefilteredDataDiv[0], table, featureKeys[0]);
             table.appendChild(generatedTableRow);
-            table.appendChild(generateTableDataRow(filteredDataComUn, uniquefilteredDataDiv[1],table));
-            table.appendChild(generateTableDataRow(filteredFeaturesUpe, uniquefilteredDataDiv[2],table));
+            table.appendChild(generateTableDataRow(filteredDataComUn, uniquefilteredDataDiv[1], table, featureKeys[0]));
+            table.appendChild(generateTableDataRow(filteredFeaturesUpe, uniquefilteredDataDiv[2], table, featureKeys[0]));
             summaryStatsElement.appendChild(table);
-            
+
 
         }
 

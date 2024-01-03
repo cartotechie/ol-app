@@ -48,7 +48,7 @@ function generatetableDataObject(features, featureKeys) {
     return tableDataObject
 }
 
-function generateTableDataRow(features, name,table) {
+function generateTableDataRow(features, name,table,attributeName) {
 
     const tableDataObject = generatetableDataObject(features, featureKeys)
     tableDataObject['name'] = name
@@ -59,9 +59,9 @@ function generateTableDataRow(features, name,table) {
     nameCell.textContent = tableDataObject.name;
     dataRow.appendChild(nameCell);
 
-    for (const key in tableDataObject.class) {
+    for (const key in tableDataObject[attributeName]) {
         const td = document.createElement('td');
-        td.textContent = tableDataObject.class[key];
+        td.textContent = tableDataObject[attributeName][key];
         dataRow.appendChild(td);
     }
 
@@ -70,7 +70,7 @@ function generateTableDataRow(features, name,table) {
 }
 
 
-function generateTableDataHeader(features, table) {
+function generateTableDataHeader(features, table,attributeName) {
     const tableDataObject = generatetableDataObject(features, featureKeys)
     //tableDataObject['name'] = name
     // Create header row
@@ -79,7 +79,7 @@ function generateTableDataHeader(features, table) {
     nameHeader.textContent = 'Name';
     headerRow.appendChild(nameHeader);
 
-    for (const key in tableDataObject.class) {
+    for (const key in tableDataObject[attributeName]) {
         const th = document.createElement('th');
         th.textContent = key;
         headerRow.appendChild(th);
@@ -113,8 +113,14 @@ function generateTable1() {
 
 function clearTable() {
     const tableContainer = document.getElementById('table');
+    const summaryStatsElement = document.getElementById('summary-stats')
     if (tableContainer) {
         tableContainer.innerHTML = ''; // Clear the content
+        // Alternatively, you can remove the entire table element
+        // tableContainer.parentNode.removeChild(tableContainer);
+    }
+    if (summaryStatsElement) {
+        summaryStatsElement.innerHTML = ''; // Clear the content
         // Alternatively, you can remove the entire table element
         // tableContainer.parentNode.removeChild(tableContainer);
     }

@@ -361,7 +361,8 @@ th {
 
 table {
   border-collapse: collapse;
-  width: 100%;
+  max-width: 100%;
+  margin: 10px;
 }
 
 th, td {
