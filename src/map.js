@@ -53,7 +53,8 @@ import {
 } from './modules/processing'
 import { textPointStyle, customSVGPointStyle, starPointStyle, crossPointStyle, squarePointStyle, defaultPointStyle } from './modules/pointStyle'
 import { classesValues } from './modules/dataStore'
-import { getLayers,map } from './fetchData'; 
+import { getLayers, map } from './fetchData';
+import { autocomplete } from './searchAutoComplete';
 
 
 // Display loading indicator
@@ -149,12 +150,59 @@ function getSearchTerm(event) {
     event.preventDefault
     var clearIcon = document.querySelector('.clear-icon');
     clearIcon.style.display = this.value.length ? 'block' : 'none';
-    //document.querySelector('.clear-icon').style.display = 'none';
+    const layer = map.getAllLayers()[2]
+    const features = layer.getSource().getFeatures().map(function (feature) {
+
+
+        return {
+            division: feature.get(province),
+            district: feature.get(commune),
+            upezilla: feature.get(upezilla),
+        };
+    });
+
+    // Get unique values for province, commune, and upezila
+    const uniqueProvinces = Array.from(new Set(layer.getSource().getFeatures().map(function (feature) {
+        return feature.get(province);
+    })));
+
+    const uniqueCommunes = Array.from(new Set(layer.getSource().getFeatures().map(function (feature) {
+        return feature.get(commune);
+    })));
+
+    const uniqueUpezilas = Array.from(new Set(layer.getSource().getFeatures().map(function (feature) {
+        return feature.get(upezilla);
+    })));
+
+    // Combine unique values
+    const uniqueValues = [...uniqueProvinces, ...uniqueCommunes, ...uniqueUpezilas];
+
+    console.log(uniqueValues)
 
     const searchInputTerm = document.getElementById('searchInput')
+    // Filter unique values based on the search query
 
-    selected = searchInputTerm.value.trim()
-    onclickDivision(searchInputTerm.value.trim())
+
+
+    //Autocomplete
+
+    const query = searchInputTerm.value.toLowerCase();
+    // Filter features based on the first letter of the input
+    var filteredValues = uniqueValues.filter(function (value) {
+        return value.toLowerCase().includes(query);
+    });
+
+    // Display filtered values in autocomplete
+    // You may customize this part based on your UI requirements
+    // Here, we simply log the suggestions to the console
+    console.log(filteredValues);
+    autocomplete(searchInputTerm, filteredValues,function(selectedValue) {
+        // Do something with the selected value
+        selected=selectedValue
+        onclickDivision(selected)
+        console.log('Selected Value:', selectedValue);
+      });
+
 
 
 
@@ -233,7 +281,7 @@ function onclickDivision(term) {
                 // Statistical tables
                 // Append the generated table to the summaryStatsElement
                 table.appendChild(generateTableDataHeader(filteredFeaturesDiv, table, featureKeys[i]));
-                const generatedTableRow = generateTableDataRow(filteredFeaturesDiv, searchTerm, table,featureKeys[i]);
+                const generatedTableRow = generateTableDataRow(filteredFeaturesDiv, searchTerm, table, featureKeys[i]);
                 table.appendChild(generatedTableRow);
                 summaryStatsElement.appendChild(table);
 
@@ -409,7 +457,7 @@ function onclickDivision(term) {
 
         layer.changed();
     } else {
-        console.log('No feature filtered')
+        console.error('No feature filtered')
     }
 
 }
