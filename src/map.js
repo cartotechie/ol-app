@@ -196,16 +196,23 @@ function getSearchTerm(event) {
     // You may customize this part based on your UI requirements
     // Here, we simply log the suggestions to the console
     console.log(filteredValues);
-    autocomplete(searchInputTerm, filteredValues,function(selectedValue) {
+    autocomplete(searchInputTerm, filteredValues, function (selectedValue) {
         // Do something with the selected value
-        selected=selectedValue
-        onclickDivision(selected)
-        console.log('Selected Value:', selectedValue);
-      });
+        if (selectedValue) {
+            selected = selectedValue
+            onclickDivision(selected)
+        } 
+        
+            
+        
+
+    });
+
+    selected = searchInputTerm.value.trim()
+    onclickDivision(selected)
 
 
-
-
+    console.log(searchInputTerm.value.trim());
 }
 
 document.getElementById('searchInput').addEventListener('input', getSearchTerm)
