@@ -55,6 +55,8 @@ import { textPointStyle, customSVGPointStyle, starPointStyle, crossPointStyle, s
 import { classesValues } from './modules/dataStore'
 import { getLayers, map } from './fetchData';
 import { autocomplete } from './modules/searchAutoComplete';
+import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
+
 
 
 // Display loading indicator
@@ -87,17 +89,42 @@ const selectedPointStyle = (feature) => {
 }
 const selectedPolyStyle = (feature) => {
 
-    if (feature.get(province) === selected || feature.get(commune) === selected || feature.get('name_en') === selected) {
+    /*if (feature.get(province) === selected || feature.get(commune) === selected || feature.get('name_en') === selected) {
         setTimeout(() => {
             feature.setStyle(defaultStyle);
         }, 5000); // 5000 milliseconds (5 seconds)
         //console.log('selected')
         return defaultStyle
-    }
+    }*/
+    //return adminBoundaryStyle
 
-
-    return adminBoundaryStyle
+    feature.setStyle(defaultStyle)
 }
+
+
+
+const highlightStyle = new Style({
+    image: new Circle({
+        radius: 4,
+        fill: new Fill({
+            color: '#33A1DE', // Light blue fill
+        }),
+        stroke: new Stroke({
+            color: '#FFFFFF', // grey stroke
+            width: 1,
+        })
+    })
+});
+
+// Function to apply highlight style to a feature
+const highlightFeature = (feature) => {
+    feature.setStyle(highlightStyle);
+};
+
+// Function to unset (remove) highlight style from a feature
+const unsetHighlight = (feature) => {
+    feature.setStyle(null); // This removes the style from the feature
+};
 
 /****************************************************************************************** */
 
@@ -141,9 +168,12 @@ document.getElementById('clear-icon').addEventListener('click', function () {
     searchInput.value = '';
     document.querySelector('.clear-icon').style.display = 'none';
     clearTable()
-    const layer = map.getAllLayers()[2]
-    const features = layer.getSource().getFeatures();
-    generateTable(createUniqueAttributes(features, 'name_en'))
+    
+    const powerLayerfeatures = map.getAllLayers()[2].getSource().getFeatures();
+    const adminLayerFeatures =map.getAllLayers()[1].getSource().getFeatures();
+    powerLayerfeatures.forEach(unsetHighlight);
+        adminLayerFeatures.forEach(unsetHighlight);
+    generateTable(createUniqueAttributes(powerLayerfeatures, 'name_en'))
 });
 
 function getSearchTerm(event) {
@@ -192,19 +222,17 @@ function getSearchTerm(event) {
         return value.toLowerCase().includes(query);
     });
 
-    // Display filtered values in autocomplete
-    // You may customize this part based on your UI requirements
-    // Here, we simply log the suggestions to the console
+
     console.log(filteredValues);
     autocomplete(searchInputTerm, filteredValues, function (selectedValue) {
         // Do something with the selected value
         if (selectedValue) {
             selected = selectedValue
             onclickDivision(selected)
-        } 
-        
-            
-        
+        }
+
+
+
 
     });
 
@@ -223,6 +251,7 @@ function onclickDivision(term) {
 
 
     const layer = map.getAllLayers()[2]
+    const adminLayerFeatures = map.getAllLayers()[1].getSource().getFeatures()
     const features = layer.getSource().getFeatures();
     const summaryStatsElement = document.getElementById('summary-stats')
 
@@ -238,12 +267,13 @@ function onclickDivision(term) {
 
     //const filteredFeatures = features.filter(feature => feature.get(province)=== searchTerm||feature.get(commune)=== searchTerm||feature.get(upezilla) === searchTerm);
     const filteredFeatures = features.filter(feature => feature.get(province) === searchTerm || feature.get(commune) === searchTerm || feature.get(upezilla) === searchTerm);
-
+    const filteredFeaturesAd = adminLayerFeatures.filter(feature => feature.get(province) === searchTerm || feature.get(commune) === searchTerm || feature.get(upezilla) === searchTerm);
 
 
     if (filteredFeatures.length > 0) {
         const extent = olExtent.boundingExtent(filteredFeatures.map(feature => feature.getGeometry().getExtent()));
         //console.log(filteredFeatures)
+
         map.getView().fit(extent, {
             padding: [10, 10, 10, 10],
             duration: 1000
@@ -257,7 +287,12 @@ function onclickDivision(term) {
         const filteredFeaturesDist = features.filter(feature => feature.get(commune) === searchTerm);
         const filteredFeaturesUpe = features.filter(feature => feature.get(upezilla) === searchTerm);
 
+        features.forEach(unsetHighlight);
+        adminLayerFeatures.forEach(unsetHighlight);
 
+        // Apply highlight style to the filtered features
+        filteredFeatures.forEach(highlightFeature);
+        filteredFeaturesAd.forEach(selectedPolyStyle)
 
 
         if (filteredFeaturesDiv.length > 0) {
