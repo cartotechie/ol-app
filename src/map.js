@@ -53,14 +53,14 @@ import {
 } from './modules/processing'
 import { textPointStyle, customSVGPointStyle, starPointStyle, crossPointStyle, squarePointStyle, defaultPointStyle } from './modules/pointStyle'
 import { classesValues } from './modules/dataStore'
-
+import { getLayers,map } from './fetchData'; 
 
 
 // Display loading indicator
 document.getElementById("loadingIndicator").style.display = "block";
 
 
-const geoJsonEndpoint = './data/powertowers.json';
+
 
 
 let searchTerm
@@ -127,129 +127,8 @@ function updateCountDisplay(element, count, label) {
 
 
 
-const map = initMap();
 
-
-const getLayers = async () => {
-    try {
-        const mapLayers = [];
-
-        // Fetch GeoJSON data
-        const response = await fetch(geoJsonEndpoint);
-        document.getElementById("loadingIndicator").style.display = "none";
-
-
-
-        if (response.ok) {
-
-
-            const responseJSON = await response.json();
-            //console.log(responseJSON)
-            const layer = new VectorLayer({
-                visible: true,
-                style: selectedPolyStyle,
-                source: new VectorSource({
-                    features: new GeoJSON().readFeatures(responseJSON[1]),
-
-                }),
-
-                title: 'Upazila boundary'
-            });
-
-
-            mapLayers.push(layer);
-            mapLayers.push(createVectorLayer(responseJSON[0], 'Powerlines', ''));
-
-        }
-
-
-
-        const vectorSource = mapLayers[1].getSource();
-
-        const subLayersData = [
-            { style: selectedPointStyle, title: 'Flood Exposure', visible: true },
-            { style: substationStyle, title: 'LULC', visible: false },
-            { style: defaultPointStyle, title: 'WindSpeed 100m', visible: false },
-            { style: crossPointStyle, title: 'Earthquake', visible: false },
-            { style: defaultPointStyle, title: 'Landslide susceptibility', visible: false },
-            { style: defaultPointStyle, title: 'Maintenance', visible: false }
-        ];
-
-        const subLayers = subLayersData.map(layerData =>
-            createSubVectorLayer(vectorSource, layerData.style, layerData.title, layerData.visible)
-        );
-
-        const layerGroup = new LayerGroup({
-            layers: [
-                new LayerGroup({
-                    layers: subLayers.reverse(), // Reverse the order if needed
-                    title: 'Classes'
-                })
-            ],
-            title: 'Powerlines'
-        });
-
-
-
-
-        /*************************************/
-
-        if (mapLayers.length > 0) {
-
-
-
-            // Add layers to LayerGroup and then to the map
-            map.addLayer(new LayerGroup({
-                title: 'MapLayers',
-                layers: [mapLayers[0], layerGroup]
-            }));
-
-            const adminlayer = mapLayers[0]
-            const layer = mapLayers[1]
-
-
-
-            /******************************************* */
-            const features = layer.getSource().getFeatures();
-
-
-            classesValues(features)
-
-
-            /***************************************** */
-
-            const uniqueUpezillasCount = countFeatures(features, 'name_en', selectedUpezillas);
-            updateCountDisplay(adminName, '', 'Bangladesh (data according to data)')
-
-            updateCountDisplay(countDisplayUpezillas, uniqueUpezillasCount, 'Upezillas')
-            updateCountDisplay(countDisplayedFeatures, features.length, 'Powerlines')
-
-
-
-            //console.log(features)
-
-            generateTable(createUniqueAttributes(features, 'name_en'))
-            // Clear existing charts
-            clearDivCharts();
-            clearDistCharts()
-            clearUpazilaCharts()
-
-
-
-        } else {
-            throw new Error('No valid GeoJSON data available');
-        }
-
-    } catch (error) {
-        console.error('There was a problem fetching the data:', error);
-    }
-};
-
-
-
-getLayers();
-
-
+getLayers()
 
 
 
