@@ -54,7 +54,7 @@ import {
 import { textPointStyle, customSVGPointStyle, starPointStyle, crossPointStyle, squarePointStyle, defaultPointStyle } from './modules/pointStyle'
 import { classesValues } from './modules/dataStore'
 import { getLayers, map } from './fetchData';
-import { autocomplete } from './modules/searchAutoComplete';
+import { autocomplete } from './searchAutoComplete';
 
 
 // Display loading indicator
