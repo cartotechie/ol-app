@@ -76,16 +76,20 @@ let selectedUpezillas = [];
 
 const selectedPointStyle = (feature) => {
 
-    if (feature.get(province) === selected || feature.get(commune) === selected || feature.get('name_en') === selected) {
+
+    /*if (feature.get(province) === selected || feature.get(commune) === selected || feature.get('name_en') === selected) {
         setTimeout(() => {
             feature.setStyle(styleFunction(feature));
         }, 2000); // 5000 milliseconds (5 seconds)
         //console.log('selected')
         return glowingStyle
-    }
+       
+    }*/
 
-
-    return styleFunction(feature)
+   
+        feature.setStyle(glowingStyle(feature));
+    
+    //return styleFunction(feature)
 }
 const selectedPolyStyle = (feature) => {
 
@@ -291,7 +295,7 @@ function onclickDivision(term) {
         adminLayerFeatures.forEach(unsetHighlight);
 
         // Apply highlight style to the filtered features
-        filteredFeatures.forEach(highlightFeature);
+        filteredFeatures.forEach(selectedPointStyle);
         filteredFeaturesAd.forEach(selectedPolyStyle)
 
 

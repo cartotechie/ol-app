@@ -1,5 +1,5 @@
 import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
-import {featureKeys} from './variables' 
+import { featureKeys } from './variables'
 
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
@@ -34,7 +34,7 @@ const substationStyle = new Style({
 
 // Style for Administrative Boundaries
 const adminBoundaryStyle = new Style({
-  
+
   //fill: new Fill({color: 'rgba(200, 200, 200, 1)'}),
   stroke: new Stroke({
     color: 'rgba(100, 100, 100, 1)', // Neutral stroke color
@@ -43,16 +43,16 @@ const adminBoundaryStyle = new Style({
 });
 
 
-  // Default style
-  const defaultStyle = new Style({
-    fill: new Fill({
-      color: 'rgba(204, 204, 204, 0.8)', // Default fill color
-    }),
-    stroke: new Stroke({
-      color: 'red', // Default border color
-      width: 3, // Default border width
-    }),
-  });
+// Default style
+const defaultStyle = new Style({
+  fill: new Fill({
+    color: 'rgba(204, 204, 204, 0.8)', // Default fill color
+  }),
+  stroke: new Stroke({
+    color: 'red', // Default border color
+    width: 3, // Default border width
+  }),
+});
 
 
 // Style function for the polygon layer
@@ -97,7 +97,7 @@ function getPolygonStyle(feature) {
   return defaultStyle;
 }
 
-const customColors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)','blue','green'];
+const customColors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)', 'blue', 'green'];
 
 
 // Create a style function to display each variable differently.
@@ -112,28 +112,17 @@ const multiVarPointStyleFunction = (feature) => {
   console.log('Load points with variables 2')
 
   return new Style({
-      image: new Circle({
-          radius: 2,
-          fill: new Fill({
-              color: `red, green, 0, 0.8)`,
-          }),
+    image: new Circle({
+      radius: 2,
+      fill: new Fill({
+        color: `red, green, 0, 0.8)`,
       }),
+    }),
   });
 };
 
 // Create a glowing style
-const glowingStyle = new Style({
-  image: new Circle({
-      radius: 5,
-      fill: new Fill({
-          color: 'red', // Adjust the glowing color
-      }),
-      stroke: new Stroke({
-          color: '#45a049', // Adjust the glowing border color
-          width: 1,
-      }),
-  }),
-});
+
 
 
 // Define styles for different ranks within each variable
@@ -192,22 +181,22 @@ const styleVariableA_Rank4 = new Style({
 // Add more styles for other ranks and variables as needed
 
 // Create a style function to apply styles based on variables and ranks
-const styleFunction = function(feature) {
+const styleFunction = function (feature) {
   const variables = feature.get('class');
- 
+
   // Apply styles based on variables and ranks
-  
-    if (variables === 'VeryHigh') {
-      return styleVariableA_Rank1;
-    } else if (variables ===  'High') {
-      return styleVariableA_Rank2;
-    }else  if (variables ==='moderate') {
-      return styleVariableA_Rank3;
-    } else if (variables === 'Low') {
-      return styleVariableA_Rank4;
-    }
-   
-   
+
+  if (variables === 'VeryHigh') {
+    return styleVariableA_Rank1;
+  } else if (variables === 'High') {
+    return styleVariableA_Rank2;
+  } else if (variables === 'moderate') {
+    return styleVariableA_Rank3;
+  } else if (variables === 'Low') {
+    return styleVariableA_Rank4;
+  }
+
+
 
   // Add more conditions for other variables
 
@@ -226,42 +215,63 @@ const styleFunction = function(feature) {
   });
 };
 
+const glowingStyle = (feature) => {
+  // Call the existing style function to get the base style
+  const baseStyle = styleFunction(feature);
 
-  // Create a legend
-  var legend = document.getElementById('legend');
-  var legendFloodExp = document.createElement('h3');
-    legendFloodExp.innerHTML='Flood Exposure'
-    legend.appendChild(legendFloodExp);
+  // Add glowing effect to the base style
+  const glowingStyle = new Style({
+      ...baseStyle,  // Copy properties from baseStyle
+      image: new Circle({
+          ...baseStyle.getImage(),  // Copy image properties from baseStyle
+          radius: 8,
+          fill: new Fill({
+              color: 'green',  // Adjust color as needed
+          }),
+          stroke: new Stroke({
+              color: 'white',  // Adjust color as needed
+              width: 3,
+          }),
+      }),
+  });
 
-  // Add legend items
-  function addLegendItem(style, label, className) {
-    var legendItem = document.createElement('div');
-    legendItem.classList.add('legend-item');
+  return glowingStyle;
+};
+// Create a legend
+var legend = document.getElementById('legend');
+var legendFloodExp = document.createElement('h3');
+legendFloodExp.innerHTML = 'Flood Exposure'
+legend.appendChild(legendFloodExp);
 
-    var legendCircle = document.createElement('div');
-    legendCircle.classList.add('legend-circle');
-    legendCircle.classList.add(className);
-    legendCircle.style.backgroundColor = style.getImage().getFill().getColor();
+// Add legend items
+function addLegendItem(style, label, className) {
+  var legendItem = document.createElement('div');
+  legendItem.classList.add('legend-item');
 
-    var legendLabel = document.createElement('div');
-    
-    legendLabel.classList.add('legend-label');
-    
-    legendLabel.textContent = label;
+  var legendCircle = document.createElement('div');
+  legendCircle.classList.add('legend-circle');
+  legendCircle.classList.add(className);
+  legendCircle.style.backgroundColor = style.getImage().getFill().getColor();
 
-    
+  var legendLabel = document.createElement('div');
 
-    legendItem.appendChild(legendCircle);
-    legendItem.appendChild(legendLabel);
-    legend.appendChild(legendItem);
-  }
+  legendLabel.classList.add('legend-label');
 
-  // Add legend items based on your styles and ranks
-  addLegendItem(styleVariableA_Rank1, 'Very High', 'legend-circle-very-high');
-  addLegendItem(styleVariableA_Rank2, 'High', 'legend-circle-high');
-  addLegendItem(styleVariableA_Rank3, 'Moderate', 'legend-circle-moderate');
-  addLegendItem(styleVariableA_Rank4, 'Low', 'legend-circle-low');
-  // Add the adminBoundaryStyle to legend
+  legendLabel.textContent = label;
+
+
+
+  legendItem.appendChild(legendCircle);
+  legendItem.appendChild(legendLabel);
+  legend.appendChild(legendItem);
+}
+
+// Add legend items based on your styles and ranks
+addLegendItem(styleVariableA_Rank1, 'Very High', 'legend-circle-very-high');
+addLegendItem(styleVariableA_Rank2, 'High', 'legend-circle-high');
+addLegendItem(styleVariableA_Rank3, 'Moderate', 'legend-circle-moderate');
+addLegendItem(styleVariableA_Rank4, 'Low', 'legend-circle-low');
+// Add the adminBoundaryStyle to legend
 
 // Create a legend item
 function createLegendItem(label, color) {
@@ -289,14 +299,14 @@ function createLegendItem(label, color) {
 
 
 // Assuming you want to create a legend item for the adminBoundaryStyle with a label "Admin Boundary"
-  // Add a horizontal line separator
-  var separator = document.createElement('hr');
-  separator.className = 'legend-separator';
-  legend.appendChild(separator);
+// Add a horizontal line separator
+var separator = document.createElement('hr');
+separator.className = 'legend-separator';
+legend.appendChild(separator);
 
 var legendAdminBounday = document.createElement('h3');
-legendAdminBounday.innerHTML='Upazila Boundary'
+legendAdminBounday.innerHTML = 'Upazila Boundary'
 legend.appendChild(legendAdminBounday);
 createLegendItem('Admin Boundary', 'rgba(200, 200, 200, 1)');
 
-  export {powerLineStyle,substationStyle,adminBoundaryStyle,defaultStyle,glowingStyle,getRandomColor,customColors,styleFunction,getPolygonStyle,multiVarPointStyleFunction}
+export { powerLineStyle, substationStyle, adminBoundaryStyle, defaultStyle, glowingStyle, getRandomColor, customColors, styleFunction, getPolygonStyle, multiVarPointStyleFunction }
