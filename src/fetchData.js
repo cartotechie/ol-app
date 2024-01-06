@@ -57,6 +57,7 @@ import { textPointStyle, customSVGPointStyle, starPointStyle, crossPointStyle, s
 import { classesValues } from './modules/dataStore'
 
 const geoJsonEndpoint = './data/powertowers.json';
+//const geoJsonEndpoint ='/worldbank/geojsonapi/'
 const map = initMap();
 let searchTerm
 let selected //= 'Sylhet Division';
@@ -90,7 +91,7 @@ const selectedPolyStyle = (feature) => {
     }
 
 
-    return adminBoundaryStyle
+    return defaultStyle
 }
 function updateCountDisplay(element, count, label) {
     element.textContent = `${count} ${label}`;
@@ -116,7 +117,7 @@ const getLayers = async () => {
             //console.log(responseJSON)
             const layer = new VectorLayer({
                 visible: true,
-                style: selectedPolyStyle,
+                //style: selectedPolyStyle,
                 source: new VectorSource({
                     features: new GeoJSON().readFeatures(responseJSON[1]),
 
@@ -151,7 +152,7 @@ const getLayers = async () => {
         const layerGroup = new LayerGroup({
             layers: [
                 new LayerGroup({
-                    layers: subLayers.reverse(), // Reverse the order if needed
+                    layers: subLayers.reverse(), // Reverse the order
                     title: 'Classes'
                 })
             ],

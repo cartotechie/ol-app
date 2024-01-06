@@ -62,16 +62,30 @@ import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
 // Display loading indicator
 document.getElementById("loadingIndicator").style.display = "block";
 
+function resetLayerHighlights(map) {
+    const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
+    const adminLayerFeatures = map.getAllLayers()[1].getSource().getFeatures();
+
+    powerLayerFeatures.forEach(unsetHighlight);
+    adminLayerFeatures.forEach(unsetHighlight);
+
+   
+    
+
+    function unsetHighlight(feature) {
+        feature.setStyle(null); // This removes the style from the feature
+    }
+
+
+}
+
 
 
 
 
 let searchTerm
 let selected //= 'Sylhet Division';
-let selectedDistrict //= 'Sylhet District';
-let valueUpazila
-let selectedDistricts = [];
-let selectedUpezillas = [];
+
 
 
 const selectedPointStyle = (feature) => {
@@ -126,9 +140,6 @@ const highlightFeature = (feature) => {
 };
 
 // Function to unset (remove) highlight style from a feature
-const unsetHighlight = (feature) => {
-    feature.setStyle(null); // This removes the style from the feature
-};
 
 /****************************************************************************************** */
 
@@ -162,7 +173,9 @@ function updateCountDisplay(element, count, label) {
 
 getLayers()
 
-
+map.on('click', function(event) {
+    handleMapInfoBoxClick(event, map)
+});
 
 
 /************************************************************************ */
@@ -171,13 +184,11 @@ document.getElementById('clear-icon').addEventListener('click', function () {
     var searchInput = document.getElementById('searchInput');
     searchInput.value = '';
     document.querySelector('.clear-icon').style.display = 'none';
+    const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
+    const adminLayerFeatures = map.getAllLayers()[1].getSource().getFeatures();
     clearTable()
-    
-    const powerLayerfeatures = map.getAllLayers()[2].getSource().getFeatures();
-    const adminLayerFeatures =map.getAllLayers()[1].getSource().getFeatures();
-    powerLayerfeatures.forEach(unsetHighlight);
-        adminLayerFeatures.forEach(unsetHighlight);
-    generateTable(createUniqueAttributes(powerLayerfeatures, 'name_en'))
+    resetLayerHighlights(map)
+    generateTable(createUniqueAttributes(powerLayerFeatures, 'name_en'))
 });
 
 function getSearchTerm(event) {
@@ -185,16 +196,7 @@ function getSearchTerm(event) {
     var clearIcon = document.querySelector('.clear-icon');
     clearIcon.style.display = this.value.length ? 'block' : 'none';
     const layer = map.getAllLayers()[2]
-    const features = layer.getSource().getFeatures().map(function (feature) {
-
-
-        return {
-            division: feature.get(province),
-            district: feature.get(commune),
-            upezilla: feature.get(upezilla),
-        };
-    });
-
+   
     // Get unique values for province, commune, and upezila
     const uniqueProvinces = Array.from(new Set(layer.getSource().getFeatures().map(function (feature) {
         return feature.get(province);
@@ -291,8 +293,7 @@ function onclickDivision(term) {
         const filteredFeaturesDist = features.filter(feature => feature.get(commune) === searchTerm);
         const filteredFeaturesUpe = features.filter(feature => feature.get(upezilla) === searchTerm);
 
-        features.forEach(unsetHighlight);
-        adminLayerFeatures.forEach(unsetHighlight);
+        resetLayerHighlights(map)
 
         // Apply highlight style to the filtered features
         filteredFeatures.forEach(selectedPointStyle);
@@ -509,9 +510,48 @@ function onclickDivision(term) {
 }
 
 
+function highlightPolygon(feature) {
+    // Customize the highlight style based on your requirements
+    var highlightStyle = new Style({
+        fill: new Fill({
+            color: 'rgba(255, 255, 0, 0.4)', // Highlighted fill color (yellow with 40% opacity)
+        }),
+        stroke: new Stroke({
+            color: 'red', // Highlighted stroke color (red)
+            width: 2, // Highlighted stroke width
+        }),
+    });
+
+    // Apply the highlight style to the selected feature
+    feature.setStyle(highlightStyle);
+
+    // Reset the style after the specified duration
+    /*setTimeout(function() {
+        feature.setStyle(null); // Reset to the default style
+    }, 2000);*/
+}
 
 
+map.on('click', function(event) {
+    var clickedFeature = null;
+    const powerLayerfeatures = map.getAllLayers()[2].getSource().getFeatures();
+    clearTable()
+    
+    resetLayerHighlights(map)
+    
+    const features=[]
+    map.forEachFeatureAtPixel(event.pixel, function(feature) {
+         features.push(feature)
+        if (feature.getGeometry().getType() === 'Polygon') {
+            clickedFeature = feature;
+            //generateTable(createUniqueAttributes(features, 'name_en'))
+            highlightPolygon(feature);
+        }
+    });
 
-
-
-
+    if (clickedFeature) {
+        // Zoom to the clicked feature
+        var extent = clickedFeature.getGeometry().getExtent();
+        map.getView().fit(extent, map.getSize(), { duration: 1000 });
+    }
+});
