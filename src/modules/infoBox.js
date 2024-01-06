@@ -81,7 +81,7 @@
 
             function zoomToClickedFeature(event, map) {
                 var coordinate = event.coordinate;
-            
+                clearInfoBox()
                 // Get features at the clicked pixel
                 var features = map.getFeaturesAtPixel(event.pixel);
                 console.log(features)
@@ -129,5 +129,10 @@
                 }
             }
 
+            function clearInfoBox() {
+                var infoBox = document.getElementById('info-box');
+                infoBox.style.display = 'none';
+            }
 
-            export { handleMapInfoBoxClick,highlightPoint,zoomToClickedFeature}
+
+            export { handleMapInfoBoxClick,highlightPoint,zoomToClickedFeature,clearInfoBox}

@@ -6,7 +6,7 @@ import {
     adminBoundeleselectedStyle,
     multiVarPointStyleFunction, defaultStyle, styleFunction, adminBoundaryStyle
 } from './modules/style'
-import { handleMapInfoBoxClick } from './modules/infoBox'
+import { handleMapInfoBoxClick,clearInfoBox } from './modules/infoBox'
 import {
     getOptionDOMValues
 } from './modules/domElements';
@@ -70,10 +70,11 @@ function resetLayerHighlights(map) {
     adminLayerFeatures.forEach(unsetHighlight);
 
    
-    
+     
 
     function unsetHighlight(feature) {
         feature.setStyle(null); // This removes the style from the feature
+        
     }
 
 
@@ -187,12 +188,25 @@ document.getElementById('clear-icon').addEventListener('click', function () {
     const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
     const adminLayerFeatures = map.getAllLayers()[1].getSource().getFeatures();
     clearTable()
+    clearInfoBox()
     resetLayerHighlights(map)
+    clearDivCharts()
+        clearDistCharts()
+        clearUpazilaCharts()
+        clearTable();
+
     generateTable(createUniqueAttributes(powerLayerFeatures, 'name_en'))
 });
 
 function getSearchTerm(event) {
-    event.preventDefault
+
+    event.preventDefault()
+    clearInfoBox()
+    clearDivCharts()
+        clearDistCharts()
+        clearUpazilaCharts()
+        clearTable();
+
     var clearIcon = document.querySelector('.clear-icon');
     clearIcon.style.display = this.value.length ? 'block' : 'none';
     const layer = map.getAllLayers()[2]
@@ -254,6 +268,12 @@ document.getElementById('searchInput').addEventListener('input', getSearchTerm)
 
 
 function onclickDivision(term) {
+    clearInfoBox()
+    resetLayerHighlights(map)
+    clearDivCharts()
+        clearDistCharts()
+        clearUpazilaCharts()
+        clearTable();
 
 
     const layer = map.getAllLayers()[2]
@@ -284,31 +304,28 @@ function onclickDivision(term) {
             padding: [10, 10, 10, 10],
             duration: 1000
         });
-        // Create charts
-        clearDivCharts()
-        clearDistCharts()
-        clearUpazilaCharts()
-
+       
+        
         const filteredFeaturesDiv = features.filter(feature => feature.get(province) === searchTerm);
         const filteredFeaturesDist = features.filter(feature => feature.get(commune) === searchTerm);
         const filteredFeaturesUpe = features.filter(feature => feature.get(upezilla) === searchTerm);
 
-        resetLayerHighlights(map)
+        
 
         // Apply highlight style to the filtered features
         filteredFeatures.forEach(selectedPointStyle);
-        filteredFeaturesAd.forEach(selectedPolyStyle)
+        filteredFeaturesAd.forEach(highlightPolygon)
 
 
         if (filteredFeaturesDiv.length > 0) {
 
 
-            clearTable();
+            
             generateTable(createUniqueAttributes(filteredFeaturesDiv, 'name_en'))
 
             for (let i = 0; i < divName.length; i++) {
                 divName[i].textContent = ''
-                divName[i].textContent = searchTerm; // You can perform actions on each element here
+                divName[i].textContent = searchTerm; 
             }
 
             for (let i = 0; i < distName.length; i++) {
@@ -346,7 +363,7 @@ function onclickDivision(term) {
         }
         if (filteredFeaturesDist.length > 0) {
 
-            clearTable();
+            
             generateTable(createUniqueAttributes(filteredFeaturesDist, 'name_en'))
             // Assuming you have already defined filteredFeaturesDist
             const uniqueValuesSetDiv = new Set();
@@ -414,7 +431,7 @@ function onclickDivision(term) {
 
 
         if (filteredFeaturesUpe.length > 0) {
-            clearTable();
+            
             generateTable(createUniqueAttributes(filteredFeaturesUpe, 'name_en'))
 
 
@@ -535,7 +552,6 @@ function highlightPolygon(feature) {
 map.on('click', function(event) {
     var clickedFeature = null;
     const powerLayerfeatures = map.getAllLayers()[2].getSource().getFeatures();
-    clearTable()
     
     resetLayerHighlights(map)
     

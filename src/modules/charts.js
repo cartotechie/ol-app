@@ -96,6 +96,26 @@ function clearDivCharts() {
         existingChart.destroy();
       }
     });
+
+
+    //clear charts header name
+    const divName = document.getElementsByClassName('div-name')
+    const distName = document.getElementsByClassName('dist-name')
+    const upazilaName = document.getElementsByClassName('upazila-name')
+
+    for (let i = 0; i < divName.length; i++) {
+      divName[i].textContent = ''
+     
+  }
+
+  for (let i = 0; i < distName.length; i++) {
+      distName[i].textContent = ''
+
+  }
+  for (let i = 0; i < upazilaName.length; i++) {
+      upazilaName[i].textContent = ''
+
+  }
 }
 
 
