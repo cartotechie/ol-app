@@ -6,6 +6,7 @@ import tableFunctions from './tables/tablesDOMFunctions';
 
 const generateTable = (features) => {
     const table = document.createElement('table');
+    
 
     // Create header row
     const headerRow = table.insertRow();

@@ -10,6 +10,7 @@ import {aggregateFeaturesByAtt,updateObjectKeyValue} from './processing'
 
 function generateChartData(features) {
   const valueCounts = aggregateFeaturesByAtt(features)
+  console.log(valueCounts)
 
   return {
     class: createChartData('Flood exposure', 'class', valueCounts),
@@ -22,6 +23,7 @@ function generateChartData(features) {
 }
 
 function createChartData(label, key, valueCounts) {
+  console.log(valueCounts)
   
   //console.log(valueCounts)
   const objectKeyValue = updateObjectKeyValue(key, valueCounts, classVariableValues)
@@ -140,4 +142,54 @@ function clearUpazilaCharts() {
 };
 
 
-export { generateChartData, createChartData, createChart, clearCharts, featureKeys, clearUpazilaCharts, clearDistCharts, clearDivCharts }
+function displayUpezillasChart(features, selectedUpeName) {
+  ////Charts
+  for (let i = 0; i < upazilaName.length; i++) {
+      upazilaName[i].textContent = ''
+      upazilaName[i].textContent = selectedUpeName; // You can perform actions on each element here
+  }
+  let filteredDataUpe = generateChartData(features)
+  createChart(`graph_upazila_class`, `bar`, filteredDataUpe.class);
+  createChart(`graph_upazila_class_1`, `bar`, filteredDataUpe.class_1);
+  createChart(`graph_upazila_class_1_13`, `bar`, filteredDataUpe.class_1_13);
+  createChart(`graph_upazila_class_1_14`, `bar`, filteredDataUpe.class_1_14);
+  createChart(`graph_upazila_class_1_15`, `bar`, filteredDataUpe.class_1_15);
+  createChart(`graph_upazila_class_12`, `bar`, filteredDataUpe.class_12);
+}
+
+function displayDistrictChart(features, selectedDistName) {
+  ////Charts
+  for (let i = 0; i < distName.length; i++) {
+      distName[i].textContent = ''
+      distName[i].textContent = selectedDistName; // You can perform actions on each element here
+  }
+
+  let filteredDataDist = generateChartData(features)
+
+  createChart(`graph_dist_class`, `bar`, filteredDataDist.class);
+  createChart(`graph_dist_class_1`, `bar`, filteredDataDist.class_1);
+  createChart(`graph_dist_class_1_13`, `bar`, filteredDataDist.class_1_13);
+  createChart(`graph_dist_class_1_14`, `bar`, filteredDataDist.class_1_14);
+  createChart(`graph_dist_class_1_15`, `bar`, filteredDataDist.class_1_15);
+  createChart(`graph_dist_class_12`, `bar`, filteredDataDist.class_12);
+
+}
+
+function displayDivisionChart(features, selectedDivName) {
+  ////Charts
+  for (let i = 0; i < divName.length; i++) {
+      divName[i].textContent = ''
+      divName[i].textContent = selectedDivName; // You can perform actions on each element here
+  }
+
+  let filteredDataDiv = generateChartData(features);
+  console.log(features)
+  createChart(`graph_div_class`, `bar`, filteredDataDiv.class);
+  createChart(`graph_div_class_1`, `bar`, filteredDataDiv.class_1);
+  createChart(`graph_div_class_1_13`, `bar`, filteredDataDiv.class_1_13);
+  createChart(`graph_div_class_1_14`, `bar`, filteredDataDiv.class_1_14);
+  createChart(`graph_div_class_1_15`, `bar`, filteredDataDiv.class_1_15);
+  createChart(`graph_div_class_12`, `bar`, filteredDataDiv.class_12);
+}
+
+export { generateChartData, createChartData, createChart, clearCharts, featureKeys, clearUpazilaCharts, clearDistCharts, clearDivCharts,displayDistrictChart,displayDivisionChart,displayUpezillasChart }

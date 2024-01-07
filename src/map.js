@@ -6,7 +6,7 @@ import {
     adminBoundeleselectedStyle,
     multiVarPointStyleFunction, defaultStyle, styleFunction, adminBoundaryStyle
 } from './modules/style'
-import { handleMapInfoBoxClick,clearInfoBox } from './modules/infoBox'
+import { handleMapInfoBoxClick, clearInfoBox } from './modules/infoBox'
 import {
     getOptionDOMValues
 } from './modules/domElements';
@@ -39,9 +39,7 @@ import {
 import GeometryCollection from 'ol/geom/GeometryCollection';
 import * as olExtent from 'ol/extent';
 import {
-    generateChartData,
-    createChartData,
-    createChart,
+    displayDistrictChart, displayDivisionChart, displayUpezillasChart,
     clearUpazilaCharts,
     clearDistCharts,
     clearDivCharts
@@ -56,6 +54,7 @@ import { classesValues } from './modules/dataStore'
 import { getLayers, map } from './fetchData';
 import { autocomplete } from './modules/searchAutoComplete';
 import { Fill, Stroke, Style, Text, Circle, RegularShape } from "ol/style";
+import { sortKeysInObject } from './modules/sorting';
 
 
 
@@ -69,12 +68,12 @@ function resetLayerHighlights(map) {
     powerLayerFeatures.forEach(unsetHighlight);
     adminLayerFeatures.forEach(unsetHighlight);
 
-   
-     
+
+
 
     function unsetHighlight(feature) {
         feature.setStyle(null); // This removes the style from the feature
-        
+
     }
 
 
@@ -101,9 +100,9 @@ const selectedPointStyle = (feature) => {
        
     }*/
 
-   
-        feature.setStyle(glowingStyle(feature));
-    
+
+    feature.setStyle(glowingStyle(feature));
+
     //return styleFunction(feature)
 }
 const selectedPolyStyle = (feature) => {
@@ -174,11 +173,6 @@ function updateCountDisplay(element, count, label) {
 
 getLayers()
 
-map.on('click', function(event) {
-    handleMapInfoBoxClick(event, map)
-});
-
-
 /************************************************************************ */
 
 document.getElementById('clear-icon').addEventListener('click', function () {
@@ -191,9 +185,9 @@ document.getElementById('clear-icon').addEventListener('click', function () {
     clearInfoBox()
     resetLayerHighlights(map)
     clearDivCharts()
-        clearDistCharts()
-        clearUpazilaCharts()
-        clearTable();
+    clearDistCharts()
+    clearUpazilaCharts()
+    clearTable();
 
     generateTable(createUniqueAttributes(powerLayerFeatures, 'name_en'))
 });
@@ -203,14 +197,14 @@ function getSearchTerm(event) {
     event.preventDefault()
     clearInfoBox()
     clearDivCharts()
-        clearDistCharts()
-        clearUpazilaCharts()
-        clearTable();
+    clearDistCharts()
+    clearUpazilaCharts()
+    clearTable();
 
     var clearIcon = document.querySelector('.clear-icon');
     clearIcon.style.display = this.value.length ? 'block' : 'none';
     const layer = map.getAllLayers()[2]
-   
+
     // Get unique values for province, commune, and upezila
     const uniqueProvinces = Array.from(new Set(layer.getSource().getFeatures().map(function (feature) {
         return feature.get(province);
@@ -271,9 +265,9 @@ function onclickDivision(term) {
     clearInfoBox()
     resetLayerHighlights(map)
     clearDivCharts()
-        clearDistCharts()
-        clearUpazilaCharts()
-        clearTable();
+    clearDistCharts()
+    clearUpazilaCharts()
+    clearTable();
 
 
     const layer = map.getAllLayers()[2]
@@ -304,13 +298,13 @@ function onclickDivision(term) {
             padding: [10, 10, 10, 10],
             duration: 1000
         });
-       
-        
+
+
         const filteredFeaturesDiv = features.filter(feature => feature.get(province) === searchTerm);
         const filteredFeaturesDist = features.filter(feature => feature.get(commune) === searchTerm);
         const filteredFeaturesUpe = features.filter(feature => feature.get(upezilla) === searchTerm);
 
-        
+
 
         // Apply highlight style to the filtered features
         filteredFeatures.forEach(selectedPointStyle);
@@ -318,26 +312,30 @@ function onclickDivision(term) {
 
 
         if (filteredFeaturesDiv.length > 0) {
+            // let filteredData = features.filter(feature => feature.get(province) === uniquefilteredDataDiv[0])
 
 
-            
+            const uniqueValuesSetDiv = new Set();
+
+            // Iterate through filteredFeaturesDist to get unique province values
+            filteredFeaturesDiv.forEach(feature => {
+                //console.log(feature.get(province));
+                const attributeValue = feature.get(province);
+                const attributeValue1 = feature.get(commune);
+
+                // Check if the attributeValue is defined (not undefined)
+                if (attributeValue !== undefined) {
+                    uniqueValuesSetDiv.add(attributeValue);
+                    uniqueValuesSetDiv.add(attributeValue1);
+                }
+            });
+
+            // Convert the Set to an array
+            let uniquefilteredDataDiv = Array.from(uniqueValuesSetDiv);
+
+            displayDivisionChart(filteredFeaturesDiv, uniquefilteredDataDiv[0])
+
             generateTable(createUniqueAttributes(filteredFeaturesDiv, 'name_en'))
-
-            for (let i = 0; i < divName.length; i++) {
-                divName[i].textContent = ''
-                divName[i].textContent = searchTerm; 
-            }
-
-            for (let i = 0; i < distName.length; i++) {
-                distName[i].textContent = ''
-
-            }
-            for (let i = 0; i < upazilaName.length; i++) {
-                upazilaName[i].textContent = ''
-
-            }
-
-
 
 
             for (let i = 0; i < featureKeys.length; i++) {
@@ -352,72 +350,38 @@ function onclickDivision(term) {
             }
 
 
-            let filteredDataDiv = generateChartData(filteredFeaturesDiv);
-            createChart(`graph_div_class`, `bar`, filteredDataDiv.class);
-            createChart(`graph_div_class_1`, `bar`, filteredDataDiv.class_1);
-            createChart(`graph_div_class_1_13`, `bar`, filteredDataDiv.class_1_13);
-            createChart(`graph_div_class_1_14`, `bar`, filteredDataDiv.class_1_14);
-            createChart(`graph_div_class_1_15`, `bar`, filteredDataDiv.class_1_15);
-            createChart(`graph_div_class_12`, `bar`, filteredDataDiv.class_12);
 
         }
         if (filteredFeaturesDist.length > 0) {
 
-            
+
             generateTable(createUniqueAttributes(filteredFeaturesDist, 'name_en'))
-            // Assuming you have already defined filteredFeaturesDist
+
             const uniqueValuesSetDiv = new Set();
 
             // Iterate through filteredFeaturesDist to get unique province values
             filteredFeaturesDist.forEach(feature => {
                 //console.log(feature.get(province));
                 const attributeValue = feature.get(province);
+                const attributeValue1 = feature.get(commune);
 
                 // Check if the attributeValue is defined (not undefined)
                 if (attributeValue !== undefined) {
                     uniqueValuesSetDiv.add(attributeValue);
+                    uniqueValuesSetDiv.add(attributeValue1);
                 }
             });
 
             // Convert the Set to an array
             let uniquefilteredDataDiv = Array.from(uniqueValuesSetDiv);
 
-            // Now, uniquefilteredDataDiv contains an array of unique province values
-            //console.log(uniquefilteredDataDiv);
-
-            for (let i = 0; i < divName.length; i++) {
-                divName[i].textContent = ''
-                divName[i].textContent = uniquefilteredDataDiv[0]; // You can perform actions on each element here
-            }
-
-            for (let i = 0; i < distName.length; i++) {
-                distName[i].textContent = ''
-                distName[i].textContent = searchTerm; // You can perform actions on each element here
-            }
-            for (let i = 0; i < upazilaName.length; i++) {
-                upazilaName[i].textContent = ''
-
-            }
 
 
             let filteredData = features.filter(feature => feature.get(province) === uniquefilteredDataDiv[0])
 
-            let filteredDataDiv = generateChartData(filteredData);
-            createChart(`graph_div_class`, `bar`, filteredDataDiv.class);
-            createChart(`graph_div_class_1`, `bar`, filteredDataDiv.class_1);
-            createChart(`graph_div_class_1_13`, `bar`, filteredDataDiv.class_1_13);
-            createChart(`graph_div_class_1_14`, `bar`, filteredDataDiv.class_1_14);
-            createChart(`graph_div_class_1_15`, `bar`, filteredDataDiv.class_1_15);
-            createChart(`graph_div_class_12`, `bar`, filteredDataDiv.class_12);
 
-            let filteredDataDist = generateChartData(filteredFeaturesDist)
-
-            createChart(`graph_dist_class`, `bar`, filteredDataDist.class);
-            createChart(`graph_dist_class_1`, `bar`, filteredDataDist.class_1);
-            createChart(`graph_dist_class_1_13`, `bar`, filteredDataDist.class_1_13);
-            createChart(`graph_dist_class_1_14`, `bar`, filteredDataDist.class_1_14);
-            createChart(`graph_dist_class_1_15`, `bar`, filteredDataDist.class_1_15);
-            createChart(`graph_dist_class_12`, `bar`, filteredDataDist.class_12);
+            displayDistrictChart(filteredFeaturesDist, uniquefilteredDataDiv[1])
+            displayDivisionChart(filteredData, uniquefilteredDataDiv[0])
 
             // Statistical tables
             // Append the generated table to the summaryStatsElement
@@ -431,10 +395,8 @@ function onclickDivision(term) {
 
 
         if (filteredFeaturesUpe.length > 0) {
-            
+
             generateTable(createUniqueAttributes(filteredFeaturesUpe, 'name_en'))
-
-
 
             // Assuming you have already defined filteredFeaturesDist
             const uniqueValuesSetDiv = new Set();
@@ -457,53 +419,13 @@ function onclickDivision(term) {
             // Convert the Set to an array
             let uniquefilteredDataDiv = Array.from(uniqueValuesSetDiv);
 
-            // Now, uniquefilteredDataDiv contains an array of unique province values
-            //console.log(uniquefilteredDataDiv);
-            for (let i = 0; i < divName.length; i++) {
-                divName[i].textContent = ''
-                divName[i].textContent = uniquefilteredDataDiv[0]; // You can perform actions on each element here
-            }
-
-            for (let i = 0; i < distName.length; i++) {
-                distName[i].textContent = ''
-                distName[i].textContent = uniquefilteredDataDiv[1]; // You can perform actions on each element here
-            }
             let filteredDataDivUn = features.filter(feature => feature.get(province) === uniquefilteredDataDiv[0])
-
-            let filteredDataDiv = generateChartData(filteredDataDivUn);
-            createChart(`graph_div_class`, `bar`, filteredDataDiv.class);
-            createChart(`graph_div_class_1`, `bar`, filteredDataDiv.class_1);
-            createChart(`graph_div_class_1_13`, `bar`, filteredDataDiv.class_1_13);
-            createChart(`graph_div_class_1_14`, `bar`, filteredDataDiv.class_1_14);
-            createChart(`graph_div_class_1_15`, `bar`, filteredDataDiv.class_1_15);
-            createChart(`graph_div_class_12`, `bar`, filteredDataDiv.class_12);
 
             let filteredDataComUn = features.filter(feature => feature.get(commune) === uniquefilteredDataDiv[1])
 
-
-            let filteredDataDist = generateChartData(filteredDataComUn)
-
-            createChart(`graph_dist_class`, `bar`, filteredDataDist.class);
-            createChart(`graph_dist_class_1`, `bar`, filteredDataDist.class_1);
-            createChart(`graph_dist_class_1_13`, `bar`, filteredDataDist.class_1_13);
-            createChart(`graph_dist_class_1_14`, `bar`, filteredDataDist.class_1_14);
-            createChart(`graph_dist_class_1_15`, `bar`, filteredDataDist.class_1_15);
-            createChart(`graph_dist_class_12`, `bar`, filteredDataDist.class_12);
-
-
-            for (let i = 0; i < upazilaName.length; i++) {
-                upazilaName[i].textContent = ''
-                upazilaName[i].textContent = uniquefilteredDataDiv[2]; // You can perform actions on each element here
-            }
-            let filteredDataUpe = generateChartData(filteredFeaturesUpe)
-            createChart(`graph_upazila_class`, `bar`, filteredDataUpe.class);
-            createChart(`graph_upazila_class_1`, `bar`, filteredDataUpe.class_1);
-            createChart(`graph_upazila_class_1_13`, `bar`, filteredDataUpe.class_1_13);
-            createChart(`graph_upazila_class_1_14`, `bar`, filteredDataUpe.class_1_14);
-            createChart(`graph_upazila_class_1_15`, `bar`, filteredDataUpe.class_1_15);
-            createChart(`graph_upazila_class_12`, `bar`, filteredDataUpe.class_12);
-
-
+            displayUpezillasChart(filteredFeaturesUpe, uniquefilteredDataDiv[2])
+            displayDistrictChart(filteredDataComUn, uniquefilteredDataDiv[1])
+            displayDivisionChart(filteredDataDivUn, uniquefilteredDataDiv[0])
 
             // Statistical tables
             // Append the generated table to the summaryStatsElement
@@ -549,20 +471,60 @@ function highlightPolygon(feature) {
 }
 
 
-map.on('click', function(event) {
+map.on('click', function (event) {
     var clickedFeature = null;
-    const powerLayerfeatures = map.getAllLayers()[2].getSource().getFeatures();
-    
-    resetLayerHighlights(map)
-    
-    const features=[]
-    map.forEachFeatureAtPixel(event.pixel, function(feature) {
-         features.push(feature)
+    const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
+
+
+    //resetLayerHighlights(map)
+    clearDivCharts()
+    clearDistCharts()
+    clearUpazilaCharts()
+    clearTable();
+
+
+    const features = []
+    console.log('features')
+    console.log(features)
+
+    map.forEachFeatureAtPixel(event.pixel, function (feature) {
+
         if (feature.getGeometry().getType() === 'Polygon') {
             clickedFeature = feature;
-            //generateTable(createUniqueAttributes(features, 'name_en'))
+            features.push(feature.get(upezilla))
+
             highlightPolygon(feature);
+
+            /////////
+            const selectedUpeName = features[0]
+            const selectedDistName = features[2]
+            const selectedDivName = features[1]
+
+            const filteredFeaturesUpe = powerLayerFeatures.filter(feature => feature.get(upezilla) === selectedUpeName)
+            const filteredFeaturesDiv = powerLayerFeatures.filter(feature => feature.get(province) === selectedDivName)
+            const filteredFeaturesDist = powerLayerFeatures.filter(feature => feature.get(commune) === selectedDistName)
+
+
+
+            if (filteredFeaturesUpe.length > 0 & filteredFeaturesDist.length > 0 & filteredFeaturesDiv.length > 0) {
+                generateTable(createUniqueAttributes(filteredFeaturesUpe, 'name_en'))
+                displayUpezillasChart(filteredFeaturesUpe, selectedUpeName)
+                displayDistrictChart(filteredFeaturesDist, selectedDistName)
+                displayDivisionChart(filteredFeaturesDiv, selectedDivName)
+
+            } else {
+                clearInfoBox()
+                resetLayerHighlights(map)
+                clearDivCharts()
+                clearDistCharts()
+                clearUpazilaCharts()
+                clearTable();
+
+                console.error('No feature selected')
+            }
+
         }
+
     });
 
     if (clickedFeature) {
@@ -571,3 +533,7 @@ map.on('click', function(event) {
         map.getView().fit(extent, map.getSize(), { duration: 1000 });
     }
 });
+
+/*map.on('click', function (event) {
+    handleMapInfoBoxClick(event, map)
+});*/
