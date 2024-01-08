@@ -25,12 +25,12 @@ import {
     province,
     commune,
     upezilla,
-    featureKeys
+    featureKeys, readableClassNames
 } from './modules/variables'
 
 import {
     generateTable,
-    clearTable, generateTableDataHeader, generateTable1, generateTableDataRow
+    clearTable, generateTableDataHeader, generateTable1, generateTableDataRow, generatetableDataObject
 } from './modules/table'
 
 import {
@@ -105,20 +105,6 @@ const selectedPointStyle = (feature) => {
 
     //return styleFunction(feature)
 }
-const selectedPolyStyle = (feature) => {
-
-    /*if (feature.get(province) === selected || feature.get(commune) === selected || feature.get('name_en') === selected) {
-        setTimeout(() => {
-            feature.setStyle(defaultStyle);
-        }, 5000); // 5000 milliseconds (5 seconds)
-        //console.log('selected')
-        return defaultStyle
-    }*/
-    //return adminBoundaryStyle
-
-    feature.setStyle(defaultStyle)
-}
-
 
 
 const highlightStyle = new Style({
@@ -181,7 +167,7 @@ document.getElementById('clear-icon').addEventListener('click', function () {
     document.querySelector('.clear-icon').style.display = 'none';
     const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
     const adminLayerFeatures = map.getAllLayers()[1].getSource().getFeatures();
-    clearTable()
+
     clearInfoBox()
     resetLayerHighlights(map)
     clearDivCharts()
@@ -196,6 +182,7 @@ function getSearchTerm(event) {
 
     event.preventDefault()
     clearInfoBox()
+    resetLayerHighlights(map)
     clearDivCharts()
     clearDistCharts()
     clearUpazilaCharts()
@@ -272,6 +259,7 @@ function onclickDivision(term) {
 
     const layer = map.getAllLayers()[2]
     const adminLayerFeatures = map.getAllLayers()[1].getSource().getFeatures()
+    const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
     const features = layer.getSource().getFeatures();
     const summaryStatsElement = document.getElementById('summary-stats')
 
@@ -281,9 +269,7 @@ function onclickDivision(term) {
 
     // adminName.innerHTML = `${searchTerm}`
 
-    const divName = document.getElementsByClassName('div-name')
-    const distName = document.getElementsByClassName('dist-name')
-    const upazilaName = document.getElementsByClassName('upazila-name')
+
 
     //const filteredFeatures = features.filter(feature => feature.get(province)=== searchTerm||feature.get(commune)=== searchTerm||feature.get(upezilla) === searchTerm);
     const filteredFeatures = features.filter(feature => feature.get(province) === searchTerm || feature.get(commune) === searchTerm || feature.get(upezilla) === searchTerm);
@@ -338,17 +324,27 @@ function onclickDivision(term) {
             generateTable(createUniqueAttributes(filteredFeaturesDiv, 'name_en'))
 
 
-            for (let i = 0; i < featureKeys.length; i++) {
-
+            for (const featureKey in readableClassNames) {
+                const readableFeatureName = readableClassNames[featureKey];
+            
+                // Create a new table for each feature
+                const table = document.createElement('table');
+            
+                // Append the label before the table
+                const labelElement = document.createElement('h3');
+                labelElement.innerHTML = `${readableFeatureName}`;
+                summaryStatsElement.appendChild(labelElement);
+            
                 // Statistical tables
                 // Append the generated table to the summaryStatsElement
-                table.appendChild(generateTableDataHeader(filteredFeaturesDiv, table, featureKeys[i]));
-                const generatedTableRow = generateTableDataRow(filteredFeaturesDiv, searchTerm, table, featureKeys[i]);
+                table.appendChild(generateTableDataHeader(filteredFeaturesDiv, table, featureKey));
+                const generatedTableRow = generateTableDataRow(filteredFeaturesDiv, searchTerm, table, featureKey);
                 table.appendChild(generatedTableRow);
+            
+                // Append the table to the summaryStatsElement
                 summaryStatsElement.appendChild(table);
-
             }
-
+            
 
 
         }
@@ -464,10 +460,7 @@ function highlightPolygon(feature) {
     // Apply the highlight style to the selected feature
     feature.setStyle(highlightStyle);
 
-    // Reset the style after the specified duration
-    /*setTimeout(function() {
-        feature.setStyle(null); // Reset to the default style
-    }, 2000);*/
+
 }
 
 
@@ -476,7 +469,7 @@ map.on('click', function (event) {
     const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
 
 
-    //resetLayerHighlights(map)
+    resetLayerHighlights(map)
     clearDivCharts()
     clearDistCharts()
     clearUpazilaCharts()
@@ -534,6 +527,8 @@ map.on('click', function (event) {
     }
 });
 
-/*map.on('click', function (event) {
+map.on('click', function (event) {
     handleMapInfoBoxClick(event, map)
-});*/
+});
+//const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
+

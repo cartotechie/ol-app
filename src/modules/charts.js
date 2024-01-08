@@ -143,6 +143,9 @@ function clearUpazilaCharts() {
 
 
 function displayUpezillasChart(features, selectedUpeName) {
+  const divName = document.getElementsByClassName('div-name')
+  const distName = document.getElementsByClassName('dist-name')
+  const upazilaName = document.getElementsByClassName('upazila-name')
   ////Charts
   for (let i = 0; i < upazilaName.length; i++) {
       upazilaName[i].textContent = ''
@@ -158,6 +161,9 @@ function displayUpezillasChart(features, selectedUpeName) {
 }
 
 function displayDistrictChart(features, selectedDistName) {
+  const divName = document.getElementsByClassName('div-name')
+  const distName = document.getElementsByClassName('dist-name')
+  const upazilaName = document.getElementsByClassName('upazila-name')
   ////Charts
   for (let i = 0; i < distName.length; i++) {
       distName[i].textContent = ''
@@ -176,6 +182,9 @@ function displayDistrictChart(features, selectedDistName) {
 }
 
 function displayDivisionChart(features, selectedDivName) {
+  const divName = document.getElementsByClassName('div-name')
+  const distName = document.getElementsByClassName('dist-name')
+  const upazilaName = document.getElementsByClassName('upazila-name')
   ////Charts
   for (let i = 0; i < divName.length; i++) {
       divName[i].textContent = ''

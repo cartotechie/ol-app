@@ -32,9 +32,8 @@ import {
 
 import {
     generateTable,
-    clearTable, generateTableDataHeader, generateTable1, generateTableDataRow
+    clearTable, generateTableDataHeader, generateTable1, generateTableDataRow, generatetableDataObject
 } from './modules/table'
-
 import {
     generateCharts
 } from './modules/charts'
@@ -48,6 +47,10 @@ import {
     clearDistCharts,
     clearDivCharts
 } from './modules/charts'
+import {
+     readableClassNames
+} from './modules/variables'
+
 import {
     countFeatures,
     createUniqueAttributes,
@@ -199,12 +202,80 @@ const getLayers = async () => {
             //console.log(features)
 
             generateTable(createUniqueAttributes(features, 'name_en'))
+            generateTable1()
             // Clear existing charts
             clearDivCharts();
             clearDistCharts()
             clearUpazilaCharts()
-
-
+            /**************** 
+            const adminLayerFeatures = map.getAllLayers()[1].getSource().getFeatures()
+            const powerLayerFeatures = map.getAllLayers()[1].getSource().getFeatures();
+            console.log(generatetableDataObject(powerLayerFeatures, featureKeys))
+            featureKeys.forEach(featureKey => {
+                
+                powerLayerFeatures.filter(feature=>feature.get(province)==='Dhaka')
+            console.log(selected)
+               
+            
+                const readableFeatureName = readableClassNames[featureKey] || featureKey;
+                const table = `<h3>${readableFeatureName}</h3>
+                <table border="1">
+                <thead>
+                    <tr>
+                        <th>Labels</th>
+                        <th>Sum of Flood (Low)</th>
+                        <th>Sum of Flood (Moderate)</th>
+                        <th>Sum of Flood (High)</th>
+                        <th>Sum of Flood (Very High)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="collapsible-header" data-section="dhakaDivision">
+                        <td>Dhaka Division</td>
+                        <td>1020</td>
+                        <td>3432</td>
+                        <td>1175</td>
+                        <td>0</td>
+                    </tr>
+            
+                    <tr class="collapsible-header" data-section="dhakaDistrict">
+                        <td>Dhaka District</td>
+                        <td>116</td>
+                        <td>680</td>
+                        <td>277</td>
+                        <td>0</td>
+                    </tr>
+            
+                    <tr class="collapsible-content" data-section="dhakaDistrict">
+                        <td>Dhaka Metropolitan</td>
+                        <td>36</td>
+                        <td>235</td>
+                        <td>71</td>
+                        <td>0</td>
+                    </tr>
+            
+                    <tr class="collapsible-content" data-section="dhakaDistrict">
+                        <td>Dhamrai Upazila</td>
+                        <td>17</td>
+                        <td>67</td>
+                        <td>50</td>
+                        <td>0</td>
+                    </tr>
+            
+                    <tr class="collapsible-content" data-section="dhakaDistrict">
+                        <td>Dohar Upazila</td>
+                        <td>0</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>`
+                const tableContainer = document.getElementById('summary-stats');
+                const tableElement = document.createElement('div');
+                tableElement.innerHTML = table;
+                tableContainer.appendChild(tableElement);
+            })*/
 
         } else {
             throw new Error('No valid GeoJSON data available');

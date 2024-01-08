@@ -6,7 +6,7 @@ import tableFunctions from './tables/tablesDOMFunctions';
 
 const generateTable = (features) => {
     const table = document.createElement('table');
-    
+
 
     // Create header row
     const headerRow = table.insertRow();
@@ -49,7 +49,7 @@ function generatetableDataObject(features, featureKeys) {
     return tableDataObject
 }
 
-function generateTableDataRow(features, name,table,attributeName) {
+function generateTableDataRow(features, name, table, attributeName) {
 
     const tableDataObject = generatetableDataObject(features, featureKeys)
     tableDataObject['name'] = name
@@ -71,7 +71,7 @@ function generateTableDataRow(features, name,table,attributeName) {
 }
 
 
-function generateTableDataHeader(features, table,attributeName) {
+function generateTableDataHeader(features, table, attributeName) {
     const tableDataObject = generatetableDataObject(features, featureKeys)
     //tableDataObject['name'] = name
     // Create header row
@@ -129,4 +129,4 @@ function clearTable() {
 
 
 
-export { generateTable, clearTable, generateTableDataHeader, generateTable1,generateTableDataRow };
+export {generatetableDataObject, generateTable, clearTable, generateTableDataHeader, generateTable1, generateTableDataRow };

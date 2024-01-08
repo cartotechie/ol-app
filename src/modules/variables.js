@@ -28,5 +28,14 @@ const classVariableValues = {
   class_1_15 : ['VeryLow', 'Low', 'moderate', 'NoData', 'VeryHigh', 'High'],
   class_12 : ['POJECTrelevant', 'classFOCUS1']}
 
-export{classVariableValues,province,commune,upezilla,featureKeys,tableAttributes}
+  const readableClassNames = {
+    'class': 'Flood exposure',
+    'class_1': 'LULC',
+    'class_1_13': 'WindSpeed (100m)',
+    'class_1_14': 'Earthquake',
+    'class_1_15': 'Landslide susceptibility',
+    'class_12': 'Maintenance'
+};
+
+export{classVariableValues,province,commune,upezilla,featureKeys,tableAttributes,readableClassNames}
 
