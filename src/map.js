@@ -380,12 +380,27 @@ function onclickDivision(term) {
             displayDivisionChart(filteredData, uniquefilteredDataDiv[0])
 
             // Statistical tables
-            // Append the generated table to the summaryStatsElement
-            table.appendChild(generateTableDataHeader(filteredFeaturesDist, table, featureKeys[0]));
-            const generatedTableRow = generateTableDataRow(filteredData, uniquefilteredDataDiv[0], table, featureKeys[0]);
-            table.appendChild(generatedTableRow);
-            //table.appendChild(generateTableDataRow(filteredFeaturesUpe, uniquefilteredDataDiv[2],table));
-            summaryStatsElement.appendChild(table);
+            
+            for (const featureKey in readableClassNames) {
+                const readableFeatureName = readableClassNames[featureKey];
+            
+                // Create a new table for each feature
+                const table = document.createElement('table');
+            
+                // Append the label before the table
+                const labelElement = document.createElement('h3');
+                labelElement.innerHTML = `${readableFeatureName}`;
+                summaryStatsElement.appendChild(labelElement);
+            
+                // Statistical tables
+                // Append the generated table to the summaryStatsElement
+                table.appendChild(generateTableDataHeader(filteredFeaturesDist, table, featureKey));
+                const generatedTableRow = generateTableDataRow(filteredFeaturesDist, searchTerm, table, featureKey);
+                table.appendChild(generatedTableRow);
+            
+                // Append the table to the summaryStatsElement
+                summaryStatsElement.appendChild(table);
+            }
 
         }
 
@@ -425,12 +440,36 @@ function onclickDivision(term) {
 
             // Statistical tables
             // Append the generated table to the summaryStatsElement
-            table.appendChild(generateTableDataHeader(filteredFeaturesUpe, table, featureKeys[0]));
+            /*table.appendChild(generateTableDataHeader(filteredFeaturesUpe, table, featureKeys[0]));
             const generatedTableRow = generateTableDataRow(filteredDataDivUn, uniquefilteredDataDiv[0], table, featureKeys[0]);
-            table.appendChild(generatedTableRow);
+            table.appendChild(generateTableDataRow(filteredDataDivUn, uniquefilteredDataDiv[0], table, featureKeys[0]));
             table.appendChild(generateTableDataRow(filteredDataComUn, uniquefilteredDataDiv[1], table, featureKeys[0]));
             table.appendChild(generateTableDataRow(filteredFeaturesUpe, uniquefilteredDataDiv[2], table, featureKeys[0]));
-            summaryStatsElement.appendChild(table);
+            summaryStatsElement.appendChild(table);*/
+
+
+            for (const featureKey in readableClassNames) {
+                const readableFeatureName = readableClassNames[featureKey];
+            
+                // Create a new table for each feature
+                const table = document.createElement('table');
+            
+                // Append the label before the table
+                const labelElement = document.createElement('h3');
+                labelElement.innerHTML = `${readableFeatureName}`;
+                summaryStatsElement.appendChild(labelElement);
+            
+                // Statistical tables
+                // Append the generated table to the summaryStatsElement
+                table.appendChild(generateTableDataHeader(filteredFeaturesUpe, table, featureKey));
+                table.appendChild(generateTableDataRow(filteredDataDivUn, uniquefilteredDataDiv[0], table, featureKey));
+            table.appendChild(generateTableDataRow(filteredDataComUn, uniquefilteredDataDiv[1], table, featureKey));
+                const generatedTableRow = generateTableDataRow(filteredFeaturesUpe, searchTerm, table, featureKey);
+                table.appendChild(generatedTableRow);
+            
+                // Append the table to the summaryStatsElement
+                summaryStatsElement.appendChild(table);
+            }
 
 
         }
