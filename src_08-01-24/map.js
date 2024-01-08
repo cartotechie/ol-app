@@ -437,6 +437,8 @@ function highlightPolygon(feature) {
 map.on('click', function (event) {
     var clickedFeature = null;
     const powerLayerFeatures = map.getAllLayers()[2].getSource().getFeatures();
+
+    clearInfoBox()
     resetLayerHighlights(map)
     clearDivCharts()
     clearDistCharts()
@@ -446,9 +448,6 @@ map.on('click', function (event) {
     const features = []
     
     map.forEachFeatureAtPixel(event.pixel, function (feature) {
-
-        
-    
 
         if (feature.getGeometry().getType() === 'Polygon') {
             clickedFeature = feature;
@@ -465,17 +464,20 @@ map.on('click', function (event) {
             const filteredFeaturesDiv = powerLayerFeatures.filter(feature => feature.get(province) === selectedDivName)
             const filteredFeaturesDist = powerLayerFeatures.filter(feature => feature.get(commune) === selectedDistName)
 
+
+
             if (filteredFeaturesUpe.length > 0 & filteredFeaturesDist.length > 0 & filteredFeaturesDiv.length > 0) {
-                
                 generateTable(createUniqueAttributes(filteredFeaturesUpe, 'name_en'))
                 displayUpezillasChart(filteredFeaturesUpe, selectedUpeName)
                 displayDistrictChart(filteredFeaturesDist, selectedDistName)
                 displayDivisionChart(filteredFeaturesDiv, selectedDivName)
-           
                 console.log(filteredFeaturesUpe)
 
-               for (const featureKey in readableClassNames) {
-                   
+                const labelElement = document.createElement('h3');
+                    labelElement.innerHTML = `ppppppppppppppppppppppppp`;
+                    summaryStatsElement.appendChild(labelElement);
+
+                for (const featureKey in readableClassNames) {
                     const readableFeatureName = readableClassNames[featureKey];
 
                     // Create a new table for each feature
@@ -497,6 +499,9 @@ map.on('click', function (event) {
                     // Append the table to the summaryStatsElement
                     summaryStatsElement.appendChild(table);
 
+                    console.log(summaryStatsElement)
+                    console.log(labelElement)
+                    console.log(table)
                 }
 
 
@@ -522,8 +527,8 @@ map.on('click', function (event) {
     }
 });
 
-/*map.on('click', function (event) {
+map.on('click', function (event) {
     handleMapInfoBoxClick(event, map)
-    console.log('IMPLEMENT THIS INSIDE FUNCTION ABOVE)
-});*/
+});
+//const featureKeys = ['class', 'class_1', 'class_1_13', 'class_1_14', 'class_1_15', 'class_12'];
 

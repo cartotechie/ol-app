@@ -10,7 +10,7 @@ import {aggregateFeaturesByAtt,updateObjectKeyValue} from './processing'
 
 function generateChartData(features) {
   const valueCounts = aggregateFeaturesByAtt(features)
-  
+  console.log(valueCounts)
 
   return {
     class: createChartData('Flood exposure', 'class', valueCounts),
@@ -23,7 +23,7 @@ function generateChartData(features) {
 }
 
 function createChartData(label, key, valueCounts) {
-  
+  console.log(valueCounts)
   
   //console.log(valueCounts)
   const objectKeyValue = updateObjectKeyValue(key, valueCounts, classVariableValues)
@@ -192,7 +192,7 @@ function displayDivisionChart(features, selectedDivName) {
   }
 
   let filteredDataDiv = generateChartData(features);
-  
+  console.log(features)
   createChart(`graph_div_class`, `bar`, filteredDataDiv.class);
   createChart(`graph_div_class_1`, `bar`, filteredDataDiv.class_1);
   createChart(`graph_div_class_1_13`, `bar`, filteredDataDiv.class_1_13);

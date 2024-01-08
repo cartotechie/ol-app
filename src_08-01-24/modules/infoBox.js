@@ -1,3 +1,12 @@
+
+import {
+    generateChartData,
+    createChartData,
+    createChart,
+    clearUpazilaCharts,
+    clearDistCharts,
+    clearDivCharts
+} from './charts'
 import {
     countFeatures,
     createUniqueAttributes,
@@ -20,7 +29,8 @@ function handleMapInfoBoxClick(event, map) {
 
     // Get features at the clicked pixel
    let features = map.getFeaturesAtPixel(event.pixel);
-    
+    console.log(features)
+    console.log(features)
     //generateTable(createUniqueAttributes(features, 'name_en'))
     if (features.length > 0) {
         
@@ -28,9 +38,9 @@ function handleMapInfoBoxClick(event, map) {
        let firstFeature = features[0];
        let properties = firstFeature.getProperties();
        let upazilaName = firstFeature.get('name_en')
-       // console.log(powerLayerFeatures.filter(feature=>feature.get('name_en')===upazilaName))
+        console.log(powerLayerFeatures.filter(feature=>feature.get('name_en')===upazilaName))
         const filteredFeaturesUpe = powerLayerFeatures.filter(feature=>feature.get('name_en')===upazilaName)
-       // console.log(filteredFeaturesUpe)
+        console.log(filteredFeaturesUpe)
         clearTable()
         generateTable(createUniqueAttributes(powerLayerFeatures, 'name_en'))
 

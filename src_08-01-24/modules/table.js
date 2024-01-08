@@ -6,7 +6,7 @@ import tableFunctions from './tables/tablesDOMFunctions';
 
 const generateTable = (features) => {
     const table = document.createElement('table');
-    console.log('tabbbbbbbbbbb')
+
 
     // Create header row
     const headerRow = table.insertRow();
@@ -114,19 +114,17 @@ function generateTable1() {
 
 function clearTable() {
     const tableContainer = document.getElementById('table');
+    const summaryStatsElement = document.getElementById('summary-stats')
     if (tableContainer) {
         tableContainer.innerHTML = ''; // Clear the content
         // Alternatively, you can remove the entire table element
         // tableContainer.parentNode.removeChild(tableContainer);
     }
-    const summaryStatsElement = document.getElementById('summary-stats')
     if (summaryStatsElement) {
         summaryStatsElement.innerHTML = ''; // Clear the content
         // Alternatively, you can remove the entire table element
         // tableContainer.parentNode.removeChild(tableContainer);
     }
-    
-    
 }
 
 
